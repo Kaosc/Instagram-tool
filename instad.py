@@ -52,5 +52,4 @@ while True:
 
 #-----------------------------------------------------------------------------------------------------#
 
-# Basic Tool For Full Sıze Instagram Profile Photo Download
-# InstagramFullSizePPDownloader
+# By Kaosc
