@@ -12,7 +12,7 @@ you can download anyone profiles photo.
 
 Quality
 
-- Don't expect too much from picture quality but it's better then worst
+- Don't expect too much from picture quality but it's better then worst.
 
 ------------------------
 
