@@ -5,8 +5,6 @@ import urllib.request
 import time
 import sys
 
-#-----------------------------------------------------------------------------------------------------#
-
 class InstaImg:
     
     def __init__ (self):
@@ -32,7 +30,6 @@ class InstaImg:
         print("%sDownloaded!%s" % (fg(46), attr(0)))
         self.browser.close()
 
-#-----------------------------------------------------------------------------------------------------#
 
 while True:
     print(" ")
@@ -46,8 +43,4 @@ while True:
         print("%sGOODBYE BABE%s" % (fg(1), attr(0)))
         time.sleep(2)
         sys.exit()
-    elif secim == "3":
-        print(" ")
-        print("%sMail Me: kaosc.mail@gmail.com%s" % (fg(75), attr(0)))
-
-#-----------------------------------------------------------------------------------------------------#
+        
