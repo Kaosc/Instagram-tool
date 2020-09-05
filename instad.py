@@ -13,6 +13,8 @@ class InstaImg:
         self.browserProfile.add_argument("--headless")
         self.browserProfile.add_argument("--disable-gpu")
         self.browserProfile.add_argument("--log-level=3")
+        self.browserProfile.add_experimental_option('excludeSwitches',['enable-logging'])
+        self.browserProfile.add_experimental_option('prefs',{"intl.accept_languages":"en,en_US"})
         self.browser = webdriver.Chrome("chromedriver.exe", chrome_options=self.browserProfile)
         self.username = username
 
