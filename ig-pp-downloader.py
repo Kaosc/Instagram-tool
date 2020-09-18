@@ -32,13 +32,13 @@ class InstaImg:
         time.sleep(3)
         byt = self.browser.find_element_by_xpath("//*[@id='et-boc']/div/div[3]/div/div/div/div/center[1]/img")
         src = byt.get_attribute("src")
-        urllib.request.urlretrieve(src, "igpp.png")
+        urllib.request.urlretrieve(src, "images/igpp.png")
         print("%sDownloaded!%s" % (fg(46), attr(0)))
         self.browser.close()
 
     def show(self):
         try:
-            img = Image.open("igpp.png")
+            img = Image.open("images/igpp.png")
             img.show() 
         except FileNotFoundError:
             print("\n%s---> There is not screenshot yet%s\n" % (fg(1), attr(0)))
@@ -46,7 +46,7 @@ class InstaImg:
     def delete(self):
         os.system("cls")
         try:
-            os.remove("igpp.png")
+            os.remove("images/igpp.png")
             print("\n%s---> Deleted!%s\n" % (fg(2), attr(0)))
         except FileNotFoundError:
             print("\n%s---> There is not screenshot yet%s\n" % (fg(2), attr(0)))
