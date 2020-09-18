@@ -6,6 +6,7 @@ import time
 import sys
 import warnings
 import os
+from PIL import Image
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
@@ -35,6 +36,13 @@ class InstaImg:
         print("%sDownloaded!%s" % (fg(46), attr(0)))
         self.browser.close()
 
+    def show(self):
+        try:
+            img = Image.open("igpp.png")
+            img.show() 
+        except FileNotFoundError:
+            print("\n%s---> There is not screenshot yet%s\n" % (fg(1), attr(0)))
+
     def delete(self):
         os.system("cls")
         try:
@@ -47,12 +55,14 @@ while True:
     print(" ")
     print("%s - - - IG PP DOWNLOADER - - - %s" % (fg(83), attr(0)))
     print(" ")
-    secim = input("%s[1]- Search User\n[2]- Delete Pic\n[3]- Exit\n%s \nEnter Number:" % (fg(71), attr(0)))
+    secim = input("%s[1]- Search User\n[2]- Delete Pic\n[3]- Show Pic\n[4]- Exit\n%s \nEnter Number:" % (fg(71), attr(0)))
     if secim == "1":
         username = input("%susername: %s" % (fg(128), attr(0)))
         InstaImg().Download(username)
-    elif secim == "3":
+    elif secim == "4":
         print("%sGOODBYE BABE%s" % (fg(1), attr(0)))
         sys.exit()
     elif secim == "2":
         InstaImg().delete()
+    elif secim == "3":
+        InstaImg().show()
