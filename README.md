@@ -5,4 +5,5 @@ PIP's
 
 -----
 
-Chrome Driver Version: 85.0
+Download the Chrome Driver https://chromedriver.chromium.org/downloads
+it must be the same version with in your computer.
