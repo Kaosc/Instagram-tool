@@ -19,7 +19,7 @@ class InstaImg:
         self.browserProfile.add_argument("--disable-gpu")
         self.browserProfile.add_argument("--log-level=3")
         self.browserProfile.add_experimental_option('excludeSwitches',['enable-logging'])
-        self.browser = webdriver.Chrome("driver/chromedriver.exe", chrome_options=self.browserProfile)
+        self.browser = webdriver.Chrome("chromedriver.exe", chrome_options=self.browserProfile)
 
     def Download(self,username):
         self.username = username
@@ -33,14 +33,14 @@ class InstaImg:
         time.sleep(3)
         byt = self.browser.find_element_by_xpath("//*[@id='et-boc']/div/div[3]/div/div/div/div/center[1]/img")
         src = byt.get_attribute("src")
-        urllib.request.urlretrieve(src, "images/igpp.png")
+        urllib.request.urlretrieve(src, "igpp.png")
         print("%sDownloaded!%s" % (fg(46), attr(0)))
         self.browser.close()
 
     def delete(self):
         os.system("cls")
         try:
-            os.remove("images/igpp.png")
+            os.remove("igpp.png")
             print("\n%s---> Deleted!%s\n" % (fg(2), attr(0)))
         except FileNotFoundError:
             print("\n%s---> There is not screenshot yet%s\n" % (fg(2), attr(0)))
