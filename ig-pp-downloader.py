@@ -9,8 +9,6 @@ import os
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
-#-----------------------------------------------------------------------------------------------------#
-
 class InstaImg:
     
     def __init__ (self):
@@ -45,8 +43,6 @@ class InstaImg:
         except FileNotFoundError:
             print("\n%s---> There is not screenshot yet%s\n" % (fg(2), attr(0)))
 
-#-----------------------------------------------------------------------------------------------------#
-
 while True:
     print(" ")
     print("%s - - - IG PP DOWNLOADER - - - %s" % (fg(83), attr(0)))
@@ -60,5 +56,3 @@ while True:
         sys.exit()
     elif secim == "2":
         InstaImg().delete()
-
-#-----------------------------------------------------------------------------------------------------#
