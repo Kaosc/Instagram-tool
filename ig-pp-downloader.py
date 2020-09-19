@@ -3,7 +3,6 @@ from colored import fg, bg, attr
 from selenium import webdriver
 import urllib.request
 import time
-import sys
 import warnings
 import os
 from PIL import Image
@@ -21,8 +20,8 @@ class InstaImg:
         self.browser = webdriver.Chrome("chromedriver.exe", chrome_options=self.browserProfile)
 
     def Download(self,username):
-        self.username = username
         os.system("cls")
+        self.username = username
         print("%sProcessing...%s" % (fg(1), attr(0)))
         self.browser.get("http://izuum.com/index.php")
         print("%sSearching image...\n %s" % (fg(226), attr(0)))
@@ -37,6 +36,7 @@ class InstaImg:
         self.browser.close()
 
     def show(self):
+        os.system("cls")
         try:
             img = Image.open("images/igpp.png")
             img.show() 
@@ -61,7 +61,8 @@ while True:
         InstaImg().Download(username)
     elif secim == "4":
         print("%sGOODBYE BABE%s" % (fg(1), attr(0)))
-        sys.exit()
+        time.sleep(1)
+        exit()
     elif secim == "2":
         InstaImg().delete()
     elif secim == "3":
