@@ -10,4 +10,4 @@ it must be the same version with in your computer.
 
 -----
 
-Add driver to folder that you downloaded.
+Add chromedriver to in "driver" folder.
