@@ -5,7 +5,7 @@ PIP's
 - pip install pillow
 -----
 
-Current Chromedriver version : 85.0
+Current chromedriver version : 85.0
 
 -----
 Download the latest chrome driver https://chromedriver.chromium.org/downloads
