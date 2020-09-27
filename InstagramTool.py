@@ -24,7 +24,7 @@ class Instagram:
 
     def showpic(self):
         os.system("cls")
-        show = input("\n%sWhat do you want to delete? [post / pp] :%s" % (fg(30), attr(0)))
+        show = input("\n%sWhat do you want to delete? [post / pp / result] :%s" % (fg(30), attr(0)))
         if show == "pp":
             try:
                 img = Image.open("images/igpp.png")
@@ -36,11 +36,17 @@ class Instagram:
                 img = Image.open("images/igpost.png")
                 img.show() 
             except FileNotFoundError:
-                print("\n%s---> There is not screenshot yet%s\n" % (fg(1), attr(0)))        
+                print("\n%s---> There is not screenshot yet%s\n" % (fg(1), attr(0)))     
+        elif show == "result":
+            try:
+                img = Image.open("images/result.png")
+                img.show() 
+            except FileNotFoundError:
+                print("\n%s---> There is not screenshot yet%s\n" % (fg(1), attr(0)))               
 
     def deletepic(self):
         os.system("cls")
-        delete = input("\n%sWhat do you want to delete? [post / pp / all] :%s" % (fg(30), attr(0)))
+        delete = input("\n%sWhat do you want to delete? [post / pp / result / all] :%s" % (fg(30), attr(0)))
         if delete == "pp":
             try:
                 os.remove("images/igpp.png")
@@ -48,6 +54,12 @@ class Instagram:
             except FileNotFoundError:
                 print("\n%s---> There is not screenshot yet%s\n" % (fg(2), attr(0)))
         elif delete == "post":
+            try:
+                os.remove("images/igpost.png")
+                print("\n%s---> Deleted!%s\n" % (fg(2), attr(0)))
+            except FileNotFoundError:
+                print("\n%s---> There is not screenshot yet%s\n" % (fg(2), attr(0)))
+        elif delete == "result":
             try:
                 os.remove("images/igpost.png")
                 print("\n%s---> Deleted!%s\n" % (fg(2), attr(0)))
@@ -62,6 +74,12 @@ class Instagram:
             
             try:
                 os.remove("images/igpost.png")
+                print("%s---> Deleted!%s\n" % (fg(2), attr(0)))
+            except FileNotFoundError:
+                pass
+
+            try:
+                os.remove("images/result.png")
                 print("%s---> Deleted!%s\n" % (fg(2), attr(0)))
             except FileNotFoundError:
                 pass
@@ -101,13 +119,14 @@ class Instagram:
         self.browser.close()
 
     def freezeAccount(self,username,password):
+        os.system("cls")
         self.browserProfile.add_argument("--headless")
         self.browserProfile.add_argument("--disable-gpu")
         self.username = username
         self.password = password
         self.browser = webdriver.Chrome("driver/chromedriver.exe", chrome_options=self.browserProfile)
         self.browser.get("https://www.instagram.com/accounts/login")
-        delay(1)
+        delay(2)
         print("%s\n---> Login in%s\n" % (fg(2), attr(0)))
         self.browser.find_element_by_xpath('//*[@id="loginForm"]/div/div[1]/div/label/input').send_keys(self.username)
         self.browser.find_element_by_xpath('//*[@id="loginForm"]/div/div[2]/div/label/input').send_keys(self.password)
@@ -116,7 +135,7 @@ class Instagram:
         print("%s---> Account freezing%s\n" % (fg(2), attr(0)))
         self.browser.get('https://www.instagram.com/accounts/remove/request/temporary/')
         self.browser.find_element_by_xpath('//*[@id="deletion-reason"]').click()
-        delay(1)
+        delay(2)
         self.browser.find_element_by_xpath("//option[@value='need-break']").click()
         self.browser.find_element_by_xpath('//*[@id="password"]').send_keys(self.password)
         delay(2)
@@ -125,8 +144,8 @@ class Instagram:
         self.browser.find_element_by_xpath('//*[@id="react-root"]/section/main/div/article/div/form/div[4]/div/div[3]/div[1]/button').click()
         print("%s---> Results coming%s\n" % (fg(2), attr(0)))
         delay(1)
-        self.browser.save_screenshot("result.png")
-        img = Image.open("result.png")
+        self.browser.save_screenshot("images/result.png")
+        img = Image.open("images/result.png")
         delay(2)
         img.show()
         self.browser.close()
