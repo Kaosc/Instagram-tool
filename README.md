@@ -16,5 +16,5 @@ Add chromedriver to in "driver" folder.
 -----
 Note:
 
-The pillow module is not working properly after the python 3.9 
+The pillow module is not working properly after the new python version (3.9). 
 Close the module for a while if is that become an issue.
