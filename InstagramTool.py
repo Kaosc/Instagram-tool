@@ -103,7 +103,7 @@ class Instagram:
         print("%s--> Downloaded!%s" % (fg(46), attr(0)))
         self.browser.close()
 
-    def postpicture(self,link):
+    def downloadPost(self,link):
         self.browserProfile.add_argument("--headless")
         self.browserProfile.add_argument("--disable-gpu")
         os.system("cls")
@@ -190,7 +190,7 @@ class Instagram:
             print("%sWAITING FOR 2 MIN..%s" % (fg(1), attr(0)))
             delay(127)        
 
-    def getfollowers(self,username,password):
+    def getFollowers(self,username,password):
         os.system('cls')
         self.username = username
         self.password = password
@@ -261,30 +261,30 @@ while True:
     secim = input("%s[1]- Download Profile Picture\n[2]- Download Picture Post\n[3]- Freeze Account\n[4]- Send IGTV Viewer\n[5]- Send Video Viewer\n[6]- Show Pictures\n[7]- Delete Pictures\n[8]- Get Your Follower List\n[9]- Exit\n%s \nEnter Number:" % (fg(207), attr(0)))
     if secim == "1":
         username = input("%susername: %s" % (fg(207), attr(0)))
-        Instagram().profilephoto(username)
+        Instagram.profilephoto(username)
     elif secim == "9":
         print("%sGOODBYE BABE%s" % (fg(207), attr(0)))
         delay(1)
         exit()
     elif secim == "2":
         link = input("%sPicture Link: %s" % (fg(207), attr(0)))
-        Instagram().postpicture(link)
+        Instagram.downloadPost(link)
     elif secim == "3":
         username = input("%susername: %s" % (fg(207), attr(0)))
         password = input("%spassword: %s" % (fg(207), attr(0)))
-        Instagram().freezeAccount(username,password)
+        Instagram.freezeAccount(username,password)
     elif secim == "4":
-        Instagram().igtv()
+        Instagram.igtv()
     elif secim == "5":
-        Instagram().video()
+        Instagram.video()
     elif secim == "6":
-        Instagram().showpic()
+        Instagram.showpic()
     elif secim == "7":
-        Instagram().deletepic()
+        Instagram.deletepic()
     elif secim == "8":
         username = input("%susername: %s" % (fg(207), attr(0)))
         password = input("%spassword: %s" % (fg(207), attr(0)))
-        Instagram().getfollowers(username,password)
+        Instagram.getFollowers(username,password)
 
 
 # - PAST AD FOR igtool
