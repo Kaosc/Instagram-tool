@@ -24,7 +24,7 @@ class Instagram:
 
     def showpic():
         os.system("cls")
-        show = input("\n%sWhat do you want to delete? [post / pp / result] :%s" % (fg(30), attr(0)))
+        show = input("\n%s[post / pp / result] :%s" % (fg(30), attr(0)))
         if show == "pp":
             try:
                 img = Image.open("images/igpp.png")
@@ -46,7 +46,7 @@ class Instagram:
 
     def deletepic():
         os.system("cls")
-        delete = input("\n%sWhat do you want to delete? [post / pp / result / all] :%s" % (fg(30), attr(0)))
+        delete = input("\n%s[post / pp / result / all] :%s" % (fg(30), attr(0)))
         if delete == "pp":
             try:
                 os.remove("images/igpp.png")
