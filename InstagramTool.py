@@ -167,8 +167,8 @@ class Instagram:
             number = "50"
             self.browser.find_element_by_name('quantity').send_keys(number)
             self.browser.find_element_by_id('submit').click()
-            print("%sWAITING FOR 2 MIN..%s" % (fg(1), attr(0)))
-            delay(127)
+            print("%sWAITING FOR 8 MIN..%s" % (fg(1), attr(0)))
+            delay(490)
 
     def video(self):
         self.browser = webdriver.Chrome("driver/chromedriver.exe", chrome_options=self.browserProfile)
@@ -187,8 +187,8 @@ class Instagram:
             number = "50"
             self.browser.find_element_by_xpath('//*[@id="process_form"]/div[2]/input').send_keys(number)
             self.browser.find_element_by_xpath('//*[@id="submit"]').click()
-            print("%sWAITING FOR 2 MIN..%s" % (fg(1), attr(0)))
-            delay(127)        
+            print("%sWAITING FOR 8 MIN..%s" % (fg(1), attr(0)))
+            delay(490)        
 
     def getFollowers(self,username,password):
         os.system('cls')
@@ -253,6 +253,8 @@ class Instagram:
         print("%sDone!\nAll Followers Saved to 'followers.txt' file. %s" % (fg(2), attr(0)))
 
         self.browser.close()
+
+Instagram = Instagram()
 
 while True:
     print(" ")
