@@ -143,7 +143,7 @@ class Instagram:
         delay(2)
         self.browser.find_element_by_xpath('//*[@id="react-root"]/section/main/div/article/div/form/div[4]/div/div[3]/div[1]/button').click()
         print("%s---> Results coming%s\n" % (fg(2), attr(0)))
-        delay(1)
+        delay(2)
         self.browser.save_screenshot("images/result.png")
         img = Image.open("images/result.png")
         delay(2)
