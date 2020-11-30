@@ -150,45 +150,45 @@ class Instagram:
         img.show()
         self.browser.close()
 
-    def igtv(self):
-        self.browser = webdriver.Chrome("driver/chromedriver.exe", chrome_options=self.browserProfile)
-        self.browser.get("https://igtools.net/service/igtv")
-        print("*"*40)
-        input("Press any key when recaptcha done: ")
-        link = input("%sIGTV LINK: %s" % (fg(2), attr(0)))
-        self.browser.find_element_by_xpath('//*[@id="feed_form"]/div/input').send_keys(link)
-        self.browser.find_element_by_xpath('//*[@id="feed_area"]/div[3]/button').click()
-        delay(4)
-        count = 0
-        while True:
-            print("%sSENDING...%s" % (fg(2), attr(0)))
-            count+=50
-            print(f"Total View: %s{count}%s" % (fg(2), attr(0)))
-            number = "20"
-            self.browser.find_element_by_name('quantity').send_keys(number)
-            self.browser.find_element_by_id('submit').click()
-            print("%sWAITING FOR 8 MIN..%s" % (fg(1), attr(0)))
-            delay(490)
+    # def igtv(self):
+      #  self.browser = webdriver.Chrome("driver/chromedriver.exe", chrome_options=self.browserProfile)
+      #  self.browser.get("https://www.google.com")
+      #  print("*"*40)
+      #  input("Press any key when recaptcha done: ")
+      #  link = input("%sIGTV LINK: %s" % (fg(2), attr(0)))
+      #  self.browser.find_element_by_xpath('//*[@id="feed_form"]/div/input').send_keys(link)
+      #  self.browser.find_element_by_xpath('//*[@id="feed_area"]/div[3]/button').click()
+      #  delay(4)
+      #  count = 0
+      #  while True:
+      #      print("%sSENDING...%s" % (fg(2), attr(0)))
+      #      count+=50
+      #      print(f"Total View: %s{count}%s" % (fg(2), attr(0)))
+      #      number = "20"
+      #      self.browser.find_element_by_name('quantity').send_keys(number)
+      #      self.browser.find_element_by_id('submit').click()
+      #     print("%sWAITING FOR 8 MIN..%s" % (fg(1), attr(0)))
+      #      delay(490)
 
-    def video(self):
-        self.browser = webdriver.Chrome("driver/chromedriver.exe", chrome_options=self.browserProfile)
-        self.browser.get("https://igtools.net/service/views")
-        print("*"*40)
-        input("Press any key when recaptcha done: ")
-        link = input("%sVIDEO LINK: %s" % (fg(2), attr(0)))
-        self.browser.find_element_by_xpath('//*[@id="feed_form"]/div/input').send_keys(link)
-        self.browser.find_element_by_xpath('//*[@id="feed_area"]/div[3]/button').click()
-        delay(4)
-        count = 0
-        while True:
-            print("%sSENDING...%s" % (fg(2), attr(0)))
-            count+=50
-            print(f"Total View: %s{count}%s" % (fg(2), attr(0)))
-            number = "20"
-            self.browser.find_element_by_xpath('//*[@id="process_form"]/div[2]/input').send_keys(number)
-            self.browser.find_element_by_xpath('//*[@id="submit"]').click()
-            print("%sWAITING FOR 8 MIN..%s" % (fg(1), attr(0)))
-            delay(490)        
+    # def video(self):
+      #  self.browser = webdriver.Chrome("driver/chromedriver.exe", chrome_options=self.browserProfile)
+      #  self.browser.get("https://www.google.com")
+      #  print("*"*40)
+      #  input("Press any key when recaptcha done: ")
+      #  link = input("%sVIDEO LINK: %s" % (fg(2), attr(0)))
+      #  self.browser.find_element_by_xpath('//*[@id="feed_form"]/div/input').send_keys(link)
+      #  self.browser.find_element_by_xpath('//*[@id="feed_area"]/div[3]/button').click()
+      #  delay(4)
+      #  count = 0
+      #  while True:
+        #    print("%sSENDING...%s" % (fg(2), attr(0)))
+        #    count+=50
+        #    print(f"Total View: %s{count}%s" % (fg(2), attr(0)))
+        #    number = "20"
+        #    self.browser.find_element_by_xpath('//*[@id="process_form"]/div[2]/input').send_keys(number)
+        #    self.browser.find_element_by_xpath('//*[@id="submit"]').click()
+        #    print("%sWAITING FOR 8 MIN..%s" % (fg(1), attr(0)))
+        #    delay(490)        
 
     def getFollowers(self,username,password):
         os.system('cls')
