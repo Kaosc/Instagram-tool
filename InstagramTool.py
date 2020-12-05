@@ -220,11 +220,11 @@ while True:
     print(" ")
     print("%s - - - INSTAGRAM TOOL - - - %s" % (fg(207), attr(0)))
     print(" ")
-    secim = input("%s[1]- Download Profile Picture\n[2]- Download Picture Post\n[3]- Freeze Account\n[6]- Show Pictures\n[7]- Delete Pictures\n[8]- Get Your Follower List\n[9]- Exit\n%s \nEnter Number:" % (fg(207), attr(0)))
+    secim = input("%s[1]- Download Profile Picture\n[2]- Download Picture Post\n[3]- Freeze Account\n[4]- Get Your Follower List\n[5]-Show Pictures\n[6]-Delete Pictures \n[7]- Exit\n%s \nEnter Number:" % (fg(207), attr(0)))
     if secim == "1":
         username = input("%susername: %s" % (fg(207), attr(0)))
         Instagram.profilephoto(username)
-    elif secim == "9":
+    elif secim == "7":
         print("%sGOODBYE BABE%s" % (fg(207), attr(0)))
         delay(1)
         exit()
@@ -235,11 +235,11 @@ while True:
         username = input("%susername: %s" % (fg(207), attr(0)))
         password = input("%spassword: %s" % (fg(207), attr(0)))
         Instagram.freezeAccount(username,password)
-    elif secim == "6":
+    elif secim == "5":
         Instagram.showpic()
-    elif secim == "7":
+    elif secim == "6":
         Instagram.deletepic()
-    elif secim == "8":
+    elif secim == "4":
         username = input("%susername: %s" % (fg(207), attr(0)))
         password = input("%spassword: %s" % (fg(207), attr(0)))
         Instagram.getFollowers(username,password)
