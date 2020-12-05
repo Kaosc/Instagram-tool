@@ -22,7 +22,7 @@ class Instagram:
         self.browserProfile.add_experimental_option('excludeSwitches',['enable-logging'])
         self.browserProfile.add_experimental_option('prefs',{"intl.accept_languages":"en,en_US"})
 
-    def showpic():
+    def showpic(self):
         os.system("cls")
         show = input("\n%s[post / pp / result] :%s" % (fg(30), attr(0)))
         if show == "pp":
@@ -44,7 +44,7 @@ class Instagram:
             except FileNotFoundError:
                 print("\n%s---> There is not screenshot yet%s\n" % (fg(1), attr(0)))               
 
-    def deletepic():
+    def deletepic(self):
         os.system("cls")
         delete = input("\n%s[post / pp / result / all] :%s" % (fg(30), attr(0)))
         if delete == "pp":
