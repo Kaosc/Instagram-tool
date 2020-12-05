@@ -220,7 +220,7 @@ while True:
     print(" ")
     print("%s - - - INSTAGRAM TOOL - - - %s" % (fg(207), attr(0)))
     print(" ")
-    secim = input("%s[1]- Download Profile Picture\n[2]- Download Picture Post\n[3]- Freeze Account\n[4]- Get Your Follower List\n[5]-Show Pictures\n[6]-Delete Pictures \n[7]- Exit\n%s \nEnter Number:" % (fg(207), attr(0)))
+    secim = input("%s[1]- Download Profile Picture\n[2]- Download Picture Post\n[3]- Freeze Account\n[4]- Get Your Follower List\n[5]- Show Pictures\n[6]- Delete Pictures \n[7]- Exit\n%s \nEnter Number:" % (fg(207), attr(0)))
     if secim == "1":
         username = input("%susername: %s" % (fg(207), attr(0)))
         Instagram.profilephoto(username)
