@@ -19,6 +19,8 @@ class Instagram:
         self.browserProfile = webdriver.ChromeOptions()
         self.browserProfile.add_argument("--log-level=3")
         self.browserProfile.add_argument('--hide-scrollbars')
+        self.browserProfile.add_argument("--headless")
+        self.browserProfile.add_argument("--disable-gpu")
         self.browserProfile.add_experimental_option('excludeSwitches',['enable-logging'])
         self.browserProfile.add_experimental_option('prefs',{"intl.accept_languages":"en,en_US"})
 
@@ -85,27 +87,20 @@ class Instagram:
                 pass
 
     def profilephoto(self,username):
-        # self.browserProfile.add_argument("--headless")
-        # self.browserProfile.add_argument("--disable-gpu")
         self.browser = webdriver.Chrome("driver/chromedriver.exe", chrome_options=self.browserProfile)
         os.system("cls")
         self.username = username
         print("\n%s--> Processing...%s" % (fg(1), attr(0)))
-        self.browser.get("http://izuum.com/index.php")
+        self.browser.get(f"https://instabig.net/fullsize/{self.username}")
         print("\n%s--> Searching image...\n %s" % (fg(226), attr(0)))
-        username = self.browser.find_element_by_xpath("//*[@id='birds']")
-        username.send_keys(self.username)
-        username.send_keys(Keys.ENTER)
-        delay(3)
-        byt = self.browser.find_element_by_xpath("//*[@id='et-boc']/div/div[3]/div/div/div/div/center[1]/img")
+        delay(2)
+        byt = self.browser.find_element_by_xpath('//*[@id="imgBigPP"]')
         src = byt.get_attribute("src")
         urllib.request.urlretrieve(src, "images/igpp.png")
         print("%s--> Downloaded!%s" % (fg(46), attr(0)))
         self.browser.close()
 
     def downloadPost(self,link):
-        # self.browserProfile.add_argument("--headless")
-        # self.browserProfile.add_argument("--disable-gpu")
         os.system("cls")
         self.link = link
         print("%s---> Loading...%s" % (fg(2), attr(0)))
@@ -122,8 +117,6 @@ class Instagram:
         os.system("cls")
         self.username = username
         self.password = password
-        # self.browserProfile.add_argument("--headless")
-        # self.browserProfile.add_argument("--disable-gpu")
         self.browser = webdriver.Chrome("driver/chromedriver.exe", chrome_options=self.browserProfile)
         self.browser.get("https://www.instagram.com/accounts/login")
         delay(2)
@@ -142,21 +135,18 @@ class Instagram:
         self.browser.find_element_by_xpath('//*[@id="react-root"]/section/main/div/article/div/form/div[3]/button').click()
         delay(2)
         self.browser.find_element_by_xpath('//*[@id="react-root"]/section/main/div/article/div/form/div[4]/div/div[3]/div[1]/button').click()
-        # print("%s---> Results coming%s\n" % (fg(2), attr(0)))
-        # delay(2)
-        # self.browser.save_screenshot("images/result.png")
-        # img = Image.open("images/result.png")
-        # delay(2)
-        # img.show()
-        # self.browser.close()
-        print('Done!')
+        print("%s---> Results coming%s\n" % (fg(2), attr(0)))
+        delay(2)
+        self.browser.save_screenshot("images/result.png")
+        img = Image.open("images/result.png")
+        delay(2)
+        img.show()
+        self.browser.close()
 
     def getFollowers(self,username,password):
         os.system('cls')
         self.username = username
         self.password = password
-        # self.browserProfile.add_argument("--headless")
-        # self.browserProfile.add_argument("--disable-gpu")
         self.browser = webdriver.Chrome("driver/chromedriver.exe", chrome_options=self.browserProfile)
         self.browser.get("http://instagram.com/accounts/login")
         delay(1)
@@ -218,7 +208,7 @@ class Instagram:
 Instagram = Instagram()
 
 while True:
-    print("\n - - headless chrome deactive\n")
+    print("")
     print("%s - - - INSTAGRAM TOOL - - - %s" % (fg(207), attr(0)))
     print(" ")
     secim = input("%s[1]- Download Profile Picture\n[2]- Download Picture Post\n[3]- Freeze Account\n[4]- Get Your Follower List\n[5]- Show Pictures\n[6]- Delete Pictures \n[7]- Exit\n%s \nEnter Number:" % (fg(207), attr(0)))
