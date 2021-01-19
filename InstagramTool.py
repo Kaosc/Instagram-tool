@@ -16,6 +16,9 @@ def delay(times):
 class Instagram:
     
     def __init__ (self):
+        self.drvPath = "E:/Code/Git/InstagramTool/driver/chromedriver.exe"              # PATH IS HERE <------------- !
+        self.imgPath = "E:/Code/Git/InstagramTool/images"                               # PATH IS HERE <------------- !
+
         self.browserProfile = webdriver.ChromeOptions()
         self.browserProfile.add_argument("--log-level=3")
         self.browserProfile.add_argument('--hide-scrollbars')
@@ -29,19 +32,19 @@ class Instagram:
         show = input("\n%s[post / pp / result] :%s" % (fg(30), attr(0)))
         if show == "pp":
             try:
-                img = Image.open("images/igpp.png")
+                img = Image.open(F"{self.imgPath}/igpp.png")
                 img.show() 
             except FileNotFoundError:
                 print("\n%s---> There is not screenshot yet%s\n" % (fg(1), attr(0)))
         elif show == "post":
             try:
-                img = Image.open("images/igpost.png")
+                img = Image.open(F"{self.imgPath}/igpost.png")
                 img.show() 
             except FileNotFoundError:
                 print("\n%s---> There is not screenshot yet%s\n" % (fg(1), attr(0)))     
         elif show == "result":
             try:
-                img = Image.open("images/result.png")
+                img = Image.open(F"{self.imgPath}/result.png")
                 img.show() 
             except FileNotFoundError:
                 print("\n%s---> There is not screenshot yet%s\n" % (fg(1), attr(0)))               
@@ -51,43 +54,43 @@ class Instagram:
         delete = input("\n%s[post / pp / result / all] :%s" % (fg(30), attr(0)))
         if delete == "pp":
             try:
-                os.remove("images/igpp.png")
+                os.remove(f"{self.imgPath}/igpp.png")
                 print("\n%s---> Deleted!%s\n" % (fg(2), attr(0)))
             except FileNotFoundError:
                 print("\n%s---> There is not screenshot yet%s\n" % (fg(2), attr(0)))
         elif delete == "post":
             try:
-                os.remove("images/igpost.png")
+                os.remove(f"{self.imgPath}/igpost.png")
                 print("\n%s---> Deleted!%s\n" % (fg(2), attr(0)))
             except FileNotFoundError:
                 print("\n%s---> There is not screenshot yet%s\n" % (fg(2), attr(0)))
         elif delete == "result":
             try:
-                os.remove("images/igpost.png")
+                os.remove(f"{self.imgPath}/igpost.png")
                 print("\n%s---> Deleted!%s\n" % (fg(2), attr(0)))
             except FileNotFoundError:
                 print("\n%s---> There is not screenshot yet%s\n" % (fg(2), attr(0)))
         elif delete == "all":
             try:
-                os.remove("images/igpp.png")
+                os.remove(f"{self.imgPath}/igpp.png")
                 print("%s---> Deleted!%s" % (fg(2), attr(0)))
             except FileNotFoundError:
                 pass
             
             try:
-                os.remove("images/igpost.png")
+                os.remove(f"{self.imgPath}/igpost.png")
                 print("%s---> Deleted!%s\n" % (fg(2), attr(0)))
             except FileNotFoundError:
                 pass
 
             try:
-                os.remove("images/result.png")
+                os.remove(f"{self.imgPath}/result.png")
                 print("%s---> Deleted!%s\n" % (fg(2), attr(0)))
             except FileNotFoundError:
                 pass
 
     def profilephoto(self,username):
-        self.browser = webdriver.Chrome("driver/chromedriver.exe", chrome_options=self.browserProfile)
+        self.browser = webdriver.Chrome(self.drvPath, chrome_options=self.browserProfile)
         os.system("cls")
         self.username = username
         print("\n%s--> Processing...%s" % (fg(1), attr(0)))
@@ -96,7 +99,7 @@ class Instagram:
         delay(2)
         byt = self.browser.find_element_by_xpath('//*[@id="imgBigPP"]')
         src = byt.get_attribute("src")
-        urllib.request.urlretrieve(src, "images/igpp.png")
+        urllib.request.urlretrieve(src, f"{self.imgPath}/igpp.png")
         print("%s--> Downloaded!%s" % (fg(46), attr(0)))
         self.browser.close()
 
@@ -104,12 +107,12 @@ class Instagram:
         os.system("cls")
         self.link = link
         print("%s---> Loading...%s" % (fg(2), attr(0)))
-        self.browser = webdriver.Chrome("driver/chromedriver.exe", chrome_options=self.browserProfile)
+        self.browser = webdriver.Chrome(self.drvPath, chrome_options=self.browserProfile)
         self.browser.get(link)
         delay(2)
         img = self.browser.find_element_by_xpath('//*[@id="react-root"]/section/main/div/div/article/div[2]/div/div/div[1]/div[1]/img')
         src = img.get_attribute("src")
-        urllib.request.urlretrieve(src, "images/igpost.png")
+        urllib.request.urlretrieve(src, f"{self.imgPath}/igpost.png")
         print("%s---> DONE!%s" % (fg(2), attr(0)))
         self.browser.close()
 
@@ -117,7 +120,7 @@ class Instagram:
         os.system("cls")
         self.username = username
         self.password = password
-        self.browser = webdriver.Chrome("driver/chromedriver.exe", chrome_options=self.browserProfile)
+        self.browser = webdriver.Chrome(self.drvPath, chrome_options=self.browserProfile)
         self.browser.get("https://www.instagram.com/accounts/login")
         delay(2)
         print("%s\n---> Login in%s\n" % (fg(2), attr(0)))
@@ -137,8 +140,8 @@ class Instagram:
         self.browser.find_element_by_xpath('//*[@id="react-root"]/section/main/div/article/div/form/div[4]/div/div[3]/div[1]/button').click()
         print("%s---> Results coming%s\n" % (fg(2), attr(0)))
         delay(2)
-        self.browser.save_screenshot("images/result.png")
-        img = Image.open("images/result.png")
+        self.browser.save_screenshot(f"{self.imgPath}/result.png")
+        img = Image.open(f"{self.imgPath}/result.png")
         delay(2)
         img.show()
         self.browser.close()
@@ -147,7 +150,7 @@ class Instagram:
         os.system('cls')
         self.username = username
         self.password = password
-        self.browser = webdriver.Chrome("driver/chromedriver.exe", chrome_options=self.browserProfile)
+        self.browser = webdriver.Chrome(self.drvPath, chrome_options=self.browserProfile)
         self.browser.get("http://instagram.com/accounts/login")
         delay(1)
         print("%sLogin in...%s" % (fg(2), attr(0)))
