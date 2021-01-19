@@ -85,8 +85,8 @@ class Instagram:
                 pass
 
     def profilephoto(self,username):
-        self.browserProfile.add_argument("--headless")
-        self.browserProfile.add_argument("--disable-gpu")
+        # self.browserProfile.add_argument("--headless")
+        # self.browserProfile.add_argument("--disable-gpu")
         self.browser = webdriver.Chrome("driver/chromedriver.exe", chrome_options=self.browserProfile)
         os.system("cls")
         self.username = username
@@ -104,8 +104,8 @@ class Instagram:
         self.browser.close()
 
     def downloadPost(self,link):
-        self.browserProfile.add_argument("--headless")
-        self.browserProfile.add_argument("--disable-gpu")
+        # self.browserProfile.add_argument("--headless")
+        # self.browserProfile.add_argument("--disable-gpu")
         os.system("cls")
         self.link = link
         print("%s---> Loading...%s" % (fg(2), attr(0)))
@@ -122,8 +122,8 @@ class Instagram:
         os.system("cls")
         self.username = username
         self.password = password
-        self.browserProfile.add_argument("--headless")
-        self.browserProfile.add_argument("--disable-gpu")
+        # self.browserProfile.add_argument("--headless")
+        # self.browserProfile.add_argument("--disable-gpu")
         self.browser = webdriver.Chrome("driver/chromedriver.exe", chrome_options=self.browserProfile)
         self.browser.get("https://www.instagram.com/accounts/login")
         delay(2)
@@ -142,20 +142,21 @@ class Instagram:
         self.browser.find_element_by_xpath('//*[@id="react-root"]/section/main/div/article/div/form/div[3]/button').click()
         delay(2)
         self.browser.find_element_by_xpath('//*[@id="react-root"]/section/main/div/article/div/form/div[4]/div/div[3]/div[1]/button').click()
-        print("%s---> Results coming%s\n" % (fg(2), attr(0)))
-        delay(2)
-        self.browser.save_screenshot("images/result.png")
-        img = Image.open("images/result.png")
-        delay(2)
-        img.show()
-        self.browser.close()
+        # print("%s---> Results coming%s\n" % (fg(2), attr(0)))
+        # delay(2)
+        # self.browser.save_screenshot("images/result.png")
+        # img = Image.open("images/result.png")
+        # delay(2)
+        # img.show()
+        # self.browser.close()
+        print('Done!')
 
     def getFollowers(self,username,password):
         os.system('cls')
         self.username = username
         self.password = password
-        self.browserProfile.add_argument("--headless")
-        self.browserProfile.add_argument("--disable-gpu")
+        # self.browserProfile.add_argument("--headless")
+        # self.browserProfile.add_argument("--disable-gpu")
         self.browser = webdriver.Chrome("driver/chromedriver.exe", chrome_options=self.browserProfile)
         self.browser.get("http://instagram.com/accounts/login")
         delay(1)
@@ -217,7 +218,7 @@ class Instagram:
 Instagram = Instagram()
 
 while True:
-    print(" ")
+    print("\n - - headless chrome deactive\n")
     print("%s - - - INSTAGRAM TOOL - - - %s" % (fg(207), attr(0)))
     print(" ")
     secim = input("%s[1]- Download Profile Picture\n[2]- Download Picture Post\n[3]- Freeze Account\n[4]- Get Your Follower List\n[5]- Show Pictures\n[6]- Delete Pictures \n[7]- Exit\n%s \nEnter Number:" % (fg(207), attr(0)))
