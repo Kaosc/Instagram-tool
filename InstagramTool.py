@@ -23,7 +23,7 @@ class Instagram:
         self.browserProfile.add_argument("--lang=en")
         self.browserProfile.add_argument("--log-level=3")
         self.browserProfile.add_argument('--hide-scrollbars')
-        self.browserProfile.add_argument("--headless")
+        # self.browserProfile.add_argument("--headless")
         self.browserProfile.add_argument("--disable-gpu")
         self.browserProfile.add_experimental_option('excludeSwitches',['enable-logging'])
         self.browserProfile.add_experimental_option('prefs',{"intl.accept_languages":"en,en_US"})
