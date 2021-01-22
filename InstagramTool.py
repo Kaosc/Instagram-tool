@@ -20,6 +20,7 @@ class Instagram:
         self.imgPath = "E:/Code/Git/InstagramTool/images"                               # PATH IS HERE <------------- !
 
         self.browserProfile = webdriver.ChromeOptions()
+        self.browserProfile.add_argument("--lang=en")
         self.browserProfile.add_argument("--log-level=3")
         self.browserProfile.add_argument('--hide-scrollbars')
         self.browserProfile.add_argument("--headless")
