@@ -16,8 +16,8 @@ def delay(times):
 class Instagram:
     
     def __init__ (self):
-        self.drvPath = "E:/Code/Git/InstagramTool/driver/chromedriver.exe"              # PATH IS HERE <------------- !
-        self.imgPath = "E:/Code/Git/InstagramTool/images"                               # PATH IS HERE <------------- !
+        self.drvPath = ""              # PATH IS HERE <------------- !
+        self.imgPath = ""              # PATH IS HERE <------------- !
 
         self.browserProfile = webdriver.ChromeOptions()
         self.browserProfile.add_argument("--lang=en")
