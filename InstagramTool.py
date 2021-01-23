@@ -18,7 +18,6 @@ class Instagram:
     def __init__ (self):
         self.drvPath = ""              # PATH IS HERE <------------- !
         self.imgPath = ""              # PATH IS HERE <------------- !
-
         self.browserProfile = webdriver.ChromeOptions()
         self.browserProfile.add_argument("--lang=en")
         self.browserProfile.add_argument("--log-level=3")
