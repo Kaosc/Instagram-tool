@@ -1,4 +1,4 @@
-from info import username, password, target, unfTarget
+from .info import username, password, target, unfTarget
 from selenium.webdriver.common.keys import Keys
 from selenium import webdriver
 import time
