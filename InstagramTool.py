@@ -16,8 +16,8 @@ def delay(times):
 class Instagram:
     
     def __init__ (self):
-        self.drvPath = ""              # PATH IS HERE <------------- !
-        self.imgPath = ""              # PATH IS HERE <------------- !
+        self.drvPath = "E:/Code/Git/InstagramBots/driver/chromedriver.exe"              # PATH IS HERE <------------- !
+        self.imgPath = "E:/Code/Git/InstagramBots/images"                               # PATH IS HERE <------------- !
         self.browserProfile = webdriver.ChromeOptions()
         self.browserProfile.add_argument("--lang=en")
         self.browserProfile.add_argument("--log-level=3")
@@ -26,6 +26,19 @@ class Instagram:
         self.browserProfile.add_argument("--disable-gpu")
         self.browserProfile.add_experimental_option('excludeSwitches',['enable-logging'])
         self.browserProfile.add_experimental_option('prefs',{"intl.accept_languages":"en,en_US"})
+
+    def login(self,username,password):
+        os.system('cls')
+        self.browser = webdriver.Chrome(self.drvPath, chrome_options=self.browserProfile)
+        print("%s--> Login in\n%s" % (fg(61), attr(0)))
+        self.username = username
+        self.password = password
+        self.browser.get("https://www.instagram.com/accounts/login/")
+        time.sleep(2)
+        self.browser.find_element_by_xpath('//*[@id="loginForm"]/div/div[1]/div/label/input').send_keys(self.username)
+        self.browser.find_element_by_xpath('//*[@id="loginForm"]/div/div[2]/div/label/input').send_keys(self.password)
+        self.browser.find_element_by_xpath('//*[@id="loginForm"]/div/div[3]/button/div').click()
+        time.sleep(3)    
 
     def showpic(self):
         os.system("cls")
@@ -104,30 +117,22 @@ class Instagram:
         self.browser.close()
 
     def downloadPost(self,link):
-        os.system("cls")
-        self.link = link
-        print("%s---> Loading...%s" % (fg(2), attr(0)))
-        self.browser = webdriver.Chrome(self.drvPath, chrome_options=self.browserProfile)
-        self.browser.get(link)
-        delay(2)
-        img = self.browser.find_element_by_xpath('//*[@id="react-root"]/section/main/div/div/article/div[2]/div/div/div[1]/div[1]/img')
-        src = img.get_attribute("src")
-        urllib.request.urlretrieve(src, f"{self.imgPath}/igpost.png")
-        print("%s---> DONE!%s" % (fg(2), attr(0)))
-        self.browser.close()
+        print('Waiting for fix.')
+        # os.system("cls")
+        # self.link = link
+        # print("%s---> Loading...%s" % (fg(2), attr(0)))
+        # self.browser = webdriver.Chrome(self.drvPath, chrome_options=self.browserProfile)
+        # self.browser.get(link)
+        # delay(2)
+        # img = self.browser.find_element_by_css_selector('//a[@srcset]')
+        # # src = img.get_attribute("src")
+        # urllib.request.urlretrieve(img, f"{self.imgPath}/igpost.png")
+        # print("%s---> DONE!%s" % (fg(2), attr(0)))
+        # self.browser.close()
 
-    def freezeAccount(self,username,password):
+    def freezeAccount(self,password):
         os.system("cls")
-        self.username = username
         self.password = password
-        self.browser = webdriver.Chrome(self.drvPath, chrome_options=self.browserProfile)
-        self.browser.get("https://www.instagram.com/accounts/login")
-        delay(2)
-        print("%s\n---> Login in%s\n" % (fg(2), attr(0)))
-        self.browser.find_element_by_xpath('//*[@id="loginForm"]/div/div[1]/div/label/input').send_keys(self.username)
-        self.browser.find_element_by_xpath('//*[@id="loginForm"]/div/div[2]/div/label/input').send_keys(self.password)
-        self.browser.find_element_by_xpath('//*[@id="loginForm"]/div/div[3]/button/div').click()
-        delay(3)
         print("%s---> Account freezing%s\n" % (fg(2), attr(0)))
         self.browser.get('https://www.instagram.com/accounts/remove/request/temporary/')
         self.browser.find_element_by_xpath('//*[@id="deletion-reason"]').click()
@@ -146,18 +151,83 @@ class Instagram:
         img.show()
         self.browser.close()
 
+    def navigateFollowers(self,user):
+        print("%s--> Navigating\n%s" % (fg(61), attr(0)))
+        self.user = user
+        self.browser.get(f'https://www.instagram.com/{self.user}')
+        time.sleep(1)
+        self.browser.find_element_by_xpath('//*[@id="react-root"]/section/main/div/header/section/ul/li[2]/a').click()
+        time.sleep(2)
+
+    def navigateFollowings(self,user):
+        print("%s--> Navigating\n%s" % (fg(61), attr(0)))
+        self.user = user
+        self.browser.get(f'https://www.instagram.com/{self.user}')
+        time.sleep(1)
+        self.browser.find_element_by_xpath('//*[@id="react-root"]/section/main/div/header/section/ul/li[3]/a').click()
+        time.sleep(2)
+
+    def getUserList(self,total):
+        self.total = total
+        dialog = self.browser.find_element_by_css_selector("div[role=dialog] ul")
+        action = webdriver.ActionChains(self.browser)
+
+        while True:
+            dialog.click()
+            action.key_down(Keys.PAGE_DOWN).perform()
+            time.sleep(0.5)
+
+            newCount = len(dialog.find_elements_by_css_selector("li"))
+            print(F"%sTotal Collected: {newCount}%s" % (fg(10), attr(0)))
+            
+            if newCount <= 1:
+                break
+
+            if newCount < total:
+                time.sleep(0.5)
+            else:
+                break
+
+        followers = dialog.find_elements_by_css_selector("li")
+        self.mainList = []
+
+        i = 0
+        for user in followers:
+            link = user.find_element_by_css_selector("a").get_attribute("href")
+            self.mainList.append(link)
+            i +=1
+            if i >= total:
+                break
+
+    def follow(self):
+        print("%s-->Processing... Get relief until it end.%s" % (fg(45), attr(0)))
+        for user in self.mainList:
+            self.browser.get(user)
+            time.sleep(2)
+            self.browser.find_element_by_xpath('//button[text()="Follow"]').click()
+            time.sleep(1)
+
+    def unFollow(self):
+        print("%s--> Processing... Get relief until it end.%s" % (fg(45), attr(0)))
+        for user in self.mainList:
+            self.browser.get(user)
+            time.sleep(2)
+            self.browser.find_element_by_css_selector("[aria-label='Following']").click()
+            time.sleep(0.5)
+            self.browser.find_element_by_css_selector("div[role=dialog]").click()
+            self.browser.find_element_by_xpath('/html/body/div[5]/div/div/div/div[3]/button[1]').click()
+            time.sleep(1)
+
+    def message(self):
+        print("%s\n--> DONE%s" % (fg(1), attr(0)))
+
+    def closeBot(self):
+        self.browser.close()
+
     def getFollowers(self,username,password):
         os.system('cls')
         self.username = username
         self.password = password
-        self.browser = webdriver.Chrome(self.drvPath, chrome_options=self.browserProfile)
-        self.browser.get("http://instagram.com/accounts/login")
-        delay(1)
-        print("%sLogin in...%s" % (fg(2), attr(0)))
-        self.browser.find_element_by_xpath('//*[@id="loginForm"]/div/div[1]/div/label/input').send_keys(self.username)
-        self.browser.find_element_by_xpath('//*[@id="loginForm"]/div/div[2]/div/label/input').send_keys(self.password)
-        self.browser.find_element_by_xpath('//*[@id="loginForm"]/div/div[3]/button/div').click()
-        delay(3)
         self.browser.get(f"https://www.instagram.com/{self.username}")
         delay(2)
     
@@ -181,7 +251,7 @@ class Instagram:
     
             if CurrentFollowers != newCount:
                 CurrentFollowers = newCount
-                print(f"Counting Followers: {newCount}")
+                print(f"Collected Followers: {newCount}")
                 delay(1)
             else:
                 break
@@ -198,8 +268,9 @@ class Instagram:
             time.sleep(0.5)
             link = users.find_element_by_css_selector("a").get_attribute("href")
             Flist.append(link)
-    
-    
+
+        print("Saving...")
+
         with open("followers.txt","w",encoding="utf-8") as file:
             for item in Flist:
                 file.write(item+ "\n")
@@ -214,11 +285,11 @@ while True:
     print("")
     print("%s - - - INSTAGRAM TOOL - - - %s" % (fg(207), attr(0)))
     print(" ")
-    secim = input("%s[1]- Download Profile Picture\n[2]- Download Picture Post\n[3]- Freeze Account\n[4]- Get Your Follower List\n[5]- Show Pictures\n[6]- Delete Pictures \n[7]- Exit\n%s \nEnter Number:" % (fg(207), attr(0)))
+    secim = input("%s[1]- Download Profile Picture\n[2]- Download Post Picture\n[3]- Freeze Account\n[4]- Get Your Follower List\n[5]- Follower Farm\n[6]- unFollow Farm \n[7]- Show Pictures\n[8]- Delete Pictures\n[9]- Exit\n%s \nEnter Number:" % (fg(207), attr(0)))
     if secim == "1":
         username = input("%susername: %s" % (fg(207), attr(0)))
         Instagram.profilephoto(username)
-    elif secim == "7":
+    elif secim == "9":
         print("%sGOODBYE BABE%s" % (fg(207), attr(0)))
         delay(1)
         exit()
@@ -228,12 +299,35 @@ while True:
     elif secim == "3":
         username = input("%susername: %s" % (fg(207), attr(0)))
         password = input("%spassword: %s" % (fg(207), attr(0)))
-        Instagram.freezeAccount(username,password)
-    elif secim == "5":
+        Instagram.login(username,password)
+        Instagram.freezeAccount(password)
+    elif secim == "7":
         Instagram.showpic()
-    elif secim == "6":
+    elif secim == "8":
         Instagram.deletepic()
     elif secim == "4":
         username = input("%susername: %s" % (fg(207), attr(0)))
         password = input("%spassword: %s" % (fg(207), attr(0)))
+        Instagram.login(username,password)
         Instagram.getFollowers(username,password)
+    elif secim == "5":
+        username = input("%sUsername: %s" % (fg(207), attr(0)))
+        password = input("%sPassword: %s" % (fg(207), attr(0)))
+        target = input("%sTarget account name: %s" % (fg(207), attr(0)))
+        total = int(input("%sTotal Follow: %s" % (fg(10), attr(0))))
+        Instagram.login(username,password)
+        Instagram.navigateFollowers(target)
+        Instagram.getUserList(total)
+        Instagram.follow()
+        Instagram.message()
+        Instagram.closeBot()        
+    elif secim == "6":
+        username = input("%sUsername: %s" % (fg(207), attr(0)))
+        password = input("%sPassword: %s" % (fg(207), attr(0)))
+        total = int(input("%sTotal unFollow: %s" % (fg(10), attr(0))))
+        Instagram.login(username,password)
+        Instagram.navigateFollowings(username)
+        Instagram.getUserList(total)
+        Instagram.unFollow()
+        Instagram.message()
+        Instagram.closeBot()
