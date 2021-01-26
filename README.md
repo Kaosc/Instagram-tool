@@ -12,3 +12,5 @@ it must be the same version with in your computer.
 Add chromedriver to in "driver" folder.
 -----
 Don't forget to setting images folder and driver path
+-----
+![alt text](https://i.ibb.co/XVTKf3N/indir.png)
