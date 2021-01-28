@@ -9,10 +9,6 @@ from PIL import Image
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
-def delay(times):
-    times = int(times)
-    time.sleep(times)
-
 class Instagram:
     
     def __init__ (self):
@@ -109,7 +105,7 @@ class Instagram:
         print("\n%s--> Processing...%s" % (fg(1), attr(0)))
         self.browser.get(f"https://instabig.net/fullsize/{self.username}")
         print("\n%s--> Searching image...\n %s" % (fg(226), attr(0)))
-        delay(2)
+        time.sleep(2)
         byt = self.browser.find_element_by_xpath('//*[@id="imgBigPP"]')
         src = byt.get_attribute("src")
         urllib.request.urlretrieve(src, f"{self.imgPath}/igpp.png")
@@ -123,7 +119,7 @@ class Instagram:
         # print("%s---> Loading...%s" % (fg(2), attr(0)))
         # self.browser = webdriver.Chrome(self.drvPath, chrome_options=self.browserProfile)
         # self.browser.get(link)
-        # delay(2)
+        # time.sleep(2)
         # img = self.browser.find_element_by_css_selector('//a[@srcset]')
         # # src = img.get_attribute("src")
         # urllib.request.urlretrieve(img, f"{self.imgPath}/igpost.png")
@@ -136,18 +132,18 @@ class Instagram:
         print("%s---> Account freezing%s\n" % (fg(2), attr(0)))
         self.browser.get('https://www.instagram.com/accounts/remove/request/temporary/')
         self.browser.find_element_by_xpath('//*[@id="deletion-reason"]').click()
-        delay(2)
+        time.sleep(2)
         self.browser.find_element_by_xpath("//option[@value='need-break']").click()
         self.browser.find_element_by_xpath('//*[@id="password"]').send_keys(self.password)
-        delay(2)
+        time.sleep(2)
         self.browser.find_element_by_xpath('//*[@id="react-root"]/section/main/div/article/div/form/div[3]/button').click()
-        delay(2)
+        time.sleep(2)
         self.browser.find_element_by_xpath('//*[@id="react-root"]/section/main/div/article/div/form/div[4]/div/div[3]/div[1]/button').click()
         print("%s---> Results coming%s\n" % (fg(2), attr(0)))
-        delay(2)
+        time.sleep(2)
         self.browser.save_screenshot(f"{self.imgPath}/result.png")
         img = Image.open(f"{self.imgPath}/result.png")
-        delay(2)
+        time.sleep(2)
         img.show()
         self.browser.close()
 
@@ -224,17 +220,16 @@ class Instagram:
     def closeBot(self):
         self.browser.close()
 
-    def getFollowers(self,username,password):
+    def getFollowers(self,username):
         os.system('cls')
         self.username = username
-        self.password = password
         self.browser.get(f"https://www.instagram.com/{self.username}")
-        delay(2)
+        time.sleep(2)
     
         self.browser.find_element_by_xpath('//*[@id="react-root"]/section/main/div/header/section/ul/li[2]/a').click()
         print("%sCounting Followers%s" % (fg(2), attr(0)))
 
-        delay(2)
+        time.sleep(2)
     
         actionBox = self.browser.find_element_by_css_selector("div[role=dialog] ul")
         CurrentFollowers = len(self.browser.find_elements_by_css_selector('li'))
@@ -245,14 +240,14 @@ class Instagram:
         while True:
             actionBox.click()
             action.key_down(Keys.PAGE_DOWN).key_down(Keys.PAGE_DOWN).key_down(Keys.PAGE_DOWN).perform()
-            delay(1)
+            time.sleep(1)
     
             newCount = len(self.browser.find_elements_by_css_selector('li'))
     
             if CurrentFollowers != newCount:
                 CurrentFollowers = newCount
                 print(f"Collected Followers: {newCount}")
-                delay(1)
+                time.sleep(1)
             else:
                 break
             
@@ -291,7 +286,7 @@ while True:
         Instagram.profilephoto(username)
     elif secim == "9":
         print("%sGOODBYE BABE%s" % (fg(207), attr(0)))
-        delay(1)
+        time.sleep(1)
         exit()
     elif secim == "2":
         link = input("%sPicture Link: %s" % (fg(207), attr(0)))
@@ -309,7 +304,7 @@ while True:
         username = input("%susername: %s" % (fg(207), attr(0)))
         password = input("%spassword: %s" % (fg(207), attr(0)))
         Instagram.login(username,password)
-        Instagram.getFollowers(username,password)
+        Instagram.getFollowers(username)
     elif secim == "5":
         username = input("%sUsername: %s" % (fg(207), attr(0)))
         password = input("%sPassword: %s" % (fg(207), attr(0)))
