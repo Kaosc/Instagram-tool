@@ -18,7 +18,7 @@ class Instagram:
         self.browserProfile.add_argument("--lang=en")
         self.browserProfile.add_argument("--log-level=3")
         self.browserProfile.add_argument('--hide-scrollbars')
-        # self.browserProfile.add_argument("--headless")
+        # self.browserProfile.add_argument("--headless")    # ---> some methods does not work properly with headless - so it's optional
         self.browserProfile.add_argument("--disable-gpu")
         self.browserProfile.add_experimental_option('excludeSwitches',['enable-logging'])
         self.browserProfile.add_experimental_option('prefs',{"intl.accept_languages":"en,en_US"})
@@ -113,18 +113,18 @@ class Instagram:
         self.browser.close()
 
     def downloadPost(self,link):
-        print('Waiting for fix.')
-        # os.system("cls")
-        # self.link = link
-        # print("%s---> Loading...%s" % (fg(2), attr(0)))
-        # self.browser = webdriver.Chrome(self.drvPath, chrome_options=self.browserProfile)
-        # self.browser.get(link)
-        # time.sleep(2)
-        # img = self.browser.find_element_by_css_selector('//a[@srcset]')
-        # # src = img.get_attribute("src")
-        # urllib.request.urlretrieve(img, f"{self.imgPath}/igpost.png")
-        # print("%s---> DONE!%s" % (fg(2), attr(0)))
-        # self.browser.close()
+        os.system("cls")
+        self.link = link
+        print("%s---> Loading...%s" % (fg(2), attr(0)))
+        self.browser = webdriver.Chrome(self.drvPath, chrome_options=self.browserProfile)
+        self.browser.get(link)
+        time.sleep(2)
+        loc = self.browser.find_elements_by_tag_name("img")[1]
+        img = loc.find_element_by_xpath("//div/img")
+        src = img.get_attribute('src')
+        urllib.request.urlretrieve(src, f"{self.imgPath}/igpost.png")
+        print("%s---> DONE!%s" % (fg(2), attr(0)))
+        self.browser.close()
 
     def freezeAccount(self,password):
         os.system("cls")
