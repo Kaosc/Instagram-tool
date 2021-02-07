@@ -34,7 +34,7 @@ class Instagram:
         self.browser.find_element_by_xpath('//*[@id="loginForm"]/div/div[1]/div/label/input').send_keys(self.username)
         self.browser.find_element_by_xpath('//*[@id="loginForm"]/div/div[2]/div/label/input').send_keys(self.password)
         self.browser.find_element_by_xpath('//*[@id="loginForm"]/div/div[3]/button/div').click()
-        time.sleep(3)    
+        time.sleep(4)    
 
     def showpic(self):
         os.system("cls")
@@ -196,7 +196,7 @@ class Instagram:
                 break
 
     def follow(self):
-        print("%s-->Processing... Get relief until it end.%s" % (fg(45), attr(0)))
+        print("%s--> Processing... Get relief until it end.%s" % (fg(45), attr(0)))
         for user in self.mainList:
             self.browser.get(user)
             time.sleep(2)
