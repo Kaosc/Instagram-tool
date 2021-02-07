@@ -201,18 +201,17 @@ class Instagram:
             self.browser.get(user)
             time.sleep(2)
             self.browser.find_element_by_xpath('//button[text()="Follow"]').click()
-            time.sleep(1)
+            time.sleep(2)
 
     def unFollow(self):
         print("%s--> Processing... Get relief until it end.%s" % (fg(45), attr(0)))
         for user in self.mainList:
             self.browser.get(user)
-            time.sleep(2)
+            time.sleep(1.5)
             self.browser.find_element_by_css_selector("[aria-label='Following']").click()
-            time.sleep(0.5)
-            self.browser.find_element_by_css_selector("div[role=dialog]").click()
-            self.browser.find_element_by_xpath('/html/body/div[5]/div/div/div/div[3]/button[1]').click()
             time.sleep(1)
+            self.browser.find_element_by_xpath('/html/body/div[4]/div/div/div/div[3]/button[1]').click()
+            time.sleep(1.5)
 
     def message(self):
         print("%s\n--> DONE%s" % (fg(1), attr(0)))
