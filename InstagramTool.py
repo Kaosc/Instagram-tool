@@ -1,5 +1,6 @@
 from ast import Try
 from colored import fg, attr
+from numpy import insert
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
@@ -133,7 +134,6 @@ class Instagram:
         time.sleep(1)
         urllib.request.urlretrieve(src, f"{self.imgPath}/igpp.png")
         print("%s--> Downloaded!%s" % (fg(46), attr(0)))
-        self.browser.close()
 
     def downloadPost(self, link):
         os.system("cls")
@@ -148,7 +148,6 @@ class Instagram:
         src = img.get_attribute('src')
         urllib.request.urlretrieve(src, f"{self.imgPath}/igpost.png")
         print("%s---> DONE!%s" % (fg(2), attr(0)))
-        self.browser.close()
 
     def freezeAccount(self, password):
         os.system("cls")
@@ -176,7 +175,6 @@ class Instagram:
         img = Image.open(f"{self.imgPath}/result.png")
         time.sleep(2)
         img.show()
-        self.browser.close()
 
     def navigateFollowers(self, user):
         print("%s--> Navigating Followers\n%s" % (fg(61), attr(0)))
@@ -310,6 +308,7 @@ while True:
     if secim == "1":
         username = input("%susername: %s" % (fg(207), attr(0)))
         Instagram.profilephoto(username)
+        Instagram.closeBot()
     elif secim == "9":
         print("%sGOODBYE BABE%s" % (fg(207), attr(0)))
         time.sleep(1)
@@ -317,11 +316,13 @@ while True:
     elif secim == "2":
         link = input("%sPicture Link: %s" % (fg(207), attr(0)))
         Instagram.downloadPost(link)
+        Instagram.closeBot()
     elif secim == "3":
         username = input("%susername: %s" % (fg(207), attr(0)))
         password = input("%spassword: %s" % (fg(207), attr(0)))
         Instagram.login(username, password)
         Instagram.freezeAccount(password)
+        Instagram.closeBot()
     elif secim == "7":
         Instagram.showpic()
     elif secim == "8":
@@ -331,6 +332,7 @@ while True:
         password = input("%spassword: %s" % (fg(207), attr(0)))
         Instagram.login(username, password)
         Instagram.getFollowers(username)
+        Instagram.closeBot()
     elif secim == "5":
         username = input("%sUsername: %s" % (fg(207), attr(0)))
         password = input("%sPassword: %s" % (fg(207), attr(0)))
@@ -341,6 +343,7 @@ while True:
         Instagram.getUserList(total)
         Instagram.follow()
         Instagram.message()
+        Instagram.closeBot()
     elif secim == "6":
         username = input("%sUsername: %s" % (fg(207), attr(0)))
         password = input("%sPassword: %s" % (fg(207), attr(0)))
@@ -350,3 +353,4 @@ while True:
         Instagram.getUserList(total)
         Instagram.unFollow()
         Instagram.message()
+        Instagram.closeBot()
