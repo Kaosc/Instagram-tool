@@ -13,4 +13,8 @@ Add chromedriver to in "driver" folder.
 -----
 Don't forget to set image and driver path
 -----
+if you do not want to pass your login informations every time please fill the 
+"_loginInfo" file.
+
+-----
 ![alt text](https://i.ibb.co/XVTKf3N/indir.png)

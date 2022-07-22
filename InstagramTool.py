@@ -9,7 +9,7 @@ import time
 import warnings
 import os
 from PIL import Image
-
+import _loginInfo 
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
@@ -29,6 +29,8 @@ class Instagram:
             'excludeSwitches', ['enable-logging'])
         self.browserProfile.add_experimental_option(
             'prefs', {"intl.accept_languages": "en,en_US"})
+        self.username = _loginInfo.username
+        self.password = _loginInfo.password
 
     def login(self, username, password):
         os.system('cls')
@@ -314,12 +316,12 @@ while True:
         time.sleep(1)
         exit()
     elif secim == "2":
-        link = input("%sPicture Link: %s" % (fg(207), attr(0)))
+        link = input("%Post Link: %s" % (fg(207), attr(0)))
         Instagram.downloadPost(link)
         Instagram.closeBot()
     elif secim == "3":
-        username = input("%susername: %s" % (fg(207), attr(0)))
-        password = input("%spassword: %s" % (fg(207), attr(0)))
+        username = _loginInfo.username if _loginInfo.username != "" else input("%susername: %s" % (fg(207), attr(0))) 
+        password = _loginInfo.username if _loginInfo.password != ""else input("%spassword: %s" % (fg(207), attr(0)))
         Instagram.login(username, password)
         Instagram.freezeAccount(password)
         Instagram.closeBot()
@@ -328,14 +330,14 @@ while True:
     elif secim == "8":
         Instagram.deletepic()
     elif secim == "4":
-        username = input("%susername: %s" % (fg(207), attr(0)))
-        password = input("%spassword: %s" % (fg(207), attr(0)))
+        username = _loginInfo.username if _loginInfo.username != "" else input("%susername: %s" % (fg(207), attr(0))) 
+        password = _loginInfo.username if _loginInfo.password != ""else input("%spassword: %s" % (fg(207), attr(0)))
         Instagram.login(username, password)
         Instagram.getFollowers(username)
         Instagram.closeBot()
     elif secim == "5":
-        username = input("%sUsername: %s" % (fg(207), attr(0)))
-        password = input("%sPassword: %s" % (fg(207), attr(0)))
+        username = _loginInfo.username if _loginInfo.username != "" else input("%susername: %s" % (fg(207), attr(0))) 
+        password = _loginInfo.username if _loginInfo.password != ""else input("%spassword: %s" % (fg(207), attr(0)))
         target = input("%sTarget account name: %s" % (fg(207), attr(0)))
         total = int(input("%sTotal Follow: %s" % (fg(10), attr(0))))
         Instagram.login(username, password)
