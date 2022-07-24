@@ -1,4 +1,5 @@
-from ast import Try
+from ast import Return, Try
+import sys
 from colored import fg, attr
 from numpy import insert
 from selenium import webdriver
@@ -9,6 +10,7 @@ import time
 import warnings
 import os
 from PIL import Image
+from urllib3 import Retry
 import _loginInfo 
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
@@ -25,14 +27,19 @@ class Instagram:
         self.browserProfile.add_argument('--hide-scrollbars')
         self.browserProfile.add_argument("--headless")    # ---> some methods may not work properly with headless - so it's optional
         self.browserProfile.add_argument("--disable-gpu")
-        self.browserProfile.add_experimental_option(
-            'excludeSwitches', ['enable-logging'])
-        self.browserProfile.add_experimental_option(
-            'prefs', {"intl.accept_languages": "en,en_US"})
+        self.browserProfile.add_argument('--mute-audio')
+        self.browserProfile.add_argument('window-size=1920,1080')
+        self.browserProfile.add_argument('window-position=0,0')
+        self.browserProfile.add_argument("--start-maximized")
+        self.browserProfile.add_experimental_option("excludeSwitches", ["disable-popup-blocking"])
+        self.browserProfile.add_experimental_option('prefs', {"profile.default_content_setting_values.notifications" : "2"})
+        self.browserProfile.add_experimental_option('excludeSwitches', ['enable-logging'])
+        self.browserProfile.add_experimental_option('prefs', {"intl.accept_languages": "en,en_US"})
         self.username = _loginInfo.username
         self.password = _loginInfo.password
 
     def login(self, username, password):
+        res = False
         os.system('cls')
         self.browser = webdriver.Chrome(
             self.drvPath, chrome_options=self.browserProfile)
@@ -43,9 +50,15 @@ class Instagram:
         time.sleep(2)
         self.browser.find_element(By.NAME, 'username').send_keys(self.username)
         self.browser.find_element(By.NAME, 'password').send_keys(self.password)
-        self.browser.find_element(
-            By.XPATH, '//*[@id="loginForm"]/div/div[3]/button/div').click()
-        time.sleep(5)
+        self.browser.find_element(By.XPATH, '//*[@id="loginForm"]/div/div[3]/button/div').click()
+        time.sleep(4)
+        try:
+            errmsg = self.browser.find_element(By.XPATH, '//*[@id="slfErrorAlert"]')
+            print(f"%s {errmsg.text} \n%s" % (fg(1), attr(0)))
+            return False
+        except:
+            return True
+            
         
     def message(self):
         print("%s\n--> DONE%s" % (fg(1), attr(0)))
@@ -195,10 +208,12 @@ class Instagram:
         dialog = self.browser.find_element(By.CSS_SELECTOR, "div[role=dialog] ul")
 
         while True:
-            time.sleep(2)
+            dialog.click()
             self.browser.execute_script(
-                'document.getElementsByTagName("ul")[1].parentElement.scrollTo(0, document.getElementsByTagName("ul")[1].parentElement.scrollHeight)'
+                'document.getElementsByTagName("ul")[2].parentElement.scrollTo(0, document.getElementsByTagName("ul")[2].parentElement.scrollHeight)'
             )
+            time.sleep(2)
+            
             newCount = len(dialog.find_elements(By.CSS_SELECTOR, "li"))
             print(F"%sTotal Collected: {newCount}%s" % (fg(10), attr(0)))
 
@@ -264,6 +279,7 @@ class Instagram:
         print(f"First Time Counting Followers: {CurrentFollowers}")
         
         while True:
+            dialog.click()
             self.browser.execute_script(
                 'document.getElementsByTagName("ul")[1].parentElement.scrollTo(0, document.getElementsByTagName("ul")[1].parentElement.scrollHeight)'
             )
@@ -321,38 +337,50 @@ while True:
         Instagram.closeBot()
     elif secim == "3":
         username = _loginInfo.username if _loginInfo.username != "" else input("%susername: %s" % (fg(207), attr(0))) 
-        password = _loginInfo.username if _loginInfo.password != "" else input("%spassword: %s" % (fg(207), attr(0)))
-        Instagram.login(username, password)
-        Instagram.freezeAccount(password)
-        Instagram.closeBot()
+        password = _loginInfo.password if _loginInfo.password != "" else input("%spassword: %s" % (fg(207), attr(0)))
+        res = Instagram.login(username, password)
+        if res:
+            Instagram.freezeAccount(password)
+            Instagram.closeBot()
+        else:
+            Instagram.closeBot()
     elif secim == "7":
         Instagram.showpic()
     elif secim == "8":
         Instagram.deletepic()
     elif secim == "4":
         username = _loginInfo.username if _loginInfo.username != "" else input("%susername: %s" % (fg(207), attr(0))) 
-        password = _loginInfo.username if _loginInfo.password != "" else input("%spassword: %s" % (fg(207), attr(0)))
-        Instagram.login(username, password)
-        Instagram.getFollowers(username)
-        Instagram.closeBot()
+        password = _loginInfo.password if _loginInfo.password != "" else input("%spassword: %s" % (fg(207), attr(0)))
+        res = Instagram.login(username, password)
+        if res:
+            Instagram.getFollowers(username)
+            Instagram.closeBot()
+        else:
+            Instagram.closeBot()
     elif secim == "5":
         username = _loginInfo.username if _loginInfo.username != "" else input("%susername: %s" % (fg(207), attr(0))) 
-        password = _loginInfo.username if _loginInfo.password != "" else input("%spassword: %s" % (fg(207), attr(0)))
+        password = _loginInfo.password if _loginInfo.password != "" else input("%spassword: %s" % (fg(207), attr(0)))
         target = input("%sTarget account name: %s" % (fg(207), attr(0)))
         total = int(input("%sTotal Follow: %s" % (fg(10), attr(0))))
-        Instagram.login(username, password)
-        Instagram.navigateFollowers(target)
-        Instagram.getUserList(total)
-        Instagram.follow()
-        Instagram.message()
-        Instagram.closeBot()
+        res = Instagram.login(username, password)
+        if res:
+            Instagram.navigateFollowers(target)
+            Instagram.getUserList(total)
+            Instagram.follow()
+            Instagram.message()
+            Instagram.closeBot()
+        else:
+            Instagram.closeBot()
     elif secim == "6":
         username = _loginInfo.username if _loginInfo.username != "" else input("%susername: %s" % (fg(207), attr(0))) 
-        password = _loginInfo.username if _loginInfo.password != "" else input("%spassword: %s" % (fg(207), attr(0)))
+        password = _loginInfo.password if _loginInfo.password != "" else input("%spassword: %s" % (fg(207), attr(0)))
         total = int(input("%sTotal unFollow: %s" % (fg(10), attr(0))))
-        Instagram.login(username, password)
-        Instagram.navigateFollowings(username)
-        Instagram.getUserList(total)
-        Instagram.unFollow()
-        Instagram.message()
-        Instagram.closeBot()
+        res = Instagram.login(username, password)
+        if res:
+            Instagram.navigateFollowings(username)
+            Instagram.getUserList(total)
+            Instagram.unFollow()
+            Instagram.message()
+            Instagram.closeBot()
+        else:
+            Instagram.closeBot()
