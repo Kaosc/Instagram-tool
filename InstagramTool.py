@@ -1,16 +1,11 @@
-from ast import Return, Try
-import sys
 from colored import fg, attr
-from numpy import insert
 from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 import urllib.request
 import time
 import warnings
 import os
 from PIL import Image
-from urllib3 import Retry
 import _loginInfo 
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
