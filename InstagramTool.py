@@ -23,7 +23,7 @@ class Instagram:
         self.browserProfile.add_argument("--lang=en")
         self.browserProfile.add_argument("--log-level=3")
         self.browserProfile.add_argument('--hide-scrollbars')
-        # self.browserProfile.add_argument("--headless")    # ---> some methods may not work properly with headless - so it's optional
+        self.browserProfile.add_argument("--headless")    # ---> some methods may not work properly with headless - so it's optional
         self.browserProfile.add_argument("--disable-gpu")
         self.browserProfile.add_experimental_option(
             'excludeSwitches', ['enable-logging'])
@@ -321,7 +321,7 @@ while True:
         Instagram.closeBot()
     elif secim == "3":
         username = _loginInfo.username if _loginInfo.username != "" else input("%susername: %s" % (fg(207), attr(0))) 
-        password = _loginInfo.username if _loginInfo.password != ""else input("%spassword: %s" % (fg(207), attr(0)))
+        password = _loginInfo.username if _loginInfo.password != "" else input("%spassword: %s" % (fg(207), attr(0)))
         Instagram.login(username, password)
         Instagram.freezeAccount(password)
         Instagram.closeBot()
@@ -331,13 +331,13 @@ while True:
         Instagram.deletepic()
     elif secim == "4":
         username = _loginInfo.username if _loginInfo.username != "" else input("%susername: %s" % (fg(207), attr(0))) 
-        password = _loginInfo.username if _loginInfo.password != ""else input("%spassword: %s" % (fg(207), attr(0)))
+        password = _loginInfo.username if _loginInfo.password != "" else input("%spassword: %s" % (fg(207), attr(0)))
         Instagram.login(username, password)
         Instagram.getFollowers(username)
         Instagram.closeBot()
     elif secim == "5":
         username = _loginInfo.username if _loginInfo.username != "" else input("%susername: %s" % (fg(207), attr(0))) 
-        password = _loginInfo.username if _loginInfo.password != ""else input("%spassword: %s" % (fg(207), attr(0)))
+        password = _loginInfo.username if _loginInfo.password != "" else input("%spassword: %s" % (fg(207), attr(0)))
         target = input("%sTarget account name: %s" % (fg(207), attr(0)))
         total = int(input("%sTotal Follow: %s" % (fg(10), attr(0))))
         Instagram.login(username, password)
@@ -347,8 +347,8 @@ while True:
         Instagram.message()
         Instagram.closeBot()
     elif secim == "6":
-        username = input("%sUsername: %s" % (fg(207), attr(0)))
-        password = input("%sPassword: %s" % (fg(207), attr(0)))
+        username = _loginInfo.username if _loginInfo.username != "" else input("%susername: %s" % (fg(207), attr(0))) 
+        password = _loginInfo.username if _loginInfo.password != "" else input("%spassword: %s" % (fg(207), attr(0)))
         total = int(input("%sTotal unFollow: %s" % (fg(10), attr(0))))
         Instagram.login(username, password)
         Instagram.navigateFollowings(username)
