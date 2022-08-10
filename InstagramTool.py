@@ -2,14 +2,14 @@ from colored import fg, attr
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 import urllib.request
-import time
 import warnings
+import time
 import os
 from PIL import Image
 import _loginInfo 
+import _scripts
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
-
 
 class Instagram:
 
@@ -20,7 +20,7 @@ class Instagram:
         self.browserProfile.add_argument("--lang=en")
         self.browserProfile.add_argument("--log-level=3")
         self.browserProfile.add_argument('--hide-scrollbars')
-        self.browserProfile.add_argument("--headless")    # ---> some methods may not work properly with headless - so it's optional
+        # self.browserProfile.add_argument("--headless")    # ---> some methods may not work properly with headless - so it's optional
         self.browserProfile.add_argument("--disable-gpu")
         self.browserProfile.add_argument('--mute-audio')
         self.browserProfile.add_argument('window-size=1920,1080')
@@ -34,19 +34,19 @@ class Instagram:
         self.password = _loginInfo.password
 
     def login(self, username, password):
-        res = False
         os.system('cls')
         self.browser = webdriver.Chrome(
             self.drvPath, chrome_options=self.browserProfile)
         print("%s--> Login in\n%s" % (fg(61), attr(0)))
         self.username = username
         self.password = password
+        time.sleep(2)
         self.browser.get("https://www.instagram.com/accounts/login/")
         time.sleep(2)
         self.browser.find_element(By.NAME, 'username').send_keys(self.username)
         self.browser.find_element(By.NAME, 'password').send_keys(self.password)
         self.browser.find_element(By.XPATH, '//*[@id="loginForm"]/div/div[3]/button/div').click()
-        time.sleep(4)
+        time.sleep(7)
         try:
             errmsg = self.browser.find_element(By.XPATH, '//*[@id="slfErrorAlert"]')
             print(f"%s {errmsg.text} \n%s" % (fg(1), attr(0)))
@@ -54,7 +54,6 @@ class Instagram:
         except:
             return True
             
-        
     def message(self):
         print("%s\n--> DONE%s" % (fg(1), attr(0)))
 
@@ -188,61 +187,25 @@ class Instagram:
 
     def navigateFollowers(self, user):
         print("%s--> Navigating Followers\n%s" % (fg(61), attr(0)))
+        time.sleep(3)
         self.user = user
         self.browser.get(f'https://www.instagram.com/{self.user}/followers')
         time.sleep(2)
 
     def navigateFollowings(self, user):
         print("%s--> Navigating Followings\n%s" % (fg(61), attr(0)))
+        time.sleep(3)
         self.user = user
         self.browser.get(f'https://www.instagram.com/{self.user}/following')
         time.sleep(2)
         
-    def getUserList(self, total):
-        self.total = total
-        dialog = self.browser.find_element(By.CSS_SELECTOR, "div[role=dialog] ul")
-
-        while True:
-            dialog.click()
-            self.browser.execute_script(
-                'document.getElementsByTagName("ul")[2].parentElement.scrollTo(0, document.getElementsByTagName("ul")[2].parentElement.scrollHeight)'
-            )
-            time.sleep(2)
-            
-            newCount = len(dialog.find_elements(By.CSS_SELECTOR, "li"))
-            print(F"%sTotal Collected: {newCount}%s" % (fg(10), attr(0)))
-
-            if newCount <= 1:
-                break
-
-            if newCount < total:
-                time.sleep(0.5)
-            else:
-                break
-
-        followers = dialog.find_elements(By.CSS_SELECTOR, "li")
-        self.mainList = []
-
-        i = 0
-        for user in followers:
-            link = user.find_element(
-                By.CSS_SELECTOR, "a").get_attribute("href")
-            self.mainList.append(link)
-            i += 1
-            if i >= total:
-                break
-
     def follow(self):
         print("%s--> Processing... Get relief until it end.%s" % (fg(45), attr(0)))
-        try:
-            for user in self.mainList:
-                self.browser.get(user)
-                time.sleep(2)
-                self.browser.find_element(
-                    By.XPATH, '//button[text()="Follow"]').click()
-                time.sleep(2)
-        except:
-            print("%s--> Something goes wrong on process! %s" % (fg(45), attr(0)))
+        for user in self.mainList:
+            self.browser.get(user)
+            time.sleep(2)
+            self.browser.execute_script(_scripts.followUser)
+            time.sleep(2)
 
     def unFollow(self):
         print("%s--> Processing... Get relief until it end.%s" %
@@ -260,38 +223,69 @@ class Instagram:
         except:
             print("%s--> Something goes wrong on process! %s" % (fg(45), attr(0)))
 
+    def getUserList(self, total):
+        time.sleep(3)
+        self.total = total
+        dialog = self.browser.find_element(By.XPATH, "//*[@class='_aano']/div/div")
+
+        while True:
+            dialog.click()
+            self.browser.execute_script(_scripts.scrollScript)
+            time.sleep(2)
+            
+            newCount = len(dialog.find_elements(By.XPATH, "./child::*"))
+            os.system("cls")
+            print(f"%sTotal Collected: {newCount}%s" % (fg(10), attr(0)))
+        
+            if newCount <= 1:
+                break
+
+            if newCount < total:
+                time.sleep(0.5)
+            else:
+                break
+
+        followers = dialog.find_elements(By.XPATH, "./child::*")
+        self.mainList = []
+
+        i = 0
+        for user in followers:
+            link = user.find_element(By.TAG_NAME, "a").get_attribute("href")
+            self.mainList.append(link)
+            i += 1
+            if i >= total:
+                break
 
     def getFollowers(self, username):
         os.system('cls')
         self.username = username
         self.browser.get(f"https://www.instagram.com/{self.username}/followers")
-        time.sleep(2)
+        time.sleep(3)
 
         print("%sCounting Followers%s" % (fg(2), attr(0)))
 
-        dialog = self.browser.find_element(By.CSS_SELECTOR, "div[role=dialog] ul")
-        CurrentFollowers = len(self.browser.find_elements(By.CSS_SELECTOR, 'li'))
+        dialog = self.browser.find_element(By.XPATH, "//*[@class='_aano']/div/div")
+        CurrentFollowers = len(dialog.find_elements(By.XPATH, "./child::*"))
         print(f"First Time Counting Followers: {CurrentFollowers}")
         
         while True:
             dialog.click()
-            self.browser.execute_script(
-                'document.getElementsByTagName("ul")[1].parentElement.scrollTo(0, document.getElementsByTagName("ul")[1].parentElement.scrollHeight)'
-            )
+            self.browser.execute_script(_scripts.scrollScript)
             time.sleep(2)
-
-            newCount = len(self.browser.find_elements(By.CSS_SELECTOR, 'li'))
+            
+            newCount = len(dialog.find_elements(By.XPATH, "./child::*"))
 
             if CurrentFollowers != newCount:
                 CurrentFollowers = newCount
-                print(f"Collected Followers: {newCount}")
+                os.system('cls')
+                print(f"%sCollected Followers: {newCount}%s" % (fg(10), attr(0)))
             else:
                 break
         
         print("%sSaving... %s" % (fg(2), attr(0)))
         
         try:
-            totalFollowers = dialog.find_elements(By.CSS_SELECTOR, 'li')
+            totalFollowers = dialog.find_elements(By.XPATH, "./child::*")
 
             Flist = []
             i = 0
@@ -323,8 +317,8 @@ while True:
         Instagram.profilephoto(username)
         Instagram.closeBot()
     elif secim == "9":
-        print("%sGOODBYE BABE%s" % (fg(207), attr(0)))
-        time.sleep(1)
+        print("% leaveing %s" % (fg(207), attr(0)))
+        time.sleep(2)
         exit()
     elif secim == "2":
         link = input("%Post Link: %s" % (fg(207), attr(0)))
