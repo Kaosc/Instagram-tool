@@ -19,9 +19,9 @@ if you do not want to pass your login informations every time please fill the
 -----
 ![alt text](https://i.ibb.co/XVTKf3N/indir.png)
 
-### Dependencies
+## Dependencies
 
-- #### Python Dependencies
+- ### Python Dependencies
 The tool requires **Selenium**, **Colored**, and **Pillow** library to function.
 
 You can install them by using the following command:
@@ -29,17 +29,16 @@ You can install them by using the following command:
 pip install selenium colored pillow
 ```
 
-- #### Chrome Driver
+- ### Chrome Driver
 
-Current version of Instagram Tool Bot supports Chrome Driver version 103. Please check [here](https://chromedriver.chromium.org/downloads) for latest version.
+Current ChromeDriver version is 103. Please check [here](https://chromedriver.chromium.org/downloads) for latest version. 
+
+ChromeDriver version must be the same chrome version installed on your system. You can check your installed chrome version via Settings > About Chrome.
 
 ### Installation
-1. Add chromedriver to in "driver" folder.
+1. Add latest ChromeDriver to in "driver" folder.
 2. Set image and driver path.
 
-### Notes
-
-- Chrome driver version must be the same chrome version installed on your system.
-
-- if you do not want to pass your login informations every time, please fill the "_loginInfo" file.
+#### Note
+if you don't want to pass your login information every time, please fill the "_loginInfo" file.
 

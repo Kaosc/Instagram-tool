@@ -9,10 +9,13 @@ await document.querySelectorAll('button').forEach((item) => {
     list.push(item)
   }
 });
-console.log(list)
 if(!skip) {
   list[0].click();
-} else if (!skip && list.length === 1 && list[0].innerText === "Follow") {
+} else if (skip && list.length === 1 && list[0].innerText === "Follow") {
   list[0].click();
 }
+"""
+unFollowUser = """
+const buttons = await document.querySelectorAll('button');
+buttons[1].click();
 """
