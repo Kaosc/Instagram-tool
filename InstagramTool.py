@@ -20,12 +20,13 @@ class Instagram:
         self.browserProfile.add_argument("--lang=en")
         self.browserProfile.add_argument("--log-level=3")
         self.browserProfile.add_argument('--hide-scrollbars')
-        # self.browserProfile.add_argument("--headless")    # ---> some methods may not work properly with headless - so it's optional
+        self.browserProfile.add_argument("--headless")    # ---> some methods may not work properly with headless - so it's optional
         self.browserProfile.add_argument("--disable-gpu")
         self.browserProfile.add_argument('--mute-audio')
         self.browserProfile.add_argument('window-size=1920,1080')
         self.browserProfile.add_argument('window-position=0,0')
         self.browserProfile.add_argument("--start-maximized")
+        self.browserProfile.add_argument("--force-dark-mode")
         self.browserProfile.add_experimental_option("excludeSwitches", ["disable-popup-blocking"])
         self.browserProfile.add_experimental_option('prefs', {"profile.default_content_setting_values.notifications" : "2"})
         self.browserProfile.add_experimental_option('excludeSwitches', ['enable-logging'])
@@ -160,7 +161,6 @@ class Instagram:
 
     def freezeAccount(self, password):
         os.system("cls")
-        self.password = password
         print("%s---> Account freezing%s\n" % (fg(2), attr(0)))
         self.browser.get(
             'https://www.instagram.com/accounts/remove/request/temporary/')
@@ -171,7 +171,7 @@ class Instagram:
         self.browser.find_element(
             By.XPATH, "//option[@value='need-break']").click()
         self.browser.find_element(
-            By.XPATH, '//*[@id="password"]').send_keys(self.password)
+            By.XPATH, '//*[@id="password"]').send_keys(password)
         time.sleep(2)
         self.browser.find_element(
             By.CSS_SELECTOR, 'article form button').click()
@@ -188,52 +188,43 @@ class Instagram:
     def navigateFollowers(self, user):
         print("%s--> Navigating Followers\n%s" % (fg(61), attr(0)))
         time.sleep(3)
-        self.user = user
-        self.browser.get(f'https://www.instagram.com/{self.user}/followers')
+        self.browser.get(f'https://www.instagram.com/{user}/followers')
         time.sleep(2)
 
     def navigateFollowings(self, user):
         print("%s--> Navigating Followings\n%s" % (fg(61), attr(0)))
         time.sleep(3)
-        self.user = user
-        self.browser.get(f'https://www.instagram.com/{self.user}/following')
+        self.browser.get(f'https://www.instagram.com/{user}/following')
         time.sleep(2)
         
     def follow(self):
-        print("%s--> Processing... Get relief until it end.%s" % (fg(45), attr(0)))
+        print("%s--> Processing...%s" % (fg(45), attr(0)))
+        for user in self.mainList:
+            self.browser.get(user)
+            time.sleep(3)
+            self.browser.execute_script(_scripts.followUser)
+            time.sleep(3)
+
+    def unFollow(self):
+        print("%s--> Processing...%s" %(fg(45), attr(0)))
         for user in self.mainList:
             self.browser.get(user)
             time.sleep(2)
-            self.browser.execute_script(_scripts.followUser)
+            self.browser.execute_script(_scripts.unFollowUser)
             time.sleep(2)
+            self.browser.find_element(By.XPATH, '//button[text()="Unfollow"]').click()
+            time.sleep(3)
 
-    def unFollow(self):
-        print("%s--> Processing... Get relief until it end.%s" %
-              (fg(45), attr(0)))
-        try:
-            for user in self.mainList:
-                self.browser.get(user)
-                time.sleep(1.5)
-                self.browser.find_element(
-                    By.CSS_SELECTOR, "[aria-label='Following']").click()
-                time.sleep(1)
-                self.browser.find_element(
-                    By.XPATH, '//button[text()="Unfollow"]').click()
-                time.sleep(1.5)
-        except:
-            print("%s--> Something goes wrong on process! %s" % (fg(45), attr(0)))
 
     def getUserList(self, total):
         time.sleep(3)
-        self.total = total
         dialog = self.browser.find_element(By.XPATH, "//*[@class='_aano']/div/div")
 
         while True:
-            dialog.click()
             self.browser.execute_script(_scripts.scrollScript)
             time.sleep(2)
             
-            newCount = len(dialog.find_elements(By.XPATH, "./child::*"))
+            newCount = len(dialog.find_elements(By.XPATH, "//div[@aria-labelledby]"))
             os.system("cls")
             print(f"%sTotal Collected: {newCount}%s" % (fg(10), attr(0)))
         
@@ -245,7 +236,7 @@ class Instagram:
             else:
                 break
 
-        followers = dialog.find_elements(By.XPATH, "./child::*")
+        followers = dialog.find_elements(By.XPATH, "//div[@aria-labelledby]")
         self.mainList = []
 
         i = 0
@@ -255,11 +246,11 @@ class Instagram:
             i += 1
             if i >= total:
                 break
+        
 
     def getFollowers(self, username):
         os.system('cls')
-        self.username = username
-        self.browser.get(f"https://www.instagram.com/{self.username}/followers")
+        self.browser.get(f"https://www.instagram.com/{username}/followers")
         time.sleep(3)
 
         print("%sCounting Followers%s" % (fg(2), attr(0)))
@@ -269,11 +260,11 @@ class Instagram:
         print(f"First Time Counting Followers: {CurrentFollowers}")
         
         while True:
-            dialog.click()
             self.browser.execute_script(_scripts.scrollScript)
             time.sleep(2)
             
             newCount = len(dialog.find_elements(By.XPATH, "./child::*"))
+            os.system("cls")
 
             if CurrentFollowers != newCount:
                 CurrentFollowers = newCount
