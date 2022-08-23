@@ -198,26 +198,43 @@ class Instagram:
         time.sleep(2)
         
     def follow(self):
-        print("%s--> Processing...%s" % (fg(45), attr(0)))
+        count = 0
         for user in self.mainList:
+            os.system("cls")
+            print(f"%s--> Processing: \n Follow count: {count} %s" %(fg(45), attr(0)))
             self.browser.get(user)
             time.sleep(3)
             self.browser.execute_script(_scripts.followUser)
-            time.sleep(3)
+            time.sleep(1.5)
+            try: 
+                self.browser.find_element(By.TAG_NAME, "h3")
+                print(f"%s\n --> Instagram blocked Follow actions. Try again later. %s" %(fg(1), attr(0)))
+                break
+            except:
+                time.sleep(2)
+                count+=1
 
     def unFollow(self):
-        print("%s--> Processing...%s" %(fg(45), attr(0)))
+        count = 0
         for user in self.mainList:
+            os.system("cls")
+            print(f"%s--> Processing: \n unFollow count: {count} %s" %(fg(45), attr(0)))
             self.browser.get(user)
             time.sleep(2)
             self.browser.execute_script(_scripts.unFollowUser)
             time.sleep(2)
             self.browser.find_element(By.XPATH, '//button[text()="Unfollow"]').click()
-            time.sleep(3)
-
-
+            time.sleep(1)
+            try: 
+                self.browser.find_element(By.TAG_NAME, "h3")
+                print(f"%s\n --> Instagram blocked unFollow actions. Try again later. %s" %(fg(1), attr(0)))
+                break
+            except:
+                time.sleep(2)
+                count+=1
+        
     def getUserList(self, total):
-        time.sleep(3)
+        time.sleep(5)
         dialog = self.browser.find_element(By.XPATH, "//*[@class='_aano']/div/div")
 
         while True:
@@ -308,8 +325,6 @@ while True:
         Instagram.profilephoto(username)
         Instagram.closeBot()
     elif secim == "9":
-        print("% leaveing %s" % (fg(207), attr(0)))
-        time.sleep(2)
         exit()
     elif secim == "2":
         link = input("%Post Link: %s" % (fg(207), attr(0)))
