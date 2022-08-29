@@ -1,7 +1,7 @@
 # Instagram Tool
 A bot with useful features that can be used for Instagram.
 
-![alt text](https://i.ibb.co/XVTKf3N/indir.png)
+![alt text](https://i.ibb.co/TrrhPBj/ss.jpg)
 
 ## Dependencies
 
