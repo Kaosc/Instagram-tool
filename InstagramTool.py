@@ -60,6 +60,7 @@ class Instagram:
 
     def closeBot(self):
         self.browser.close()
+        self.mainList = []
         
     def showpic(self):
         os.system("cls")
@@ -201,27 +202,33 @@ class Instagram:
         count = 0
         for user in self.mainList:
             os.system("cls")
-            print(f"%s--> Processing: \n Follow count: {count} %s" %(fg(45), attr(0)))
+            print(f"%s--> Processing:\n--> Follow count: {count} %s" %(fg(43), attr(0)))
             self.browser.get(user)
-            time.sleep(3)
-            self.browser.execute_script(_scripts.followUser)
-            time.sleep(1.5)
+            time.sleep(2)
+            try:
+                self.browser.execute_script(_scripts.followUser)
+            except:
+                print(f"%s\n --> Connection speed getting slower. Skipping... %s" %(fg(1), attr(0)))
+            time.sleep(2)
             try: 
                 self.browser.find_element(By.TAG_NAME, "h3")
                 print(f"%s\n --> Instagram blocked Follow actions. Try again later. %s" %(fg(1), attr(0)))
                 break
             except:
-                time.sleep(2)
+                time.sleep(1)
                 count+=1
 
     def unFollow(self):
         count = 0
         for user in self.mainList:
             os.system("cls")
-            print(f"%s--> Processing: \n unFollow count: {count} %s" %(fg(45), attr(0)))
+            print(f"%s--> Processing:\n--> unFollow count: {count} %s" %(fg(43), attr(0)))
             self.browser.get(user)
             time.sleep(2)
-            self.browser.execute_script(_scripts.unFollowUser)
+            try:
+                self.browser.execute_script(_scripts.unFollowUser)
+            except:
+                print(f"%s\n --> Connection speed getting slower. Skipping... %s" %(fg(1), attr(0)))
             time.sleep(2)
             self.browser.find_element(By.XPATH, '//button[text()="Unfollow"]').click()
             time.sleep(1)
@@ -230,7 +237,7 @@ class Instagram:
                 print(f"%s\n --> Instagram blocked unFollow actions. Try again later. %s" %(fg(1), attr(0)))
                 break
             except:
-                time.sleep(2)
+                time.sleep(1)
                 count+=1
         
     def getUserList(self, total):
@@ -312,25 +319,52 @@ class Instagram:
             
         print("%sDone!\nAll Followers Saved to 'followers.txt' file. %s" % (fg(2), attr(0)))
 
+    def removeRequests(self):
+        os.system('cls')
+        print("%s--> Navigating to requested accounts list \n%s" % (fg(61), attr(0)))
+
+        self.browser.get(f"https://www.instagram.com/accounts/access_tool/current_follow_requests")
+        time.sleep(3)
+
+        while True:
+            time.sleep(2)
+            
+            newCount = self.browser.execute_script('return document.querySelectorAll("article div").length')
+
+            os.system("cls")
+            print(f"%sTotal Collected: {newCount}%s" % (fg(10), attr(0)))
+
+            try:
+                self.browser.find_element(By.XPATH, '//*["article"]/main/button').click()
+            except:
+                break
         
+        requestedAccountNames = self.browser.execute_script('return document.querySelectorAll("article div")')
+        print(f"%s \n--> Generating links... %s" % (fg(10), attr(0)))
+        self.mainList = []
+
+        for user in requestedAccountNames:
+            username = user.text
+            self.mainList.append(f"https://www.instagram.com/{username}/")
+
 Instagram = Instagram()
 
 while True:
     print("")
     print("%s - - - INSTAGRAM TOOL - - - %s" % (fg(207), attr(0)))
     print(" ")
-    secim = input("%s[1]- Download Profile Picture\n[2]- Download Post Picture\n[3]- Freeze Account\n[4]- Get Your Follower List\n[5]- Follower Farm\n[6]- unFollow Farm \n[7]- Show Pictures\n[8]- Delete Pictures\n[9]- Exit\n%s \nEnter Number:" % (fg(207), attr(0)))
-    if secim == "1":
+    opt = input("%s[0]- Download Profile Picture\n[1]- Download Post Picture\n[2]- Freeze Account\n[3]- Get Your Follower List\n[4]- Follower Farm\n[5]- unFollow Farm \n[6]- Show Pictures\n[7]- Delete Pictures\n[8]- Remove Requests\n[9]- Exit \n%s \nEnter Number:" % (fg(207), attr(0)))
+    if opt == "0":
         username = input("%susername: %s" % (fg(207), attr(0)))
         Instagram.profilephoto(username)
         Instagram.closeBot()
-    elif secim == "9":
+    elif opt == "9":
         exit()
-    elif secim == "2":
+    elif opt == "1":
         link = input("%Post Link: %s" % (fg(207), attr(0)))
         Instagram.downloadPost(link)
         Instagram.closeBot()
-    elif secim == "3":
+    elif opt == "2":
         username = _loginInfo.username if _loginInfo.username != "" else input("%susername: %s" % (fg(207), attr(0))) 
         password = _loginInfo.password if _loginInfo.password != "" else input("%spassword: %s" % (fg(207), attr(0)))
         res = Instagram.login(username, password)
@@ -339,11 +373,11 @@ while True:
             Instagram.closeBot()
         else:
             Instagram.closeBot()
-    elif secim == "7":
+    elif opt == "6":
         Instagram.showpic()
-    elif secim == "8":
+    elif opt == "7":
         Instagram.deletepic()
-    elif secim == "4":
+    elif opt == "3":
         username = _loginInfo.username if _loginInfo.username != "" else input("%susername: %s" % (fg(207), attr(0))) 
         password = _loginInfo.password if _loginInfo.password != "" else input("%spassword: %s" % (fg(207), attr(0)))
         res = Instagram.login(username, password)
@@ -352,7 +386,7 @@ while True:
             Instagram.closeBot()
         else:
             Instagram.closeBot()
-    elif secim == "5":
+    elif opt == "4":
         username = _loginInfo.username if _loginInfo.username != "" else input("%susername: %s" % (fg(207), attr(0))) 
         password = _loginInfo.password if _loginInfo.password != "" else input("%spassword: %s" % (fg(207), attr(0)))
         target = input("%sTarget account name: %s" % (fg(207), attr(0)))
@@ -366,7 +400,7 @@ while True:
             Instagram.closeBot()
         else:
             Instagram.closeBot()
-    elif secim == "6":
+    elif opt == "5":
         username = _loginInfo.username if _loginInfo.username != "" else input("%susername: %s" % (fg(207), attr(0))) 
         password = _loginInfo.password if _loginInfo.password != "" else input("%spassword: %s" % (fg(207), attr(0)))
         total = int(input("%sTotal unFollow: %s" % (fg(10), attr(0))))
@@ -374,6 +408,17 @@ while True:
         if res:
             Instagram.navigateFollowings(username)
             Instagram.getUserList(total)
+            Instagram.unFollow()
+            Instagram.message()
+            Instagram.closeBot()
+        else:
+            Instagram.closeBot()
+    elif opt == "8":
+        username = _loginInfo.username if _loginInfo.username != "" else input("%susername: %s" % (fg(207), attr(0))) 
+        password = _loginInfo.password if _loginInfo.password != "" else input("%spassword: %s" % (fg(207), attr(0)))
+        res = Instagram.login(username, password)
+        if res:
+            Instagram.removeRequests()
             Instagram.unFollow()
             Instagram.message()
             Instagram.closeBot()
