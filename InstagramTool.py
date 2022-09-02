@@ -228,13 +228,13 @@ class Instagram:
             try:
                 self.browser.execute_script(_scripts.unFollowUser)
             except:
-                print(f"%s\n --> Connection speed getting slower. Skipping... %s" %(fg(1), attr(0)))
+                print(f"%s\n--> Connection speed getting slower. Skipping... %s" %(fg(1), attr(0)))
             time.sleep(2)
             self.browser.find_element(By.XPATH, '//button[text()="Unfollow"]').click()
             time.sleep(1)
             try: 
                 self.browser.find_element(By.TAG_NAME, "h3")
-                print(f"%s\n --> Instagram blocked unFollow actions. Try again later. %s" %(fg(1), attr(0)))
+                print(f"%s\n--> Instagram blocked unFollow actions. Try again later. %s" %(fg(1), attr(0)))
                 break
             except:
                 time.sleep(1)
@@ -319,7 +319,7 @@ class Instagram:
             
         print("%sDone!\nAll Followers Saved to 'followers.txt' file. %s" % (fg(2), attr(0)))
 
-    def removeRequests(self):
+    def removeRequests(self, threshold):
         os.system('cls')
         print("%s--> Navigating to requested accounts list \n%s" % (fg(61), attr(0)))
 
@@ -330,6 +330,9 @@ class Instagram:
             time.sleep(2)
             
             newCount = self.browser.execute_script('return document.querySelectorAll("article div").length')
+
+            if (newCount == threshold):
+                break
 
             os.system("cls")
             print(f"%sTotal Collected: {newCount}%s" % (fg(10), attr(0)))
@@ -416,9 +419,11 @@ while True:
     elif opt == "8":
         username = _loginInfo.username if _loginInfo.username != "" else input("%susername: %s" % (fg(207), attr(0))) 
         password = _loginInfo.password if _loginInfo.password != "" else input("%spassword: %s" % (fg(207), attr(0)))
+        print("%s--> Determine threshold for less wait time %s" % (fg(207), attr(0)))
+        threshold = input("%sThreshold: %s" % (fg(207), attr(0)))
         res = Instagram.login(username, password)
         if res:
-            Instagram.removeRequests()
+            Instagram.removeRequests(threshold)
             Instagram.unFollow()
             Instagram.message()
             Instagram.closeBot()
