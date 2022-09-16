@@ -319,36 +319,37 @@ class Instagram:
             
         print("%sDone!\nAll Followers Saved to 'followers.txt' file. %s" % (fg(2), attr(0)))
 
-    def removeRequests(self, threshold):
-        os.system('cls')
-        print("%s--> Navigating to requested accounts list \n%s" % (fg(61), attr(0)))
+    # ---------------- DEPRECATED ----------------
+    # def removeRequests(self, threshold):
+    #     os.system('cls')
+    #     print("%s--> Navigating to requested accounts list \n%s" % (fg(61), attr(0)))
 
-        self.browser.get(f"https://www.instagram.com/accounts/access_tool/current_follow_requests")
-        time.sleep(3)
+    #     self.browser.get(f"https://www.instagram.com/accounts/access_tool/current_follow_requests")
+    #     time.sleep(3)
 
-        while True:
-            time.sleep(2)
+    #     while True:
+    #         time.sleep(2)
             
-            newCount = self.browser.execute_script('return document.querySelectorAll("article div").length')
+    #         newCount = self.browser.execute_script('return document.querySelectorAll("article div").length')
 
-            if (newCount == threshold):
-                break
+    #         if (newCount == threshold):
+    #             break
 
-            os.system("cls")
-            print(f"%sTotal Collected: {newCount}%s" % (fg(10), attr(0)))
+    #         os.system("cls")
+    #         print(f"%sTotal Collected: {newCount}%s" % (fg(10), attr(0)))
 
-            try:
-                self.browser.find_element(By.XPATH, '//*["article"]/main/button').click()
-            except:
-                break
+    #         try:
+    #             self.browser.find_element(By.XPATH, '//*["article"]/main/button').click()
+    #         except:
+    #             break
         
-        requestedAccountNames = self.browser.execute_script('return document.querySelectorAll("article div")')
-        print(f"%s \n--> Generating links... %s" % (fg(10), attr(0)))
-        self.mainList = []
+    #     requestedAccountNames = self.browser.execute_script('return document.querySelectorAll("article div")')
+    #     print(f"%s \n--> Generating links... %s" % (fg(10), attr(0)))
+    #     self.mainList = []
 
-        for user in requestedAccountNames:
-            username = user.text
-            self.mainList.append(f"https://www.instagram.com/{username}/")
+    #     for user in requestedAccountNames:
+    #         username = user.text
+    #         self.mainList.append(f"https://www.instagram.com/{username}/")
 
 Instagram = Instagram()
 
@@ -417,15 +418,17 @@ while True:
         else:
             Instagram.closeBot()
     elif opt == "8":
-        username = _loginInfo.username if _loginInfo.username != "" else input("%susername: %s" % (fg(207), attr(0))) 
-        password = _loginInfo.password if _loginInfo.password != "" else input("%spassword: %s" % (fg(207), attr(0)))
-        print("%s--> Determine threshold for less wait time %s" % (fg(207), attr(0)))
-        threshold = input("%sThreshold: %s" % (fg(207), attr(0)))
-        res = Instagram.login(username, password)
-        if res:
-            Instagram.removeRequests(threshold)
-            Instagram.unFollow()
-            Instagram.message()
-            Instagram.closeBot()
-        else:
-            Instagram.closeBot()
+        os.system("cls")
+        print("%s\n --> DEPRECATED - Instagram doesn't show requested accounts anymore. %s" % (fg(2), attr(0)))
+        # username = _loginInfo.username if _loginInfo.username != "" else input("%susername: %s" % (fg(207), attr(0))) 
+        # password = _loginInfo.password if _loginInfo.password != "" else input("%spassword: %s" % (fg(207), attr(0)))
+        # print("%s--> Determine user threshold for less wait time (ex. 100) %s" % (fg(207), attr(0)))
+        # threshold = input("%sThreshold: %s" % (fg(207), attr(0)))
+        # res = Instagram.login(username, password)
+        # if res:
+        #     Instagram.removeRequests(threshold)
+        #     Instagram.unFollow()
+        #     Instagram.message()
+        #     Instagram.closeBot()
+        # else:
+        #     Instagram.closeBot()
