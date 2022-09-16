@@ -1,5 +1,5 @@
 # Instagram Tool
-A bot with useful features that can be used for Instagram.
+A tool with useful features that can be used for Instagram.
 
 ![alt text](https://i.ibb.co/TrrhPBj/ss.jpg)
 
