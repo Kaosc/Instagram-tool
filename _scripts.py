@@ -1,4 +1,4 @@
-scrollScript = """ document.evaluate("//*[@role='dialog']/div/div/div/div", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.lastElementChild.scrollTo(0, document.evaluate("//*[@role='dialog']/div/div/div/div", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.lastElementChild.scrollHeight) """
+scrollScript = """ document.evaluate("//*[@role='dialog']/div/div", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.lastElementChild.scrollTo(0, document.evaluate("//*[@role='dialog']//ul", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.lastElementChild.scrollHeight) """
 scrollPage = """window.scrollTo(0, document.body.scrollHeight);"""
 followUser = """ 
 let list = [];

@@ -20,7 +20,7 @@ class Instagram:
         self.browserProfile.add_argument("--lang=en")
         self.browserProfile.add_argument("--log-level=3")
         self.browserProfile.add_argument('--hide-scrollbars')
-        self.browserProfile.add_argument("--headless")    # ---> some methods may not work properly with headless - so it's optional
+        # self.browserProfile.add_argument("--headless")    # ---> some methods may not work properly with headless - so it's optional
         self.browserProfile.add_argument("--disable-gpu")
         self.browserProfile.add_argument('--mute-audio')
         self.browserProfile.add_argument('window-size=1920,1080')
@@ -188,14 +188,16 @@ class Instagram:
 
     def navigateFollowers(self, user):
         print("%s--> Navigating Followers\n%s" % (fg(61), attr(0)))
+        self.browser.get(f'https://www.instagram.com/{user}')
         time.sleep(3)
-        self.browser.get(f'https://www.instagram.com/{user}/followers')
+        self.browser.find_element(By.XPATH, f'//*[@href="/{user}/followers/"]').click()
         time.sleep(2)
 
     def navigateFollowings(self, user):
+        self.browser.get(f'https://www.instagram.com/{user}')
         print("%s--> Navigating Followings\n%s" % (fg(61), attr(0)))
         time.sleep(3)
-        self.browser.get(f'https://www.instagram.com/{user}/following')
+        self.browser.find_element(By.XPATH, f'//*[@href="/{user}/following/"]').click()
         time.sleep(2)
         
     def follow(self):
@@ -242,13 +244,12 @@ class Instagram:
         
     def getUserList(self, total):
         time.sleep(5)
-        dialog = self.browser.find_element(By.XPATH, "//*[@class='_aano']/div/div")
 
         while True:
             self.browser.execute_script(_scripts.scrollScript)
             time.sleep(2)
             
-            newCount = len(dialog.find_elements(By.XPATH, "//div[@aria-labelledby]"))
+            newCount = len(self.browser.find_elements(By.XPATH, "//*[@role='dialog']//li/div"))
             os.system("cls")
             print(f"%sTotal Collected: {newCount}%s" % (fg(10), attr(0)))
         
@@ -260,7 +261,7 @@ class Instagram:
             else:
                 break
 
-        followers = dialog.find_elements(By.XPATH, "//div[@aria-labelledby]")
+        followers = self.browser.find_elements(By.XPATH, "//*[@role='dialog']//li/div")
         self.mainList = []
 
         i = 0
@@ -279,7 +280,7 @@ class Instagram:
 
         print("%sCounting Followers%s" % (fg(2), attr(0)))
 
-        dialog = self.browser.find_element(By.XPATH, "//*[@class='_aano']/div/div")
+        dialog = self.browser.find_element(By.XPATH, "//*[@role='dialog']")
         CurrentFollowers = len(dialog.find_elements(By.XPATH, "./child::*"))
         print(f"First Time Counting Followers: {CurrentFollowers}")
         
