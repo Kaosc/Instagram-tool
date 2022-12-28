@@ -20,7 +20,7 @@ class Instagram:
         self.browserProfile.add_argument("--lang=en")
         self.browserProfile.add_argument("--log-level=3")
         self.browserProfile.add_argument('--hide-scrollbars')
-        # self.browserProfile.add_argument("--headless") # some methods may not work properly with headless - so it's optional
+        self.browserProfile.add_argument("--headless") # some methods may not work properly with headless - so it's optional
         self.browserProfile.add_argument("--disable-gpu")
         self.browserProfile.add_argument('--mute-audio')
         self.browserProfile.add_argument('window-size=1920,1080')
