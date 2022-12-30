@@ -18,5 +18,6 @@ if(!skip) {
 """
 unFollowUser = """
 const buttons = await document.querySelectorAll('button');
-buttons[1].click();
+buttons[0].click();
 """
+unFollowInvidual = """ document.getElementsByTagName('button')[3].click(); """
