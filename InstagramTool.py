@@ -98,22 +98,26 @@ class Instagram:
 
     def downloadPP(self, username):
         os.system("cls")
-        self.browser = webdriver.Chrome(self.drvPath, chrome_options=self.browserProfile)
+        self.browser = webdriver.Chrome(
+            self.drvPath, chrome_options=self.browserProfile)
         self.username = username
-        
+
         print("\n%s--> Processing...%s" % (fg(1), attr(0)))
         self.browser.get(f"https://instabig.net/download-instagram-instadp")
-        
+
         print("\n%s--> Downloading image...\n %s" % (fg(226), attr(0)))
         time.sleep(2)
-        self.browser.find_element(By.XPATH, "/html/body/div[1]/div/form/div/input").send_keys(username)
-        self.browser.find_element(By.XPATH, "/html/body/div[1]/div/form/div/button").click()
-        
+        self.browser.find_element(
+            By.XPATH, "/html/body/div[1]/div/form/div/input").send_keys(username)
+        self.browser.find_element(
+            By.XPATH, "/html/body/div[1]/div/form/div/button").click()
+
         byt = ""
         while byt == "":
             time.sleep(1)
             try:
-                byt = self.browser.find_element(By.XPATH, "//*[@class='imgInstadp']")
+                byt = self.browser.find_element(
+                    By.XPATH, "//*[@class='imgInstadp']")
             except:
                 pass
 
@@ -130,7 +134,8 @@ class Instagram:
             self.drvPath, chrome_options=self.browserProfile)
         self.browser.get(f"{link}media/?size=l")
         time.sleep(2)
-        src = self.browser.find_element(By.TAG_NAME, "img").get_attribute('src')
+        src = self.browser.find_element(
+            By.TAG_NAME, "img").get_attribute('src')
         urllib.request.urlretrieve(src, f"{self.imgPath}/post.png")
         print("%s---> Downloaded!%s" % (fg(2), attr(0)))
 
@@ -189,8 +194,24 @@ class Instagram:
                 if action == "Follow":
                     self.browser.execute_script(_scripts.followUser)
                 else:
-                    self.browser.execute_script(_scripts.unfollowUser)
-            except:
+                    self.browser.execute_script(_scripts.unFollowUser)
+
+                    # bussiness account
+                    try:
+                        time.sleep(0.5)
+                        btns = self.browser.find_elements(By.XPATH, "//*[@aria-disabled]")
+                        btns[-1].click()
+                    except:
+                        pass
+
+                    # private account
+                    try:
+                        self.browser.execute_script(_scripts.unFollowInvidual)
+                    except:
+                        pass
+
+            except Exception as e:
+                print(e)
                 print(
                     f"%s\n --> Connection speed getting slower. Skipping... %s" % (fg(1), attr(0)))
             time.sleep(1.5)
