@@ -185,8 +185,9 @@ class Instagram:
             # You can change the time to 30 seconds or more in case you get blocked
             # Please note that the more you increase the time, the more time it will take to finish the process
             # Please don't use a time less than 15 seconds
-            for wait in range(16):
-                print(f"%s--> {15-wait} seconds left to {action.lower()} next user... %s" %
+            sleepTime = action == "Follow" and 15 or 30
+            for wait in range(sleepTime):
+                print(f"%s--> {sleepTime-wait} seconds left to {action.lower()} next user... %s" %
                       (fg(2), attr(0)), end="\r")
                 time.sleep(1)
 
