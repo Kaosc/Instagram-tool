@@ -1,7 +1,7 @@
 # Instagram Tool
 A tool with useful features that can be used for Instagram.
 
-![alt text](https://i.ibb.co/TrrhPBj/ss.jpg)
+![console look](./assets/console.png)
 
 ## Dependencies
 
