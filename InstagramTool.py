@@ -358,10 +358,8 @@ while True:
         Instagram.closeBot()
     elif opt == "2":
         # Freeze Account
-        username = _loginInfo.username if _loginInfo.username != "" else input(
-            "%susername: %s" % (fg(207), attr(0)))
-        password = _loginInfo.password if _loginInfo.password != "" else input(
-            "%spassword: %s" % (fg(207), attr(0)))
+        username = _loginInfo.username if _loginInfo.username != "" else input("%susername: %s" % (fg(207), attr(0)))
+        password = _loginInfo.password if _loginInfo.password != "" else input("%spassword: %s" % (fg(207), attr(0)))
         res = Instagram.login(username, password)
         if res:
             Instagram.freezeAccount(password)
@@ -376,10 +374,8 @@ while True:
         Instagram.deleteImg()
     elif opt == "3":
         # Get Followers
-        username = _loginInfo.username if _loginInfo.username != "" else input(
-            "%susername: %s" % (fg(207), attr(0)))
-        password = _loginInfo.password if _loginInfo.password != "" else input(
-            "%spassword: %s" % (fg(207), attr(0)))
+        username = _loginInfo.username if _loginInfo.username != "" else input("%susername: %s" % (fg(207), attr(0)))
+        password = _loginInfo.password if _loginInfo.password != "" else input("%spassword: %s" % (fg(207), attr(0)))
         res = Instagram.login(username, password)
         if res:
             Instagram.getFollowers(username)
@@ -388,10 +384,8 @@ while True:
             Instagram.closeBot()
     elif opt == "4":
         # Follower Farm
-        username = _loginInfo.username if _loginInfo.username != "" else input(
-            "%susername: %s" % (fg(207), attr(0)))
-        password = _loginInfo.password if _loginInfo.password != "" else input(
-            "%spassword: %s" % (fg(207), attr(0)))
+        username = _loginInfo.username if _loginInfo.username != "" else input("%susername: %s" % (fg(207), attr(0)))
+        password = _loginInfo.password if _loginInfo.password != "" else input("%spassword: %s" % (fg(207), attr(0)))
         target = input("%sTarget account name: %s" % (fg(207), attr(0)))
         total = int(input("%sTotal Follow: %s" % (fg(10), attr(0))))
         res = Instagram.login(username, password)
@@ -405,10 +399,8 @@ while True:
             Instagram.closeBot()
     elif opt == "5":
         # Unfollow Farm
-        username = _loginInfo.username if _loginInfo.username != "" else input(
-            "%susername: %s" % (fg(207), attr(0)))
-        password = _loginInfo.password if _loginInfo.password != "" else input(
-            "%spassword: %s" % (fg(207), attr(0)))
+        username = _loginInfo.username if _loginInfo.username != "" else input("%susername: %s" % (fg(207), attr(0)))
+        password = _loginInfo.password if _loginInfo.password != "" else input("%spassword: %s" % (fg(207), attr(0)))
         total = int(input("%sTotal unFollow: %s" % (fg(10), attr(0))))
         res = Instagram.login(username, password)
         if res:
@@ -422,8 +414,7 @@ while True:
     elif opt == "8":
         # Remove Requests
         os.system("cls")
-        print("%s\n --> DEPRECATED - Instagram doesn't show requested accounts anymore. %s" %
-              (fg(2), attr(0)))
+        print("%s\n --> DEPRECATED - Instagram doesn't show requested accounts anymore. %s" %(fg(2), attr(0)))
         # username = _loginInfo.username if _loginInfo.username != "" else input("%susername: %s" % (fg(207), attr(0)))
         # password = _loginInfo.password if _loginInfo.password != "" else input("%spassword: %s" % (fg(207), attr(0)))
         # print("%s--> Determine user threshold for less wait time (ex. 100) %s" % (fg(207), attr(0)))
