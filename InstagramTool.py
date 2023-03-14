@@ -224,7 +224,7 @@ class Instagram:
             self.browser.execute_script(_scripts.scrollScript)
             time.sleep(2)
 
-            newCount = len(self.browser.find_elements(By.XPATH, "//*[@aria-labelledby]"))
+            newCount = len(self.browser.find_elements(By.XPATH, "//*[@class='_aano']/div/div/div"))
             os.system("cls")
 
             print(f"%s Total Collected: {newCount}/{total} %s" % (fg(10), attr(0)))
@@ -237,7 +237,7 @@ class Instagram:
             else:
                 break
 
-        followers = self.browser.find_elements(By.XPATH, "//*[@aria-labelledby]")
+        followers = self.browser.find_elements(By.XPATH, "//*[@class='_aano']/div/div/div")
         self.userList = []
 
         i = 0
@@ -256,15 +256,14 @@ class Instagram:
 
         print("%sCounting Followers%s" % (fg(2), attr(0)))
 
-        # dialog = self.browser.find_element(By.XPATH, "//*[@role='dialog']")
-        counterFollowers = len(self.browser.find_elements(By.XPATH, "//*[@aria-labelledby]"))
+        counterFollowers = len(self.browser.find_elements(By.XPATH, "//*[@class='_aano']/div/div/div"))
         print(f"First Time Counting Followers: {counterFollowers}")
 
         while True:
             self.browser.execute_script(_scripts.scrollScript)
             time.sleep(2)
 
-            newCount = len(self.browser.find_elements(By.XPATH, "//*[@aria-labelledby]"))
+            newCount = len(self.browser.find_elements(By.XPATH, "//*[@class='_aano']/div/div/div"))
             os.system("cls")
 
             if counterFollowers != newCount:
@@ -277,7 +276,7 @@ class Instagram:
         print("%sSaving... %s" % (fg(2), attr(0)))
 
         try:
-            totalFollowers = self.browser.find_elements(By.XPATH, "//*[@aria-labelledby]")
+            totalFollowers = self.browser.find_elements(By.XPATH, "//*[@class='_aano']/div/div/div")
 
             Flist = []
             i = 0
