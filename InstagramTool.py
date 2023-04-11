@@ -162,10 +162,15 @@ class Instagram:
         self.browser.get(f'https://www.instagram.com/{user}')
         print(f"%s--> Navigating to {path}\n%s" % (fg(61), attr(0)))
         time.sleep(3)
-
-        self.browser.find_element(By.XPATH, f'//*[@href="/{user}/{path}/"]').click()
-        time.sleep(2)
-
+        
+        try: 
+            self.browser.find_element(By.XPATH, f'//*[@href="/{user}/{path}/"]').click()
+            time.sleep(2)
+            return True
+        except:
+            print(f"%s--> {user} does not exist!%s" % (fg(1), attr(0)))
+            return False
+        
     def userAction(self, action):
         count = 0
         for user in self.userList:
@@ -388,8 +393,8 @@ while True:
         target = input("%sTarget account name: %s" % (fg(207), attr(0)))
         total = int(input("%sTotal Follow: %s" % (fg(10), attr(0))))
         res = Instagram.login(username, password)
-        if res:
-            Instagram.navigateTo(target, "followers")
+        userExist = Instagram.navigateTo(target, "followers")
+        if res & userExist:
             Instagram.getFollowings(total)
             Instagram.userAction("Follow")
             Instagram.message()
@@ -402,8 +407,8 @@ while True:
         password = _loginInfo.password if _loginInfo.password != "" else input("%spassword: %s" % (fg(207), attr(0)))
         total = int(input("%sTotal unFollow: %s" % (fg(10), attr(0))))
         res = Instagram.login(username, password)
-        if res:
-            Instagram.navigateTo(username, "following")
+        userExist = Instagram.navigateTo(username, "following")
+        if res & userExist:
             Instagram.getFollowings(total)
             Instagram.userAction("unFollow")
             Instagram.message()
