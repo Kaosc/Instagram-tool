@@ -17,7 +17,13 @@ if(!skip) {
 }
 """
 unFollowUser = """
-const buttons = await document.querySelectorAll('button');
-buttons[0].click();
+document.querySelectorAll("button")[0].click()
+setTimeout(() => {
+	document.querySelectorAll("span").forEach((item) => {
+		if (item.innerText === "Unfollow") {
+			item.click()
+		}
+	})
+}, 2000)
 """
 unFollowInvidual = """ document.getElementsByTagName('button')[3].click(); """
