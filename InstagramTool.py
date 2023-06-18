@@ -1,6 +1,7 @@
 from colored import fg, attr
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
 import urllib.request
 import warnings
 import time
@@ -11,11 +12,11 @@ import _scripts
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
-
 class Instagram:
     def __init__(self):
         self.drvPath = "./driver/chromedriver.exe"
         self.imgPath = "./images"
+        self.service = Service(self.drvPath)
         self.browserProfile = webdriver.ChromeOptions()
         self.browserProfile.add_argument("--lang=en")
         self.browserProfile.add_argument("--log-level=3")
@@ -34,12 +35,16 @@ class Instagram:
         self.username = _loginInfo.username
         self.password = _loginInfo.password
 
+
+    def executeChrome(self):
+        self.browser = webdriver.Chrome(service=self.service, options=self.browserProfile)
+
     def login(self, username, password):
-        os.system('cls')
+        os.system("cls")
         self.username = username
         self.password = password
 
-        self.browser = webdriver.Chrome(self.drvPath, chrome_options=self.browserProfile)
+        self.executeChrome()
         print("%s--> Logging in\n%s" % (fg(61), attr(0)))
         time.sleep(2)
         
@@ -96,7 +101,7 @@ class Instagram:
     def downloadPP(self, username):
         os.system("cls")
         self.username = username
-        self.browser = webdriver.Chrome(self.drvPath, chrome_options=self.browserProfile)
+        self.executeChrome()
 
         print("\n%s--> Processing...%s" % (fg(1), attr(0)))
         self.browser.get(f"https://instabig.net/download-instagram-instadp")
@@ -126,7 +131,7 @@ class Instagram:
         self.link = link
         print("%s---> Loading...%s" % (fg(2), attr(0)))
 
-        self.browser = webdriver.Chrome(self.drvPath, chrome_options=self.browserProfile)
+        self.executeChrome()
         self.browser.get(f"{link}media/?size=l")
         time.sleep(2)
 
@@ -178,11 +183,11 @@ class Instagram:
             print(f"%s--> Processing\n--> Total {action}: {count}/{len(self.userList)} %s" % (fg(43), attr(0)))
             self.browser.get(user)
 
-            # Wait for 15 seconds to avoid Instagram blocking actions
+            # Wait for 20 seconds to avoid Instagram blocking actions
             # You can change the time to 30 seconds or more in case you get blocked
             # Please note that the more you increase the time, the more time it will take to finish the process
             # Please don't use a time less than 15 seconds
-            sleepTime = action == "Follow" and 15 or 18
+            sleepTime = action == "Follow" and 20 or 25
             for wait in range(sleepTime):
                 print(f"%s--> {sleepTime-wait} seconds left to {action.lower()} next user... %s" % (fg(2), attr(0)), end="\r")
                 time.sleep(1)
