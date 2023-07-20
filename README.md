@@ -12,12 +12,14 @@ A tool with useful features that can be used for Instagram.
 You can install them by using the following command:
 
 ```bash
-pip install selenium colored pillow
+pip install selenium colored pillow python-dotenv requests
 ```
+
+or run the `dep-installer.py` file.
 
 - ### Chrome Driver
 
-Current ChromeDriver version is 114. Please check [here](https://chromedriver.chromium.org/downloads) for latest version.
+Current ChromeDriver version is 115. Please check [here](https://chromedriver.chromium.org/downloads) for latest version.
 
 ChromeDriver version must be the same chrome version installed on your system. You can check your installed chrome version via Settings > About Chrome.
 
@@ -28,4 +30,10 @@ ChromeDriver version must be the same chrome version installed on your system. Y
 
 #### Note
 
-if you don't want to pass your login information every time, please fill the "\_loginInfo" file.
+if you don't want to pass your login information every time, please fill the "\_loginInfo" file or create
+a .env file with the following variables:
+
+```bash
+USERNAME=your_username
+PASSWORD=your_password
+```
