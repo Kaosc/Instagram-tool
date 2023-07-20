@@ -6,9 +6,11 @@ import urllib.request
 import warnings
 import time
 import os
+import requests
 from PIL import Image
 import _loginInfo
 import _scripts
+
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
@@ -16,6 +18,7 @@ class Instagram:
     def __init__(self):
         self.drvPath = "./driver/chromedriver.exe"
         self.imgPath = "./images"
+        self.userList = []
         self.service = Service(self.drvPath)
         self.browserProfile = webdriver.ChromeOptions()
         self.browserProfile.add_argument("--lang=en")
@@ -32,27 +35,34 @@ class Instagram:
         self.browserProfile.add_experimental_option('prefs', {"profile.default_content_setting_values.notifications": "2"})
         self.browserProfile.add_experimental_option('excludeSwitches', ['enable-logging'])
         self.browserProfile.add_experimental_option('prefs', {"intl.accept_languages": "en,en_US"})
-        self.username = _loginInfo.username
-        self.password = _loginInfo.password
-
-
-    def executeChrome(self):
         self.browser = webdriver.Chrome(service=self.service, options=self.browserProfile)
+
+    def createImagePath(self):
+        # create images folder if not exists
+        if not os.path.exists(self.imgPath):
+            os.makedirs(self.imgPath)
+
+    def getTotalFileSum(self, path):
+        total = 0
+        for root, dirs, files in os.walk(path):
+            total += len(files)
+
+        if total == 0:
+            return ""
+        else:
+            return total
 
     def login(self, username, password):
         os.system("cls")
-        self.username = username
-        self.password = password
 
-        self.executeChrome()
         print("%s--> Logging in\n%s" % (fg(61), attr(0)))
         time.sleep(2)
         
         self.browser.get("https://www.instagram.com/accounts/login/")
         time.sleep(2)
         
-        self.browser.find_element(By.NAME, 'username').send_keys(self.username)
-        self.browser.find_element(By.NAME, 'password').send_keys(self.password)
+        self.browser.find_element(By.NAME, 'username').send_keys(username)
+        self.browser.find_element(By.NAME, 'password').send_keys(password)
         self.browser.find_element(By.XPATH, '//*[@id="loginForm"]/div/div[3]/button/div').click()
         time.sleep(7)
         
@@ -100,43 +110,37 @@ class Instagram:
 
     def downloadPP(self, username):
         os.system("cls")
-        self.username = username
-        self.executeChrome()
 
         print("\n%s--> Processing...%s" % (fg(1), attr(0)))
-        self.browser.get(f"https://instabig.net/download-instagram-instadp")
-        time.sleep(2)
 
-        print("\n%s--> Downloading image...\n %s" % (fg(226), attr(0)))
+        url = f"https://www.instagram.com/{username}/?__a=1&__d=1"
+        pic = requests.get(url).json()["graphql"]["user"]["profile_pic_url_hd"]
 
-        self.browser.find_element(By.XPATH, "/html/body/div[1]/div/form/div/input").send_keys(username)
-        self.browser.find_element(By.XPATH, "/html/body/div[1]/div/form/div/button").click()
+        # create images folder if not exists
+        self.createImagePath()
+        fileNum = self.getTotalFileSum(self.imgPath)
 
-        byt = ""
-        while byt == "":
-            time.sleep(1)
-            try:
-                byt = self.browser.find_element(By.XPATH, "//*[@class='imgInstadp']")
-            except:
-                pass
-
-        src = byt.get_attribute("src")
-        time.sleep(1)
-        urllib.request.urlretrieve(src, f"{self.imgPath}/pp.png")
+        urllib.request.urlretrieve(pic, f"{self.imgPath}/pp{fileNum}.png")
 
         print("%s--> Downloaded!%s" % (fg(46), attr(0)))
 
-    def downloadPost(self, link):
+    def downloadPost(self, link = ""):
         os.system("cls")
-        self.link = link
-        print("%s---> Loading...%s" % (fg(2), attr(0)))
+        print("%s---> Downloading...%s" % (fg(2), attr(0)))
 
-        self.executeChrome()
-        self.browser.get(f"{link}media/?size=l")
+        # if link is not a post link, convert it to post link
+        postId = link.split("/")[-2]
+
+        self.browser.get(f"https://www.instagram.com/p/{postId}/media/?size=l")
         time.sleep(2)
 
         src = self.browser.find_element(By.TAG_NAME, "img").get_attribute('src')
-        urllib.request.urlretrieve(src, f"{self.imgPath}/post.png")
+
+        # create images folder if not exists
+        self.createImagePath()
+        fileNum = self.getTotalFileSum(self.imgPath)
+        
+        urllib.request.urlretrieve(src, f"{self.imgPath}/post{fileNum}.png")
 
         print("%s---> Downloaded!%s" % (fg(2), attr(0)))
 
