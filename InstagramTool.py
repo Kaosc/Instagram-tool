@@ -196,6 +196,13 @@ class Instagram:
                 print(f"%s--> {sleepTime-wait} seconds left to {action.lower()} next user... %s" % (fg(2), attr(0)), end="\r")
                 time.sleep(1)
 
+            # check load block
+            isBlocked = self.browser.find_element(By.XPATH, "//*[@aria-label='Error']")
+            if isBlocked:
+                print(f"%s\n --> Instagram blocked {action} actions. Try again later. %s" % (fg(1), attr(0)))
+                self.closeBot()
+                break
+
             try:
                 if action == "Follow":
                     self.browser.execute_script(_scripts.followUser)
