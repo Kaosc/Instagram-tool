@@ -59,7 +59,7 @@ class Instagram:
         time.sleep(2)
         
         self.browser.get("https://www.instagram.com/accounts/login/")
-        time.sleep(2)
+        time.sleep(3)
         
         self.browser.find_element(By.NAME, 'username').send_keys(username)
         self.browser.find_element(By.NAME, 'password').send_keys(password)
@@ -197,11 +197,14 @@ class Instagram:
                 time.sleep(1)
 
             # check load block
-            isBlocked = self.browser.find_element(By.XPATH, "//*[@aria-label='Error']")
-            if isBlocked:
-                print(f"%s\n --> Instagram blocked {action} actions. Try again later. %s" % (fg(1), attr(0)))
-                self.closeBot()
-                break
+            try:
+                isBlocked = self.browser.find_element(By.XPATH, "//*[@aria-label='Error']")
+                if isBlocked:
+                    print(f"%s\n --> Instagram blocked {action} actions. Try again later. %s" % (fg(1), attr(0)))
+                    self.closeBot()
+                    break
+            except:
+                pass
 
             try:
                 if action == "Follow":
