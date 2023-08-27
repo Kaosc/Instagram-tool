@@ -11,7 +11,6 @@ from PIL import Image
 import _loginInfo
 import _scripts
 
-
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 class Instagram:
@@ -63,7 +62,7 @@ class Instagram:
         
         self.browser.find_element(By.NAME, 'username').send_keys(username)
         self.browser.find_element(By.NAME, 'password').send_keys(password)
-        self.browser.find_element(By.XPATH, '//*[@id="loginForm"]/div/div[3]/button/div').click()
+        self.browser.find_element(By.XPATH, '//*[@type="submit"]').click()
         time.sleep(7)
         
         try:
@@ -182,22 +181,18 @@ class Instagram:
         
     def userAction(self, action):
         count = 0
+        
         for user in self.userList:
             os.system("cls")
-            print(f"%s--> Processing\n--> Total {action}: {count}/{len(self.userList)} %s" % (fg(43), attr(0)))
+
+            skip = True
+            
+            print(f"%s--> Total {action}ed: {count}/{len(self.userList)} %s" % (fg(43), attr(0)))
             self.browser.get(user)
 
-            # Wait for 20 seconds to avoid Instagram blocking actions
-            # You can change the time to 30 seconds or more in case you get blocked
-            # Please note that the more you increase the time, the more time it will take to finish the process
-            # Please don't use a time less than 15 seconds
-            sleepTime = action == "Follow" and 20 or 25
-            for wait in range(sleepTime):
-                print(f"%s--> {sleepTime-wait} seconds left to {action.lower()} next user... %s" % (fg(2), attr(0)), end="\r")
-                time.sleep(1)
-
-            # check load block
+            # Check page load block
             try:
+                time.sleep(1)
                 isBlocked = self.browser.find_element(By.XPATH, "//*[@aria-label='Error']")
                 if isBlocked:
                     print(f"%s\n --> Instagram blocked {action} actions. Try again later. %s" % (fg(1), attr(0)))
@@ -206,39 +201,64 @@ class Instagram:
             except:
                 pass
 
+            # Execute follow/unfollow aciton
             try:
+                time.sleep(2)
                 if action == "Follow":
-                    self.browser.execute_script(_scripts.followUser)
+                    # This will skip ["Requested", "Following", "Follow Back"] buttons
+                    try:
+                        followButton = self.browser.find_element(By.XPATH, "//header//*[@type='button']//*[contains(text(), 'Follow')]")
+                        if followButton.text == "Follow":
+                            followButton.click()
+                            skip = False
+                    except:
+                        pass
                 else:
-                    self.browser.execute_script(_scripts.unFollowUser)
-
-                    # bussiness account
+                    # Open options popup dialog 
                     try:
-                        time.sleep(0.5)
-                        btns = self.browser.find_elements(By.XPATH, "//*[@aria-disabled]")
-                        btns[-1].click()
+                        popupButton = self.browser.find_element(By.XPATH, "//header//*[@type='button']//*[contains(text(), 'Following')]")
+                        if popupButton.text == "Following":
+                            if popupButton.text == "Following":
+                                popupButton.click()
+                                skip = False
                     except:
                         pass
-
-                    # private account
+                    time.sleep(1.5)
+                    # Click unfollow button in popup dialog
                     try:
-                        self.browser.execute_script(_scripts.unFollowInvidual)
+                        unFollowButton = self.browser.find_element(By.XPATH, "//*/div[@role='button']//*[contains(text(), 'Unfollow')]")
+                        if unFollowButton.text == "Unfollow":
+                            unFollowButton.click()
+                            skip = False
                     except:
                         pass
-
             except Exception as e:
                 print(e)
                 print(f"%s\n --> Connection speed getting slower. Skipping... %s" % (fg(1), attr(0)))
             
-            time.sleep(1.5)
-            
+            # Check action block
             try:
+                time.sleep(1.5)
                 self.browser.find_element(By.TAG_NAME, "h3")
                 print(f"%s\n --> Instagram blocked {action} actions. Try again later. %s" % (fg(1), attr(0)))
                 break
             except:
-                time.sleep(1.5)
-                count += 1
+                pass
+
+            count += 1
+
+            # Wait for 20 seconds to avoid Instagram blocking actions
+            # You can change the time to 30 seconds or more in case you get blocked
+            # Please note that the more you increase the time, the more time it will take to finish the process
+            # Please don't use a time less than 15 seconds
+            if skip:
+                print(f"%s\n --> Already {action}ed!%s" % (fg(2), attr(0)))
+                time.sleep(1)
+            else:
+                sleepTime = action == "Follow" and 20 or 25
+                for wait in range(sleepTime):
+                    print(f"%s--> {sleepTime-wait} seconds left to {action.lower()} next user... %s" % (fg(2), attr(0)), end="\r")
+                    time.sleep(1)
 
     # Followings List
     def getFollowings(self, total):
