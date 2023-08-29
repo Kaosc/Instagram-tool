@@ -1,8 +1,8 @@
 # Instagram Tool
 
-A tool with useful features that can be used for Instagram.
+Console based tool with useful features that can be used for Instagram.
 
-![console look](./assets/console.png)
+![console look](./assets/preview.png)
 
 # Installing Dependencies
 
