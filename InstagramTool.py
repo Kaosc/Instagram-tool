@@ -10,6 +10,7 @@ import requests
 from PIL import Image
 import _loginInfo
 import _scripts
+import json
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
@@ -18,12 +19,13 @@ class Instagram:
         self.drvPath = "./driver/chromedriver.exe"
         self.imgPath = "./images"
         self.userList = []
+        self.pendingFollowRequestHrefs = []
         self.service = Service(self.drvPath)
         self.browserProfile = webdriver.ChromeOptions()
         self.browserProfile.add_argument("--lang=en")
         self.browserProfile.add_argument("--log-level=3")
         self.browserProfile.add_argument('--hide-scrollbars')
-        self.browserProfile.add_argument("--headless") # some methods may not work properly with headless - so it's optional
+        self.browserProfile.add_argument("--headless")
         self.browserProfile.add_argument("--disable-gpu")
         self.browserProfile.add_argument('--mute-audio')
         self.browserProfile.add_argument('window-size=1920,1080')
@@ -54,7 +56,7 @@ class Instagram:
     def login(self, username, password):
         os.system("cls")
 
-        print("%s--> Logging in\n%s" % (fg(61), attr(0)))
+        print("%s⊳ Logging in\n%s" % (fg(61), attr(0)))
         time.sleep(2)
         
         self.browser.get("https://www.instagram.com/accounts/login/")
@@ -73,7 +75,7 @@ class Instagram:
             return True
 
     def message(self):
-        print("%s\n--> DONE%s" % (fg(1), attr(0)))
+        print("%s\n⊳ DONE%s" % (fg(1), attr(0)))
 
     def closeBot(self):
         self.browser.close()
@@ -86,7 +88,7 @@ class Instagram:
             img = Image.open(F"{self.imgPath}/{fileName}.png")
             img.show()
         except FileNotFoundError:
-            print("%s--> File not found!%s" % (fg(1), attr(0)))
+            print("%s⊳ File not found!%s" % (fg(1), attr(0)))
 
     def deleteImg(self):
         os.system("cls")
@@ -99,18 +101,18 @@ class Instagram:
                     os.remove(f"{self.imgPath}/{file}.png")
                 except FileNotFoundError:
                     pass
-            print("\n%s--> All files deleted!%s\n" % (fg(2), attr(0)))
+            print("\n%s⊳ All files deleted!%s\n" % (fg(2), attr(0)))
         else:
             try:
                 os.remove(f"{self.imgPath}/{fileName}.png")
-                print("\n%s--> Deleted!%s\n" % (fg(2), attr(0)))
+                print("\n%s⊳ Deleted!%s\n" % (fg(2), attr(0)))
             except FileNotFoundError:
                 pass
 
     def downloadPP(self, username):
         os.system("cls")
 
-        print("\n%s--> Processing...%s" % (fg(1), attr(0)))
+        print("\n%s⊳ Processing...%s" % (fg(1), attr(0)))
 
         url = f"https://www.instagram.com/{username}/?__a=1&__d=1"
         pic = requests.get(url).json()["graphql"]["user"]["profile_pic_url_hd"]
@@ -121,11 +123,11 @@ class Instagram:
 
         urllib.request.urlretrieve(pic, f"{self.imgPath}/pp{fileNum}.png")
 
-        print("%s--> Downloaded!%s" % (fg(46), attr(0)))
+        print("%s⊳ Downloaded!%s" % (fg(46), attr(0)))
 
     def downloadPost(self, link = ""):
         os.system("cls")
-        print("%s---> Downloading...%s" % (fg(2), attr(0)))
+        print("%s-⊳ Downloading...%s" % (fg(2), attr(0)))
 
         # if link is not a post link, convert it to post link
         postId = link.split("/")[-2]
@@ -141,11 +143,11 @@ class Instagram:
         
         urllib.request.urlretrieve(src, f"{self.imgPath}/post{fileNum}.png")
 
-        print("%s---> Downloaded!%s" % (fg(2), attr(0)))
+        print("%s-⊳ Downloaded!%s" % (fg(2), attr(0)))
 
     def freezeAccount(self, password):
         os.system("cls")
-        print("%s---> Account freezing%s\n" % (fg(2), attr(0)))
+        print("%s-⊳ Account freezing%s\n" % (fg(2), attr(0)))
         self.browser.get('https://www.instagram.com/accounts/remove/request/temporary/')
         time.sleep(2)
         self.browser.find_element(By.XPATH, '//*[@id="deletion-reason"]').click()
@@ -157,7 +159,7 @@ class Instagram:
         time.sleep(2)
         self.browser.find_element(By.CSS_SELECTOR, 'article form div div button').click()
 
-        print("%s---> Results coming%s\n" % (fg(2), attr(0)))
+        print("%s-⊳ Results coming%s\n" % (fg(2), attr(0)))
         time.sleep(2)
 
         self.browser.save_screenshot(f"{self.imgPath}/result.png")
@@ -168,7 +170,7 @@ class Instagram:
 
     def navigateTo(self, user, path):
         self.browser.get(f'https://www.instagram.com/{user}')
-        print(f"%s--> Navigating to {path}\n%s" % (fg(61), attr(0)))
+        print(f"%s⊳ Navigating to {path}\n%s" % (fg(61), attr(0)))
         time.sleep(3)
         
         try: 
@@ -176,18 +178,19 @@ class Instagram:
             time.sleep(2)
             return True
         except:
-            print(f"%s--> {user} does not exist!%s" % (fg(1), attr(0)))
+            print(f"%s⊳ {user} does not exist!%s" % (fg(1), attr(0)))
             return False
         
     def userAction(self, action):
         count = 0
+        hrefs = action == "removeRequest" and self.pendingFollowRequestHrefs or self.userList
         
-        for user in self.userList:
+        for user in hrefs:
             os.system("cls")
 
             skip = True
             
-            print(f"%s--> Total {action}ed: {count}/{len(self.userList)} %s" % (fg(43), attr(0)))
+            print(f"%s⊳ Total {action}ed: {count}/{len(hrefs)} %s" % (fg(43), attr(0)))
             self.browser.get(user)
 
             # Check page load block
@@ -195,7 +198,7 @@ class Instagram:
                 time.sleep(1)
                 isBlocked = self.browser.find_element(By.XPATH, "//*[@aria-label='Error']")
                 if isBlocked:
-                    print(f"%s\n --> Instagram blocked {action} actions. Try again later. %s" % (fg(1), attr(0)))
+                    print(f"%s\n ⊳ Instagram blocked {action} actions. Try again later. %s" % (fg(1), attr(0)))
                     self.closeBot()
                     break
             except:
@@ -204,7 +207,14 @@ class Instagram:
             # Execute follow/unfollow aciton
             try:
                 time.sleep(2)
+
+
+
                 if action == "Follow":
+                    ################################
+                    ############ Follow ############
+                    ################################
+
                     # This will skip ["Requested", "Following", "Follow Back"] buttons
                     try:
                         followButton = self.browser.find_element(By.XPATH, "//header//*[@type='button']//*[contains(text(), 'Follow')]")
@@ -213,8 +223,37 @@ class Instagram:
                             skip = False
                     except:
                         pass
+
+                elif action == "removeRequest":
+                    #################################
+                    ######### removeRequest #########
+                    #################################
+
+                    # Open popup dialog 
+                    try:
+                        popupButton = self.browser.find_element(By.XPATH, "//header//*[@type='button']//*[contains(text(), 'Requested')]")
+                        if popupButton.text == "Requested":
+                            if popupButton.text == "Requested":
+                                popupButton.click()
+                                skip = False
+                    except:
+                        pass
+
+                    # Click unfollow button in popup dialog
+                    time.sleep(1.5)
+                    try:
+                        unFollowButton = self.browser.find_element(By.XPATH, "//*/button[contains(text(), 'Unfollow')]")
+                        if unFollowButton.text == "Unfollow":
+                            unFollowButton.click()
+                            skip = False
+                    except:
+                        pass
                 else:
-                    # Open options popup dialog 
+                    ################################
+                    ########### unFollow ###########
+                    ################################
+
+                    # Open popup dialog 
                     try:
                         popupButton = self.browser.find_element(By.XPATH, "//header//*[@type='button']//*[contains(text(), 'Following')]")
                         if popupButton.text == "Following":
@@ -223,8 +262,9 @@ class Instagram:
                                 skip = False
                     except:
                         pass
-                    time.sleep(1.5)
+
                     # Click unfollow button in popup dialog
+                    time.sleep(1.5)
                     try:
                         unFollowButton = self.browser.find_element(By.XPATH, "//*/div[@role='button']//*[contains(text(), 'Unfollow')]")
                         if unFollowButton.text == "Unfollow":
@@ -233,14 +273,14 @@ class Instagram:
                     except:
                         pass
             except Exception as e:
+                print(f"%s\n ⊳ Connection speed getting slower. Skipping... %s" % (fg(1), attr(0)))
                 print(e)
-                print(f"%s\n --> Connection speed getting slower. Skipping... %s" % (fg(1), attr(0)))
             
             # Check action block
             try:
                 time.sleep(1.5)
                 self.browser.find_element(By.TAG_NAME, "h3")
-                print(f"%s\n --> Instagram blocked {action} actions. Try again later. %s" % (fg(1), attr(0)))
+                print(f"%s\n ⊳ Instagram blocked {action} actions. Try again later. %s" % (fg(1), attr(0)))
                 break
             except:
                 pass
@@ -252,12 +292,12 @@ class Instagram:
             # Please note that the more you increase the time, the more time it will take to finish the process
             # Please don't use a time less than 15 seconds
             if skip:
-                print(f"%s\n --> Already {action}ed!%s" % (fg(2), attr(0)))
+                print(f"%s\n ⊳ Skipping {action} action cause it's already done. %s" % (fg(1), attr(0)))
                 time.sleep(1)
             else:
                 sleepTime = action == "Follow" and 20 or 25
                 for wait in range(sleepTime):
-                    print(f"%s--> {sleepTime-wait} seconds left to {action.lower()} next user... %s" % (fg(2), attr(0)), end="\r")
+                    print(f"%s⊳ {sleepTime-wait} seconds left to {action.lower()} next user... %s" % (fg(2), attr(0)), end="\r")
                     time.sleep(1)
 
     # Followings List
@@ -339,42 +379,31 @@ class Instagram:
 
         print("%sDone! All followers successfully saved to 'followers.txt' file. %s" % (fg(2), attr(0)))
 
-    # ---------------- DEPRECATED ----------------
-    # def removeRequests(self, threshold):
-    #     os.system('cls')
-    #     print("%s--> Navigating to requested accounts list \n%s" % (fg(61), attr(0)))
+    def removeRequests(self):
+        os.system('cls')
+        print("%s⊳ Importing data from 'pending_follow_requests.json' file... %s" % (fg(61), attr(0)))
 
-    #     self.browser.get(f"https://www.instagram.com/accounts/access_tool/current_follow_requests")
-    #     time.sleep(3)
+        # Importing data from 'pending_follow_requests.json' file
+        try:
+            f = open('data/pending_follow_requests.json')
+            data = json.load(f)
+            for i in data['relationships_follow_requests_sent']:
+                self.pendingFollowRequestHrefs.append(i['string_list_data'][0]['href'])
+            f.close()
+        except:
+            print("%s⊳ Something went wrong while importing data from 'pending_follow_requests.json' file. Please make sure the file exists and meets the requirements. read the README.md file for more information. %s" % (fg(1), attr(0)))
+            return
 
-    #     while True:
-    #         time.sleep(2)
-
-    #         newCount = self.browser.execute_script('return document.querySelectorAll("article div").length')
-
-    #         if (newCount == threshold):
-    #             break
-
-    #         os.system("cls")
-    #         print(f"%s Total Collected: {newCount}/{total}%s " % (fg(10), attr(0)))
-
-    #         try:
-    #             self.browser.find_element(By.XPATH, '//*["article"]/main/button').click()
-    #         except:
-    #             break
-
-    #     requestedAccountNames = self.browser.execute_script('return document.querySelectorAll("article div")')
-    #     print(f"%s \n--> Generating links... %s" % (fg(10), attr(0)))
-    #     self.userList = []
-
-    #     for user in requestedAccountNames:
-    #         username = user.text
-    #         self.userList.append(f"https://www.instagram.com/{username}/")
+        # Removing requests
+        print("%s⊳ Removing requests... %s" % (fg(61), attr(0)))
+        self.userAction("removeRequest")
 
 Instagram = Instagram()
 
 while True:
-    print("%s\n - - - INSTAGRAM TOOL - - - \n %s" % (fg(207), attr(0)))
+    print("%s\n∴∵∴∵∴∵∴∵∴∵∴∵∴∵∴∵∴∵∴∵∴∵∴∵∴∵∴∵∴%s" % (fg(171), attr(0)))
+    print("%s∴∵∴∵∴∵ INSTAGRAM TOOL ∴∵∴∵∴∵∴%s" % (fg(171), attr(0)))
+    print("%s∴∵∴∵∴∵∴∵∴∵∴∵∴∵∴∵∴∵∴∵∴∵∴∵∴∵∴∵∴\n %s" % (fg(171), attr(0)))
     opt = input("%s"
         "[0] - Download Profile Picture\n"
         "[1] - Download Post Picture\n"
@@ -386,7 +415,8 @@ while True:
         "[7] - Delete Pictures\n"
         "[8] - Remove Requests\n"
         "[9] - Exit \n\n"
-        "%sEnter Number:""" % (fg(207), attr(0)))
+        "⊳ ENTER NUMBER: %s""" % (fg(171), attr(0)))
+    
     if opt == "0":
         # Download Profile Picture
         username = input("%susername: %s" % (fg(207), attr(0)))
@@ -394,6 +424,7 @@ while True:
         Instagram.closeBot()
     elif opt == "9":
         exit()
+        Instagram.closeBot()
     elif opt == "1":
         # Download Post Picture
         link = input("%sPost Link: %s" % (fg(207), attr(0)))
@@ -457,16 +488,12 @@ while True:
     elif opt == "8":
         # Remove Requests
         os.system("cls")
-        print("%s\n --> DEPRECATED - Instagram doesn't show requested accounts anymore. %s" %(fg(2), attr(0)))
-        # username = _loginInfo.username if _loginInfo.username != "" else input("%susername: %s" % (fg(207), attr(0)))
-        # password = _loginInfo.password if _loginInfo.password != "" else input("%spassword: %s" % (fg(207), attr(0)))
-        # print("%s--> Determine user threshold for less wait time (ex. 100) %s" % (fg(207), attr(0)))
-        # threshold = input("%sThreshold: %s" % (fg(207), attr(0)))
-        # res = Instagram.login(username, password)
-        # if res:
-        #     Instagram.removeRequests(threshold)
-        #     Instagram.unFollow()
-        #     Instagram.message()
-        #     Instagram.closeBot()
-        # else:
-        #     Instagram.closeBot()
+        username = _loginInfo.username if _loginInfo.username != "" else input("%susername: %s" % (fg(207), attr(0)))
+        password = _loginInfo.password if _loginInfo.password != "" else input("%spassword: %s" % (fg(207), attr(0)))
+        res = Instagram.login(username, password)
+        if res:
+            Instagram.removeRequests()
+            Instagram.message()
+            Instagram.closeBot()
+        else:
+            Instagram.closeBot()
