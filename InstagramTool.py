@@ -49,9 +49,9 @@ class Instagram:
             total += len(files)
 
         if total == 0:
-            return ""
+            return 1
         else:
-            return total
+            return total + 1
 
     def login(self, username, password):
         os.system("cls")
