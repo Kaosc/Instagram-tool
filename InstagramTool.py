@@ -19,7 +19,7 @@ class Instagram:
         self.drvPath = "./driver/chromedriver.exe"
         self.imgPath = "./images"
         self.userList = []
-        self.pendingFollowRequestHrefs = []
+        self.pendingFollowRequests = []
         self.service = Service(self.drvPath)
         self.browserProfile = webdriver.ChromeOptions()
         self.browserProfile.add_argument("--lang=en")
@@ -183,7 +183,7 @@ class Instagram:
         
     def userAction(self, action):
         count = 0
-        hrefs = action == "removeRequest" and self.pendingFollowRequestHrefs or self.userList
+        hrefs = action == "removeRequest" and self.pendingFollowRequests or self.userList
         
         for user in hrefs:
             os.system("cls")
@@ -191,7 +191,7 @@ class Instagram:
             skip = True
             
             print(f"%s⊳ Total {action}ed: {count}/{len(hrefs)} %s" % (fg(43), attr(0)))
-            self.browser.get(user)
+            self.browser.get(action == "removeRequest" and user["string_list_data"][0]["href"] or user)
 
             # Check page load block
             try:
@@ -207,8 +207,6 @@ class Instagram:
             # Execute follow/unfollow aciton
             try:
                 time.sleep(2)
-
-
 
                 if action == "Follow":
                     ################################
@@ -238,7 +236,7 @@ class Instagram:
                                 skip = False
                     except:
                         pass
-
+                    
                     # Click unfollow button in popup dialog
                     time.sleep(1.5)
                     try:
@@ -248,6 +246,8 @@ class Instagram:
                             skip = False
                     except:
                         pass
+
+                    self.reWritePendingRequests(user)
                 else:
                     ################################
                     ########### unFollow ###########
@@ -387,8 +387,8 @@ class Instagram:
         try:
             f = open('data/pending_follow_requests.json')
             data = json.load(f)
-            for i in data['relationships_follow_requests_sent']:
-                self.pendingFollowRequestHrefs.append(i['string_list_data'][0]['href'])
+            for user in data['relationships_follow_requests_sent']:
+                self.pendingFollowRequests.append(user)
             f.close()
         except:
             print("%s⊳ Something went wrong while importing data from 'pending_follow_requests.json' file. Please make sure the file exists and meets the requirements. read the README.md file for more information. %s" % (fg(1), attr(0)))
@@ -397,6 +397,22 @@ class Instagram:
         # Removing requests
         print("%s⊳ Removing requests... %s" % (fg(61), attr(0)))
         self.userAction("removeRequest")
+
+    def reWritePendingRequests(self, user):
+        print("%s⊳ Re-writing 'pending_follow_requests.json' file... %s" % (fg(61), attr(0)))
+
+        # deleting user from 'pending_follow_requests.json' file
+        with open("data/pending_follow_requests.json", "r", encoding="utf-8") as file:
+            data = json.load(file)
+            for i in range(len(data['relationships_follow_requests_sent'])):
+                if data['relationships_follow_requests_sent'][i]['string_list_data'][0]['href'] == user['string_list_data'][0]['href']:
+                    del data['relationships_follow_requests_sent'][i]
+                    break
+
+        # re-writing 'pending_follow_requests.json' file
+        newFile = { "relationships_follow_requests_sent": data['relationships_follow_requests_sent'] }
+        with open("data/pending_follow_requests.json", "w", encoding="utf-8") as file:
+            json.dump(newFile, file, indent=3)
 
 Instagram = Instagram()
 
