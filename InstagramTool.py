@@ -16,36 +16,43 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 class Instagram:
     def __init__(self):
+        # Paths
         self.drvPath = "./driver/chromedriver.exe"
         self.imgPath = "./images"
+        # Chrome Options
+        self.service = Service(self.drvPath)
+        self.chromeOpt = webdriver.ChromeOptions()
+        self.chromeOpt.add_argument("--lang=en")
+        self.chromeOpt.add_argument("--log-level=3")
+        self.chromeOpt.add_argument('--hide-scrollbars')
+        self.chromeOpt.add_argument("--headless")
+        self.chromeOpt.add_argument("--disable-gpu")
+        self.chromeOpt.add_argument('--mute-audio')
+        self.chromeOpt.add_argument('window-size=1920,1080')
+        self.chromeOpt.add_argument('window-position=0,0')
+        self.chromeOpt.add_argument("--start-maximized")
+        self.chromeOpt.add_argument("--force-dark-mode")
+        self.chromeOpt.add_experimental_option("excludeSwitches", ["disable-popup-blocking"])
+        self.chromeOpt.add_experimental_option('prefs', {"profile.default_content_setting_values.notifications": "2"})
+        self.chromeOpt.add_experimental_option('excludeSwitches', ['enable-logging'])
+        self.chromeOpt.add_experimental_option('prefs', {"intl.accept_languages": "en,en_US"})
+        self.browser = webdriver.Chrome(service=self.service, options=self.chromeOpt)
+        # Variables
         self.userList = []
         self.pendingFollowRequests = []
-        self.service = Service(self.drvPath)
-        self.browserProfile = webdriver.ChromeOptions()
-        self.browserProfile.add_argument("--lang=en")
-        self.browserProfile.add_argument("--log-level=3")
-        self.browserProfile.add_argument('--hide-scrollbars')
-        self.browserProfile.add_argument("--headless")
-        self.browserProfile.add_argument("--disable-gpu")
-        self.browserProfile.add_argument('--mute-audio')
-        self.browserProfile.add_argument('window-size=1920,1080')
-        self.browserProfile.add_argument('window-position=0,0')
-        self.browserProfile.add_argument("--start-maximized")
-        self.browserProfile.add_argument("--force-dark-mode")
-        self.browserProfile.add_experimental_option("excludeSwitches", ["disable-popup-blocking"])
-        self.browserProfile.add_experimental_option('prefs', {"profile.default_content_setting_values.notifications": "2"})
-        self.browserProfile.add_experimental_option('excludeSwitches', ['enable-logging'])
-        self.browserProfile.add_experimental_option('prefs', {"intl.accept_languages": "en,en_US"})
-        self.browser = webdriver.Chrome(service=self.service, options=self.browserProfile)
+        self.followTimeout = 25
+        self.UnfollowTimeout = 25
 
     def createImagePath(self):
-        # create images folder if not exists
         if not os.path.exists(self.imgPath):
             os.makedirs(self.imgPath)
 
+    def clearc(self):
+        os.system("cls")
+
     def getTotalFileSum(self, path):
         total = 0
-        for root, dirs, files in os.walk(path):
+        for _, _, files in os.walk(path):
             total += len(files)
 
         if total == 0:
@@ -54,8 +61,7 @@ class Instagram:
             return total + 1
 
     def login(self, username, password):
-        os.system("cls")
-
+        self.clearc()
         print("%s⊳ Logging in\n%s" % (fg(61), attr(0)))
         time.sleep(2)
         
@@ -82,7 +88,8 @@ class Instagram:
         self.userList = []
 
     def showImg(self):
-        os.system("cls")
+        self.clearc()
+
         fileName = input("\n%s[post / pp / result] :%s" % (fg(30), attr(0)))
         try:
             img = Image.open(F"{self.imgPath}/{fileName}.png")
@@ -91,7 +98,8 @@ class Instagram:
             print("%s⊳ File not found!%s" % (fg(1), attr(0)))
 
     def deleteImg(self):
-        os.system("cls")
+        self.clearc()
+
         files = ["pp", "post", "result"]
         fileName = input(f"\n%s {files}: %s" % (fg(30), attr(0)))
 
@@ -110,8 +118,7 @@ class Instagram:
                 pass
 
     def downloadPP(self, username):
-        os.system("cls")
-
+        self.clearc()
         print("\n%s⊳ Processing...%s" % (fg(1), attr(0)))
 
         url = f"https://www.instagram.com/{username}/?__a=1&__d=1"
@@ -126,7 +133,7 @@ class Instagram:
         print("%s⊳ Downloaded!%s" % (fg(46), attr(0)))
 
     def downloadPost(self, link = ""):
-        os.system("cls")
+        self.clearc()
         print("%s-⊳ Downloading...%s" % (fg(2), attr(0)))
 
         # if link is not a post link, convert it to post link
@@ -146,7 +153,7 @@ class Instagram:
         print("%s-⊳ Downloaded!%s" % (fg(2), attr(0)))
 
     def freezeAccount(self, password):
-        os.system("cls")
+        self.clearc()
         print("%s-⊳ Account freezing%s\n" % (fg(2), attr(0)))
         self.browser.get('https://www.instagram.com/accounts/remove/request/temporary/')
         time.sleep(2)
@@ -159,7 +166,7 @@ class Instagram:
         time.sleep(2)
         self.browser.find_element(By.CSS_SELECTOR, 'article form div div button').click()
 
-        print("%s-⊳ Results coming%s\n" % (fg(2), attr(0)))
+        print("%s-⊳ Results loading...%s\n" % (fg(2), attr(0)))
         time.sleep(2)
 
         self.browser.save_screenshot(f"{self.imgPath}/result.png")
@@ -186,7 +193,7 @@ class Instagram:
         hrefs = action == "removeRequest" and self.pendingFollowRequests or self.userList
         
         for user in hrefs:
-            os.system("cls")
+            self.clearc()
 
             skip = True
             
@@ -263,7 +270,6 @@ class Instagram:
                     except:
                         pass
 
-                    # Click unfollow button in popup dialog
                     time.sleep(1.5)
                     try:
                         unFollowButton = self.browser.find_element(By.XPATH, "//*/div[@role='button']//*[contains(text(), 'Unfollow')]")
@@ -295,12 +301,12 @@ class Instagram:
                 print(f"%s\n ⊳ Skipping {action} action cause it's already done. %s" % (fg(1), attr(0)))
                 time.sleep(1)
             else:
-                sleepTime = action == "Follow" and 20 or 25
+                sleepTime = action == "Follow" and self.followTimeout or self.UnfollowTimeout
                 for wait in range(sleepTime):
                     print(f"%s⊳ {sleepTime-wait} seconds left to {action.lower()} next user... %s" % (fg(2), attr(0)), end="\r")
                     time.sleep(1)
 
-    # Followings List
+    # Get user followings List
     def getFollowings(self, total):
         time.sleep(5)
 
@@ -309,7 +315,7 @@ class Instagram:
             time.sleep(2)
 
             newCount = len(self.browser.find_elements(By.XPATH, "//*[@class='_aano']/div/div/div"))
-            os.system("cls")
+            self.clearc()
 
             print(f"%s Total Collected: {newCount}/{total} %s" % (fg(10), attr(0)))
 
@@ -332,7 +338,7 @@ class Instagram:
             if i >= total:
                 break
 
-    # Follower List
+    # Get user follower List
     def getFollowers(self, username):
         os.system('cls')
         self.browser.get(f"https://www.instagram.com/{username}/followers")
@@ -348,7 +354,7 @@ class Instagram:
             time.sleep(2)
 
             newCount = len(self.browser.find_elements(By.XPATH, "//*[@class='_aano']/div/div/div"))
-            os.system("cls")
+            self.clearc()
 
             if counterFollowers != newCount:
                 counterFollowers = newCount
@@ -417,9 +423,7 @@ class Instagram:
 Instagram = Instagram()
 
 while True:
-    print("%s\n∴∵∴∵∴∵∴∵∴∵∴∵∴∵∴∵∴∵∴∵∴∵∴∵∴∵∴∵∴%s" % (fg(171), attr(0)))
-    print("%s∴∵∴∵∴∵ INSTAGRAM TOOL ∴∵∴∵∴∵∴%s" % (fg(171), attr(0)))
-    print("%s∴∵∴∵∴∵∴∵∴∵∴∵∴∵∴∵∴∵∴∵∴∵∴∵∴∵∴∵∴\n %s" % (fg(171), attr(0)))
+    print("%s\n∴∵∴∵∴∵ INSTAGRAM TOOL ∴∵∴∵∴∵∴\n%s" % (fg(171), attr(0)))
     opt = input("%s"
         "[0] - Download Profile Picture\n"
         "[1] - Download Post Picture\n"
@@ -503,7 +507,6 @@ while True:
             Instagram.closeBot()
     elif opt == "8":
         # Remove Requests
-        os.system("cls")
         username = _loginInfo.username if _loginInfo.username != "" else input("%susername: %s" % (fg(207), attr(0)))
         password = _loginInfo.password if _loginInfo.password != "" else input("%spassword: %s" % (fg(207), attr(0)))
         res = Instagram.login(username, password)
