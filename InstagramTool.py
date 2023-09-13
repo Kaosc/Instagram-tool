@@ -14,7 +14,6 @@ import json
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
-
 class Instagram:
     def __init__(self):
         # Paths
@@ -26,7 +25,7 @@ class Instagram:
         self.chromeOpt.add_argument("--lang=en")
         self.chromeOpt.add_argument("--log-level=3")
         self.chromeOpt.add_argument("--hide-scrollbars")
-        self.chromeOpt.add_argument("--headless")
+        # self.chromeOpt.add_argument("--headless")
         self.chromeOpt.add_argument("--disable-gpu")
         self.chromeOpt.add_argument("--mute-audio")
         self.chromeOpt.add_argument("window-size=1920,1080")
@@ -95,8 +94,11 @@ class Instagram:
         print("%s\n⊳ DONE%s" % (fg(1), attr(0)))
 
     def closeBot(self):
-        self.browser.close()
+        self.browser.quit()
+
+    def resetBot(self):
         self.userList = []
+        self.pendingFollowRequests = []
 
     def showImg(self):
         self.clearc()
@@ -188,26 +190,27 @@ class Instagram:
 
         img.show()
 
-    def checkPageLoadBlock(self):
+    def checkPageLoadBlock(self, action):
+        isBlocked = False
+        
         try:
             time.sleep(1)
             isBlocked = self.browser.find_element(By.XPATH, "//*[@aria-label='Error']")
-            if isBlocked:
-                print(
-                    f"%s\n ⊳ Instagram blocked {action} actions. Try again later. %s"
-                    % (fg(1), attr(0))
-                )
-                self.closeBot()
-                break
+            if isBlocked.is_displayed(): 
+                print( f"%s\n ⊳ Instagram blocked {action}. Try again later. %s" % (fg(1), attr(0)))
+                self.resetBot()
         except:
             pass
+
+        return isBlocked
 
     def navigateTo(self, user, path):
         self.browser.get(f"https://www.instagram.com/{user}")
         print(f"%s⊳ Navigating to {path}\n%s" % (fg(61), attr(0)))
         time.sleep(3)
 
-        self.checkPageLoadBlock()
+        if self.checkPageLoadBlock("page loads"):
+            return False
 
         try:
             self.browser.find_element(By.XPATH, f'//*[@href="/{user}/{path}/"]').click()
@@ -235,7 +238,8 @@ class Instagram:
                 or user
             )
 
-            self.checkPageLoadBlock()
+            if self.checkPageLoadBlock(f"{action} actions"):
+                return False
 
             # Execute follow/unfollow aciton
             try:
@@ -511,143 +515,149 @@ class Instagram:
         with open("data/pending_follow_requests.json", "w", encoding="utf-8") as file:
             json.dump(newFile, file, indent=3)
 
+if __name__ == "__main__":
+    Instagram = Instagram()
 
-Instagram = Instagram()
+    try:
+        while True:
+            print("%s\n∴∵∴∵∴∵ INSTAGRAM TOOL ∴∵∴∵∴∵∴\n%s" % (fg(171), attr(0)))
+            opt = input(
+                "%s"
+                "[0] - Download Profile Picture\n"
+                "[1] - Download Post Picture\n"
+                "[2] - Freeze Account\n"
+                "[3] - Get Your Follower List\n"
+                "[4] - Follower Farm\n"
+                "[5] - unFollow Farm \n"
+                "[6] - Show Pictures\n"
+                "[7] - Delete Pictures\n"
+                "[8] - Remove Requests\n"
+                "[9] - Exit \n\n"
+                "⊳ ENTER NUMBER: %s"
+                "" % (fg(171), attr(0))
+            )
 
-while True:
-    print("%s\n∴∵∴∵∴∵ INSTAGRAM TOOL ∴∵∴∵∴∵∴\n%s" % (fg(171), attr(0)))
-    opt = input(
-        "%s"
-        "[0] - Download Profile Picture\n"
-        "[1] - Download Post Picture\n"
-        "[2] - Freeze Account\n"
-        "[3] - Get Your Follower List\n"
-        "[4] - Follower Farm\n"
-        "[5] - unFollow Farm \n"
-        "[6] - Show Pictures\n"
-        "[7] - Delete Pictures\n"
-        "[8] - Remove Requests\n"
-        "[9] - Exit \n\n"
-        "⊳ ENTER NUMBER: %s"
-        "" % (fg(171), attr(0))
-    )
-
-    if opt == "0":
-        # Download Profile Picture
-        username = input("%susername: %s" % (fg(207), attr(0)))
-        Instagram.downloadPP(username)
+            if opt == "0":
+                # Download Profile Picture
+                username = input("%susername: %s" % (fg(207), attr(0)))
+                Instagram.downloadPP(username)
+                Instagram.resetBot()
+            elif opt == "9":
+                Instagram.closeBot()
+                exit()
+            elif opt == "1":
+                # Download Post Picture
+                link = input("%sPost Link: %s" % (fg(207), attr(0)))
+                Instagram.downloadPost(link)
+                Instagram.resetBot()
+            elif opt == "2":
+                # Freeze Account
+                username = (
+                    _loginInfo.username
+                    if _loginInfo.username != ""
+                    else input("%susername: %s" % (fg(207), attr(0)))
+                )
+                password = (
+                    _loginInfo.password
+                    if _loginInfo.password != ""
+                    else input("%spassword: %s" % (fg(207), attr(0)))
+                )
+                res = Instagram.login(username, password)
+                if res:
+                    Instagram.freezeAccount(password)
+                    Instagram.resetBot()
+                else:
+                    Instagram.resetBot()
+            elif opt == "6":
+                # Show Pictures
+                Instagram.showImg()
+            elif opt == "7":
+                # Delete Pictures
+                Instagram.deleteImg()
+            elif opt == "3":
+                # Get Followers
+                username = (
+                    _loginInfo.username
+                    if _loginInfo.username != ""
+                    else input("%susername: %s" % (fg(207), attr(0)))
+                )
+                password = (
+                    _loginInfo.password
+                    if _loginInfo.password != ""
+                    else input("%spassword: %s" % (fg(207), attr(0)))
+                )
+                res = Instagram.login(username, password)
+                if res:
+                    Instagram.getFollowers(username)
+                    Instagram.resetBot()
+                else:
+                    Instagram.resetBot()
+            elif opt == "4":
+                # Follower Farm
+                username = (
+                    _loginInfo.username
+                    if _loginInfo.username != ""
+                    else input("%susername: %s" % (fg(207), attr(0)))
+                )
+                password = (
+                    _loginInfo.password
+                    if _loginInfo.password != ""
+                    else input("%spassword: %s" % (fg(207), attr(0)))
+                )
+                target = input("%sTarget account name: %s" % (fg(207), attr(0)))
+                total = int(input("%sTotal Follow: %s" % (fg(10), attr(0))))
+                res = Instagram.login(username, password)
+                userExist = Instagram.navigateTo(target, "followers")
+                if res & userExist:
+                    Instagram.getFollowings(total)
+                    Instagram.userAction("Follow")
+                    Instagram.message()
+                    Instagram.resetBot()
+                else:
+                    Instagram.resetBot()
+            elif opt == "5":
+                # Unfollow Farm
+                username = (
+                    _loginInfo.username
+                    if _loginInfo.username != ""
+                    else input("%susername: %s" % (fg(207), attr(0)))
+                )
+                password = (
+                    _loginInfo.password
+                    if _loginInfo.password != ""
+                    else input("%spassword: %s" % (fg(207), attr(0)))
+                )
+                total = int(input("%sTotal unFollow: %s" % (fg(10), attr(0))))
+                res = Instagram.login(username, password)
+                userExist = Instagram.navigateTo(username, "following")
+                if res & userExist:
+                    Instagram.getFollowings(total)
+                    Instagram.userAction("unFollow")
+                    Instagram.message()
+                    Instagram.resetBot()
+                else:
+                    Instagram.resetBot()
+            elif opt == "8":
+                # Remove Requests
+                username = (
+                    _loginInfo.username
+                    if _loginInfo.username != ""
+                    else input("%susername: %s" % (fg(207), attr(0)))
+                )
+                password = (
+                    _loginInfo.password
+                    if _loginInfo.password != ""
+                    else input("%spassword: %s" % (fg(207), attr(0)))
+                )
+                res = Instagram.login(username, password)
+                if res:
+                    Instagram.removeRequests()
+                    Instagram.message()
+                    Instagram.resetBot()
+                else:
+                    Instagram.resetBot()
+    except:
+        print("\n%s⊳ Shutting down bot...%s" % (fg(1), attr(0)))
+    finally:
         Instagram.closeBot()
-    elif opt == "9":
         exit()
-        Instagram.closeBot()
-    elif opt == "1":
-        # Download Post Picture
-        link = input("%sPost Link: %s" % (fg(207), attr(0)))
-        Instagram.downloadPost(link)
-        Instagram.closeBot()
-    elif opt == "2":
-        # Freeze Account
-        username = (
-            _loginInfo.username
-            if _loginInfo.username != ""
-            else input("%susername: %s" % (fg(207), attr(0)))
-        )
-        password = (
-            _loginInfo.password
-            if _loginInfo.password != ""
-            else input("%spassword: %s" % (fg(207), attr(0)))
-        )
-        res = Instagram.login(username, password)
-        if res:
-            Instagram.freezeAccount(password)
-            Instagram.closeBot()
-        else:
-            Instagram.closeBot()
-    elif opt == "6":
-        # Show Pictures
-        Instagram.showImg()
-    elif opt == "7":
-        # Delete Pictures
-        Instagram.deleteImg()
-    elif opt == "3":
-        # Get Followers
-        username = (
-            _loginInfo.username
-            if _loginInfo.username != ""
-            else input("%susername: %s" % (fg(207), attr(0)))
-        )
-        password = (
-            _loginInfo.password
-            if _loginInfo.password != ""
-            else input("%spassword: %s" % (fg(207), attr(0)))
-        )
-        res = Instagram.login(username, password)
-        if res:
-            Instagram.getFollowers(username)
-            Instagram.closeBot()
-        else:
-            Instagram.closeBot()
-    elif opt == "4":
-        # Follower Farm
-        username = (
-            _loginInfo.username
-            if _loginInfo.username != ""
-            else input("%susername: %s" % (fg(207), attr(0)))
-        )
-        password = (
-            _loginInfo.password
-            if _loginInfo.password != ""
-            else input("%spassword: %s" % (fg(207), attr(0)))
-        )
-        target = input("%sTarget account name: %s" % (fg(207), attr(0)))
-        total = int(input("%sTotal Follow: %s" % (fg(10), attr(0))))
-        res = Instagram.login(username, password)
-        userExist = Instagram.navigateTo(target, "followers")
-        if res & userExist:
-            Instagram.getFollowings(total)
-            Instagram.userAction("Follow")
-            Instagram.message()
-            Instagram.closeBot()
-        else:
-            Instagram.closeBot()
-    elif opt == "5":
-        # Unfollow Farm
-        username = (
-            _loginInfo.username
-            if _loginInfo.username != ""
-            else input("%susername: %s" % (fg(207), attr(0)))
-        )
-        password = (
-            _loginInfo.password
-            if _loginInfo.password != ""
-            else input("%spassword: %s" % (fg(207), attr(0)))
-        )
-        total = int(input("%sTotal unFollow: %s" % (fg(10), attr(0))))
-        res = Instagram.login(username, password)
-        userExist = Instagram.navigateTo(username, "following")
-        if res & userExist:
-            Instagram.getFollowings(total)
-            Instagram.userAction("unFollow")
-            Instagram.message()
-            Instagram.closeBot()
-        else:
-            Instagram.closeBot()
-    elif opt == "8":
-        # Remove Requests
-        username = (
-            _loginInfo.username
-            if _loginInfo.username != ""
-            else input("%susername: %s" % (fg(207), attr(0)))
-        )
-        password = (
-            _loginInfo.password
-            if _loginInfo.password != ""
-            else input("%spassword: %s" % (fg(207), attr(0)))
-        )
-        res = Instagram.login(username, password)
-        if res:
-            Instagram.removeRequests()
-            Instagram.message()
-            Instagram.closeBot()
-        else:
-            Instagram.closeBot()
