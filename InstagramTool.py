@@ -25,7 +25,7 @@ class Instagram:
         self.chromeOpt.add_argument("--lang=en")
         self.chromeOpt.add_argument("--log-level=3")
         self.chromeOpt.add_argument("--hide-scrollbars")
-        # self.chromeOpt.add_argument("--headless")
+        self.chromeOpt.add_argument("--headless")
         self.chromeOpt.add_argument("--disable-gpu")
         self.chromeOpt.add_argument("--mute-audio")
         self.chromeOpt.add_argument("window-size=1920,1080")
