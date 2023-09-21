@@ -45,22 +45,22 @@ class Instagram:
     def messages(self):
         return {
             "login": "%s\n >>> Logging in...%s" % (fg(1), attr(0)),
-            "imgNotFound": "%s >>> Image not found!%s" % (fg(1), attr(0)),
-            "imgDeleted": "%s >>> Image deleted!%s" % (fg(2), attr(0)),
-            "allImgDeleted": "%s >>> All images deleted!%s" % (fg(2), attr(0)),
-            "downloading": "%s >>> Downloading image...%s" % (fg(2), attr(0)),
-            "downloaded": "%s >>> Image downloaded!%s" % (fg(2), attr(0)),
-            "freeze": "%s >>> Freezing account...%s" % (fg(2), attr(0)),
-            "freezeResult": "%s >>> Results loading...%s" % (fg(2), attr(0)),
-            "countFollowers": "%s >>> Counting followers...%s" % (fg(2), attr(0)),
-            "savingFollowers": "%s >>> Saving followers...%s" % (fg(2), attr(0)),
-            "getFollowersSuccess": "%s >>> Followers successfully saved to 'followers.txt' file!%s" % (fg(2), attr(0)),
-            "getFollowersError": "%s >>> Something went wrong while saving followers. Please try again later.%s" % (fg(1), attr(0)),
-            "importingRequests": "%s >>> Importing data from 'pending_follow_requests.json' file...%s" % (fg(2), attr(0)),
-            "importingRequestsError": "%s >>> Something went wrong while importing data from 'pending_follow_requests.json' file. Please make sure the file exists and meets the requirements. Read the README.md file for more information.%s" % (fg(1), attr(0)),
-            "removeRequest": "%s >>> Removing requests...%s" % (fg(2), attr(0)),
-            "rewritingRequests": "%s >>> Re-writing 'pending_follow_requests.json' file...%s" % (fg(2), attr(0)),
-            "done": "%s >>> DONE!%s" % (fg(2), attr(0)),
+            "imgNotFound": "%s\n >>> Image not found!%s" % (fg(1), attr(0)),
+            "imgDeleted": "%s\n >>> Image deleted!%s" % (fg(2), attr(0)),
+            "allImgDeleted": "%s\n >>> All images deleted!%s" % (fg(2), attr(0)),
+            "downloading": "%s\n >>> Downloading image...%s" % (fg(2), attr(0)),
+            "downloaded": "%s\n >>> Image downloaded!%s" % (fg(2), attr(0)),
+            "freeze": "%s\n >>> Freezing account...%s" % (fg(2), attr(0)),
+            "freezeResult": "%s\n >>> Results loading...%s" % (fg(2), attr(0)),
+            "countFollowers": "%s\n >>> Counting followers...%s" % (fg(2), attr(0)),
+            "savingFollowers": "%s\n >>> Saving followers...%s" % (fg(2), attr(0)),
+            "getFollowersSuccess": "%s\n >>> Followers successfully saved to 'followers.txt' file!%s" % (fg(2), attr(0)),
+            "getFollowersError": "%s\n >>> Something went wrong while saving followers. Please try again later.%s" % (fg(1), attr(0)),
+            "importingRequests": "%s\n >>> Importing data from 'pending_follow_requests.json' file...%s" % (fg(2), attr(0)),
+            "importingRequestsError": "%s\n >>> Something went wrong while importing data from 'pending_follow_requests.json' file. Please make sure the file exists and meets the requirements. Read the README.md file for more information.%s" % (fg(1), attr(0)),
+            "removeRequest": "%s\n >>> Removing requests...%s" % (fg(2), attr(0)),
+            "rewritingRequests": "%s\n >>> Re-writing 'pending_follow_requests.json' file...%s" % (fg(2), attr(0)),
+            "done": "%s\n >>> DONE!%s" % (fg(2), attr(0)),
         }
 
     def createImagePath(self):
@@ -512,7 +512,7 @@ if __name__ == "__main__":
 
     try:
         while True:
-            print("%s\n∴∵∴∵∴∵ INSTAGRAM TOOL ∴∵∴∵∴∵∴\n%s" % (fg(171), attr(0)))
+            print("%s\n\n∴∵∴∵∴∵ INSTAGRAM TOOL ∴∵∴∵∴∵∴\n%s" % (fg(171), attr(0)))
             opt = input(
                 "%s"
                 "[0] - Download Profile Picture\n"
@@ -603,7 +603,7 @@ if __name__ == "__main__":
                 if res & userExist:
                     Instagram.getFollowings(total)
                     Instagram.userAction("Follow")
-                    Instagram.messages()["done"]
+                    print(Instagram.messages()["done"])
                     Instagram.resetBot()
                 else:
                     Instagram.resetBot()
@@ -625,7 +625,7 @@ if __name__ == "__main__":
                 if res & userExist:
                     Instagram.getFollowings(total)
                     Instagram.userAction("unFollow")
-                    Instagram.messages()["done"]
+                    print(Instagram.messages()["done"])
                     Instagram.resetBot()
                 else:
                     Instagram.resetBot()
@@ -644,7 +644,7 @@ if __name__ == "__main__":
                 res = Instagram.login(username, password)
                 if res:
                     Instagram.removeRequests()
-                    Instagram.messages()["done"]
+                    print(Instagram.messages()["done"])
                     Instagram.resetBot()
                 else:
                     Instagram.resetBot()
