@@ -50,3 +50,19 @@ if you don't want to pass your login information every time you run the tool, pl
 USERNAME="your_username"
 PASSWORD="your_password"
 ```
+
+## Links to the repositories of the libraries used in this tool
+
+- [Selenium](
+    https://github.com/SeleniumHQ/Selenium) 
+- [Colored](
+    https://gitlab.com/dslackw/colored)
+- [Pillow](
+   https://github.com/python-pillow/Pillow
+)
+- [python-dotenv](
+   https://github.com/theskumar/python-dotenv
+)
+- [Requests](
+   https://github.com/psf/requests
+)
