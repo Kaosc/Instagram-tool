@@ -39,7 +39,7 @@ class Instagram:
         # Variables
         self.userList = []
         self.pendingFollowRequests = []
-        self.followTimeout = 40
+        self.followTimeout = 45
         self.UnfollowTimeout = 30
 
     def messages(self):
@@ -648,7 +648,7 @@ if __name__ == "__main__":
                     Instagram.resetBot()
                 else:
                     Instagram.resetBot()
-    except:
+    except e as Exception:
         print(f"%s >>> Shutting down... %s" % (fg(10), attr(0)))
     finally:
         Instagram.closeBot()
