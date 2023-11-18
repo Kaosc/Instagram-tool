@@ -47,8 +47,8 @@ Order to remove pending follow requests:
 if you don't want to pass your login information every time you run the tool, please fill the `_loginInfo` file or create a `.env` file with the following variables:
 
 ```bash
-USERNAME="your_username"
-PASSWORD="your_password"
+IG_USERNAME="your_username"
+IG_PASSWORD="your_password"
 ```
 
 ## Links to the repositories of the libraries used in this tool
