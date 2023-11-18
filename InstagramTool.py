@@ -546,12 +546,12 @@ if __name__ == "__main__":
             # FREEZE ACCOUNT #
                 username = (
                     _loginInfo.username
-                    if _loginInfo.username != ""
+                    if _loginInfo.username != None
                     else input("%susername: %s" % (fg(207), attr(0)))
                 )
                 password = (
                     _loginInfo.password
-                    if _loginInfo.password != ""
+                    if _loginInfo.password != None
                     else input("%spassword: %s" % (fg(207), attr(0)))
                 )
                 res = Instagram.login(username, password)
@@ -570,12 +570,12 @@ if __name__ == "__main__":
             # GET FOLLOWERS #
                 username = (
                     _loginInfo.username
-                    if _loginInfo.username != ""
+                    if _loginInfo.username != None
                     else input("%susername: %s" % (fg(207), attr(0)))
                 )
                 password = (
                     _loginInfo.password
-                    if _loginInfo.password != ""
+                    if _loginInfo.password != None
                     else input("%spassword: %s" % (fg(207), attr(0)))
                 )
                 res = Instagram.login(username, password)
@@ -585,15 +585,16 @@ if __name__ == "__main__":
                 else:
                     Instagram.resetBot()
             elif opt == "4":
+                print(_loginInfo.username)
             # FOLLOW FARM #
                 username = (
                     _loginInfo.username
-                    if _loginInfo.username != ""
+                    if _loginInfo.username != None
                     else input("%susername: %s" % (fg(207), attr(0)))
                 )
                 password = (
                     _loginInfo.password
-                    if _loginInfo.password != ""
+                    if _loginInfo.password != None
                     else input("%spassword: %s" % (fg(207), attr(0)))
                 )
                 target = input("%sTarget account name: %s" % (fg(207), attr(0)))
@@ -611,12 +612,12 @@ if __name__ == "__main__":
             # UNFOLLOW FARM #
                 username = (
                     _loginInfo.username
-                    if _loginInfo.username != ""
+                    if _loginInfo.username != None
                     else input("%susername: %s" % (fg(207), attr(0)))
                 )
                 password = (
                     _loginInfo.password
-                    if _loginInfo.password != ""
+                    if _loginInfo.password != None
                     else input("%spassword: %s" % (fg(207), attr(0)))
                 )
                 total = int(input("%sTotal unFollow: %s" % (fg(10), attr(0))))
@@ -633,12 +634,12 @@ if __name__ == "__main__":
             # REMOVE REQUESTS #
                 username = (
                     _loginInfo.username
-                    if _loginInfo.username != ""
+                    if _loginInfo.username != None
                     else input("%susername: %s" % (fg(207), attr(0)))
                 )
                 password = (
                     _loginInfo.password
-                    if _loginInfo.password != ""
+                    if _loginInfo.password != None
                     else input("%spassword: %s" % (fg(207), attr(0)))
                 )
                 res = Instagram.login(username, password)
