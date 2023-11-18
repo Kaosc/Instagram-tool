@@ -585,7 +585,6 @@ if __name__ == "__main__":
                 else:
                     Instagram.resetBot()
             elif opt == "4":
-                print(_loginInfo.username)
             # FOLLOW FARM #
                 username = (
                     _loginInfo.username
