@@ -29,7 +29,7 @@ class Instagram:
         self.chrome_options = webdriver.ChromeOptions()
         self.chrome_options.add_argument("--lang=en")
         self.chrome_options.add_argument("--log-level=3")
-        # self.chrome_options.add_argument("--headless")
+        self.chrome_options.add_argument("--headless")
         self.chrome_options.add_argument("window-size=1920,1080")
         self.chrome_options.add_argument("window-position=0,0")
         self.chrome_options.add_argument("--start-maximized")
