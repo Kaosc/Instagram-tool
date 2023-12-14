@@ -1,8 +1,14 @@
 # Instagram Tool
 
-Console based tool with useful features that can be used for Instagram.
+### Console based tool with useful features that can be used for Instagram.
 
 ![console look](./assets/preview.png)
+
+#### ⚠️ Currently, Instagram does not load the user list as a whole, making it impossible to retrieve the user by scrolling down. As a result, the following features may not work as expected.
+
+- Get Your Follower List
+- Follower Farm
+- unFollow Farm
 
 # Installing Dependencies
 
@@ -53,16 +59,8 @@ IG_PASSWORD="your_password"
 
 ## Links to the repositories of the libraries used in this tool
 
-- [Selenium](
-    https://github.com/SeleniumHQ/Selenium) 
-- [Colored](
-    https://gitlab.com/dslackw/colored)
-- [Pillow](
-   https://github.com/python-pillow/Pillow
-)
-- [python-dotenv](
-   https://github.com/theskumar/python-dotenv
-)
-- [Requests](
-   https://github.com/psf/requests
-)
+- [Selenium](https://github.com/SeleniumHQ/Selenium)
+- [Colored](https://gitlab.com/dslackw/colored)
+- [Pillow](https://github.com/python-pillow/Pillow)
+- [python-dotenv](https://github.com/theskumar/python-dotenv)
+- [Requests](https://github.com/psf/requests)
