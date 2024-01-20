@@ -4,12 +4,6 @@
 
 ![console look](./assets/preview.png)
 
-#### ⚠️ Currently, Instagram does not load the user list as a whole, making it impossible to retrieve the user by scrolling down. As a result, the following features may not work as expected.
-
-- Get Your Follower List
-- Follower Farm
-- unFollow Farm
-
 # Installing Dependencies
 
 ## 1. Python Dependencies
