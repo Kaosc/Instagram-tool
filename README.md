@@ -4,9 +4,9 @@
 
 ![console look](./assets/preview.png)
 
-# Installing Dependencies
+# Installing dependencies
 
-## 1. Python Dependencies
+## 1. Python dependencies
 
 ```bash
 pip install selenium colored pillow python-dotenv requests
@@ -14,7 +14,7 @@ pip install selenium colored pillow python-dotenv requests
 
 or run the `dep-installer.py` file.
 
-## 2. Chrome Driver
+## 2. ChromeDriver
 
 Current ChromeDriver version is 121. Please check [here](https://googlechromelabs.github.io/chrome-for-testing/) for the latest version.
 
@@ -25,30 +25,32 @@ ChromeDriver version must be the same chrome version installed on your system. Y
 1. Add latest ChromeDriver to in "driver" folder.
 2. Set image and driver path.
 
-# Additional Notes
-
-## Removing pending follow requests
+# Removing pending follow requests
 
 Order to remove pending follow requests:
 
 1. Download your data from Instagram.
    - Your Activity > [Download Your Information](https://www.instagram.com/download/request)
-   - Select JSON format and click "Next" button.
-   - Enter your password and click "Request Download" button.
-   - Wait for Instagram to send you your data with email.
-   - Extract the zip file.
-2. Find`pending_follow_requests.json` file under `followers_and_following` folder.
-3. Copy the file to `data` folder in the tool.
+   - Click continue.
+   - Click "Download or transfter information".
+   - Find "Connections" tab and tick the "Followers and following" check box.
+   - Click Next.
+   - Tick the "Dwonload to device" check box & click next.
+   - Select a "Date range" & Select "Format" as JSON then click "Create files".
+2. Wait for the Instagram notifies you with e-mail that the process is complete.
+3. After downloading the data that Instagram sends you, find `pending_follow_requests.json` file under `connections/followers_and_following` folder.
+4. Move the file to `data` folder in the tool.
 
-#### ! Do not rename or edit the file.
+> [!WARNING]
+> Do not rename or edit the file content.
 
-## Fill login information
+# Fill login information
 
 if you don't want to pass your login information every time you run the tool, please fill the `_loginInfo` file or create a `.env` file with the following variables:
 
 ```bash
-IG_USERNAME="your_username"
-IG_PASSWORD="your_password"
+USERNAME="your_username"
+PASSWORD="your_password"
 ```
 
 ## Links to the repositories of the libraries used in this tool
