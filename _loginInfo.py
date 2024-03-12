@@ -11,6 +11,6 @@ dotenv.load_dotenv()
 # IG_PASSWORD = "your_password"
 
 # or replace with your username as string. eg: username = "your_username"
-username = os.getenv("USERNAME")
+username = os.getenv("IG_USERNAME")
 # or replace with your password as string. eg: password = "your_password"
-password = os.getenv("PASSWORD")
+password = os.getenv("IG_PASSWORD")
