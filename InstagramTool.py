@@ -50,7 +50,7 @@ class Instagram:
         self.user_list = []
         self.pendingFollowRequests = []
         self.followTimeout = 45
-        self.unfollow_timeout = 30
+        self.unfollow_timeout = 10
 
     def messages(self):
         return {
