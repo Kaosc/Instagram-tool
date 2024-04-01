@@ -51,6 +51,7 @@ class Instagram:
         self.pendingFollowRequests = []
         self.followTimeout = 45
         self.unfollow_timeout = 10
+        self.isLoggedIn = False
 
     def messages(self):
         return {
@@ -100,6 +101,9 @@ class Instagram:
             return total + 1
 
     def login(self, username, password):
+        if self.isLoggedIn:
+            return True
+
         self.clearc()
         print(self.messages()["login"])
         time.sleep(2)
@@ -127,6 +131,7 @@ class Instagram:
             print(f"%s>>> {errmsg.text} \n%s" % (fg(1), attr(0)))
             return False
         except NoSuchElementException:
+            self.isLoggedIn = True
             return True
 
     def close_bot(self):
