@@ -24,12 +24,17 @@ class Instagram:
         self.driverPath = "./driver/chromedriver.exe"
         self.imageFolderPath = "./images"
         self.requestedAccountsFilePath = "data/pending_follow_requests.json"
+        
         # Chrome Options
         self.service = Service(self.driverPath)
         self.chrome_options = webdriver.ChromeOptions()
         self.chrome_options.add_argument("--lang=en")
         self.chrome_options.add_argument("--log-level=3")
+
+        # The headless option may lead to blocks from Instagram if used too often. 
+        # You might want to disable it in your use case.
         self.chrome_options.add_argument("--headless")
+        
         self.chrome_options.add_argument("window-size=1920,1080")
         self.chrome_options.add_argument("window-position=0,0")
         self.chrome_options.add_argument("--start-maximized")
@@ -46,10 +51,11 @@ class Instagram:
         self.browser = webdriver.Chrome(
             service=self.service, options=self.chrome_options
         )
+
         # Variables
         self.user_list = []
         self.pendingFollowRequests = []
-        self.followTimeout = 45
+        self.followTimeout = 35
         self.unfollow_timeout = 10
         self.isLoggedIn = False
 

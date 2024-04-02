@@ -53,6 +53,16 @@ USERNAME="your_username"
 PASSWORD="your_password"
 ```
 
+# Additional Notes
+
+The headless option may lead to certian action blocks (follow/unfollow) from Instagram if used too often. You might want to disable it in your use case.
+
+Order to disable it comment out or remove the above line from **InstagramTool.py** file.
+
+```py
+ self.chrome_options.add_argument("--headless")
+```
+
 ## Links to the repositories of the libraries used in this tool
 
 - [Selenium](https://github.com/SeleniumHQ/Selenium)
