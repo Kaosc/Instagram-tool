@@ -55,7 +55,7 @@ class Instagram:
         # Variables
         self.user_list = []
         self.pendingFollowRequests = []
-        self.followTimeout = 35
+        self.followTimeout = 20
         self.unfollow_timeout = 10
         self.isLoggedIn = False
 
@@ -115,12 +115,13 @@ class Instagram:
         time.sleep(2)
 
         self.browser.get("https://www.instagram.com/accounts/login/")
-        time.sleep(3)
+        time.sleep(7)
 
         self.browser.find_element(By.NAME, "username").send_keys(username)
         self.browser.find_element(By.NAME, "password").send_keys(password)
+        time.sleep(1)
         self.browser.find_element(By.XPATH, '//*[@type="submit"]').click()
-        time.sleep(7)
+        time.sleep(10)
 
         try:
             isPasswordIncorrect = self.browser.find_element(
