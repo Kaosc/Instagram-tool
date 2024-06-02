@@ -55,7 +55,7 @@ class Instagram:
         # Variables
         self.user_list = []
         self.pendingFollowRequests = []
-        self.followTimeout = 20
+        self.followTimeout = 35
         self.unfollow_timeout = 10
         self.isLoggedIn = False
 
@@ -285,6 +285,8 @@ class Instagram:
 
         if self.check_page_load_block("page loads"):
             return False
+            
+        time.sleep(2)
 
         try:
             self.browser.find_element(By.XPATH, f'//*[@href="/{user}/{path}/"]').click()
