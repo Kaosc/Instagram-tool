@@ -573,153 +573,155 @@ class Instagram:
         with open(self.requestedAccountsFilePath, "w", encoding="utf-8") as file:
             json.dump(newFile, file, indent=3)
 
+try:
+    Instagram = Instagram()
 
-Instagram = Instagram()
+    if __name__ == "__main__":
+        try:
+            while True:
+                print("%s\n\n∴∵∴∵∴∵ INSTAGRAM TOOL ∴∵∴∵∴∵∴\n%s" % (fg(171), attr(0)))
+                opt = input(
+                    "%s"
+                    "[0] - Download Profile Picture\n"
+                    "[1] - Download Post Picture\n"
+                    "[2] - Freeze Account\n"
+                    "[3] - Get Your Follower List\n"
+                    "[4] - Follower Farm\n"
+                    "[5] - unFollow Farm \n"
+                    "[6] - Show Pictures\n"
+                    "[7] - Delete Pictures\n"
+                    "[8] - Remove Requests\n"
+                    "[9] - Exit \n\n"
+                    ">>> ENTER NUMBER: %s"
+                    "" % (fg(171), attr(0))
+                )
 
-if __name__ == "__main__":
-    try:
-        while True:
-            print("%s\n\n∴∵∴∵∴∵ INSTAGRAM TOOL ∴∵∴∵∴∵∴\n%s" % (fg(171), attr(0)))
-            opt = input(
-                "%s"
-                "[0] - Download Profile Picture\n"
-                "[1] - Download Post Picture\n"
-                "[2] - Freeze Account\n"
-                "[3] - Get Your Follower List\n"
-                "[4] - Follower Farm\n"
-                "[5] - unFollow Farm \n"
-                "[6] - Show Pictures\n"
-                "[7] - Delete Pictures\n"
-                "[8] - Remove Requests\n"
-                "[9] - Exit \n\n"
-                ">>> ENTER NUMBER: %s"
-                "" % (fg(171), attr(0))
-            )
-
-            if opt == "0":
-                # DOWNLOAD PROFILE PICTURE #
-                username = input("%susername: %s" % (fg(207), attr(0)))
-                Instagram.download_pp(username)
-                Instagram.reset_bot()
-            elif opt == "9":
-                Instagram.close_bot()
-                exit()
-            elif opt == "1":
-                # DOWNLOAD POST #
-                link = input("%sPost Link: %s" % (fg(207), attr(0)))
-                Instagram.downloadPost(link)
-                Instagram.reset_bot()
-            elif opt == "2":
-                # FREEZE ACCOUNT #
-                username = (
-                    _loginInfo.username
-                    if _loginInfo.username is not None
-                    else input("%susername: %s" % (fg(207), attr(0)))
-                )
-                password = (
-                    _loginInfo.password
-                    if _loginInfo.password is not None
-                    else input("%spassword: %s" % (fg(207), attr(0)))
-                )
-                LOGGED = Instagram.login(username, password)
-                if LOGGED:
-                    Instagram.freeze_account(password)
+                if opt == "0":
+                    # DOWNLOAD PROFILE PICTURE #
+                    username = input("%susername: %s" % (fg(207), attr(0)))
+                    Instagram.download_pp(username)
                     Instagram.reset_bot()
-                else:
+                elif opt == "9":
+                    Instagram.close_bot()
+                    exit()
+                elif opt == "1":
+                    # DOWNLOAD POST #
+                    link = input("%sPost Link: %s" % (fg(207), attr(0)))
+                    Instagram.downloadPost(link)
                     Instagram.reset_bot()
-            elif opt == "6":
-                # OPEN SELECTED PICTURE #
-                Instagram.show_img()
-            elif opt == "7":
-                # DELETE SELECTED PICTURE #
-                Instagram.delete_img()
-            elif opt == "3":
-                # GET FOLLOWERS #
-                username = (
-                    _loginInfo.username
-                    if _loginInfo.username is not None
-                    else input("%susername: %s" % (fg(207), attr(0)))
-                )
-                password = (
-                    _loginInfo.password
-                    if _loginInfo.password is not None
-                    else input("%spassword: %s" % (fg(207), attr(0)))
-                )
-                LOGGED = Instagram.login(username, password)
-                if LOGGED:
-                    Instagram.get_followers(username)
-                    Instagram.reset_bot()
-                else:
-                    Instagram.reset_bot()
-            elif opt == "4":
-                # FOLLOW FARM #
-                username = (
-                    _loginInfo.username
-                    if _loginInfo.username is not None
-                    else input("%susername: %s" % (fg(207), attr(0)))
-                )
-                password = (
-                    _loginInfo.password
-                    if _loginInfo.password is not None
-                    else input("%spassword: %s" % (fg(207), attr(0)))
-                )
-                target = input("%sTarget account name: %s" % (fg(207), attr(0)))
-                total = int(input("%sTotal Follow: %s" % (fg(10), attr(0))))
-                LOGGED = Instagram.login(username, password)
-                USER_EXIST = Instagram.navigate_to(target, "followers")
-                if LOGGED & USER_EXIST:
-                    Instagram.getFollowings(total)
-                    Instagram.userAction("Follow")
-                    print(Instagram.messages()["done"])
-                    Instagram.reset_bot()
-                else:
-                    Instagram.reset_bot()
-            elif opt == "5":
-                # UNFOLLOW FARM #
-                username = (
-                    _loginInfo.username
-                    if _loginInfo.username is not None
-                    else input("%susername: %s" % (fg(207), attr(0)))
-                )
-                password = (
-                    _loginInfo.password
-                    if _loginInfo.password is not None
-                    else input("%spassword: %s" % (fg(207), attr(0)))
-                )
-                total = int(input("%sTotal unFollow: %s" % (fg(10), attr(0))))
-                LOGGED = Instagram.login(username, password)
-                USER_EXIST = Instagram.navigate_to(username, "following")
-                if LOGGED & USER_EXIST:
-                    Instagram.getFollowings(total)
-                    Instagram.userAction("unFollow")
-                    print(Instagram.messages()["done"])
-                    Instagram.reset_bot()
-                else:
-                    Instagram.reset_bot()
-            elif opt == "8":
-                # REMOVE REQUESTS #
-                username = (
-                    _loginInfo.username
-                    if _loginInfo.username is not None
-                    else input("%susername: %s" % (fg(207), attr(0)))
-                )
-                password = (
-                    _loginInfo.password
-                    if _loginInfo.password is not None
-                    else input("%spassword: %s" % (fg(207), attr(0)))
-                )
-                LOGGED = Instagram.login(username, password)
-                if LOGGED:
-                    Instagram.removeRequests()
-                    print(Instagram.messages()["done"])
-                    Instagram.reset_bot()
-                else:
-                    Instagram.reset_bot()
-    except KeyboardInterrupt:
-        print("%s >>> Shutting down... %s" % (fg(10), attr(0)))
-    except Exception as e:
-        print("Caught an unexpected error: %s" % e)
-        print("%s >>> Shutting down... %s" % (fg(10), attr(0)))
-    finally:
-        Instagram.close_bot()
-        exit()
+                elif opt == "2":
+                    # FREEZE ACCOUNT #
+                    username = (
+                        _loginInfo.username
+                        if _loginInfo.username is not None
+                        else input("%susername: %s" % (fg(207), attr(0)))
+                    )
+                    password = (
+                        _loginInfo.password
+                        if _loginInfo.password is not None
+                        else input("%spassword: %s" % (fg(207), attr(0)))
+                    )
+                    LOGGED = Instagram.login(username, password)
+                    if LOGGED:
+                        Instagram.freeze_account(password)
+                        Instagram.reset_bot()
+                    else:
+                        Instagram.reset_bot()
+                elif opt == "6":
+                    # OPEN SELECTED PICTURE #
+                    Instagram.show_img()
+                elif opt == "7":
+                    # DELETE SELECTED PICTURE #
+                    Instagram.delete_img()
+                elif opt == "3":
+                    # GET FOLLOWERS #
+                    username = (
+                        _loginInfo.username
+                        if _loginInfo.username is not None
+                        else input("%susername: %s" % (fg(207), attr(0)))
+                    )
+                    password = (
+                        _loginInfo.password
+                        if _loginInfo.password is not None
+                        else input("%spassword: %s" % (fg(207), attr(0)))
+                    )
+                    LOGGED = Instagram.login(username, password)
+                    if LOGGED:
+                        Instagram.get_followers(username)
+                        Instagram.reset_bot()
+                    else:
+                        Instagram.reset_bot()
+                elif opt == "4":
+                    # FOLLOW FARM #
+                    username = (
+                        _loginInfo.username
+                        if _loginInfo.username is not None
+                        else input("%susername: %s" % (fg(207), attr(0)))
+                    )
+                    password = (
+                        _loginInfo.password
+                        if _loginInfo.password is not None
+                        else input("%spassword: %s" % (fg(207), attr(0)))
+                    )
+                    target = input("%sTarget account name: %s" % (fg(207), attr(0)))
+                    total = int(input("%sTotal Follow: %s" % (fg(10), attr(0))))
+                    LOGGED = Instagram.login(username, password)
+                    USER_EXIST = Instagram.navigate_to(target, "followers")
+                    if LOGGED & USER_EXIST:
+                        Instagram.getFollowings(total)
+                        Instagram.userAction("Follow")
+                        print(Instagram.messages()["done"])
+                        Instagram.reset_bot()
+                    else:
+                        Instagram.reset_bot()
+                elif opt == "5":
+                    # UNFOLLOW FARM #
+                    username = (
+                        _loginInfo.username
+                        if _loginInfo.username is not None
+                        else input("%susername: %s" % (fg(207), attr(0)))
+                    )
+                    password = (
+                        _loginInfo.password
+                        if _loginInfo.password is not None
+                        else input("%spassword: %s" % (fg(207), attr(0)))
+                    )
+                    total = int(input("%sTotal unFollow: %s" % (fg(10), attr(0))))
+                    LOGGED = Instagram.login(username, password)
+                    USER_EXIST = Instagram.navigate_to(username, "following")
+                    if LOGGED & USER_EXIST:
+                        Instagram.getFollowings(total)
+                        Instagram.userAction("unFollow")
+                        print(Instagram.messages()["done"])
+                        Instagram.reset_bot()
+                    else:
+                        Instagram.reset_bot()
+                elif opt == "8":
+                    # REMOVE REQUESTS #
+                    username = (
+                        _loginInfo.username
+                        if _loginInfo.username is not None
+                        else input("%susername: %s" % (fg(207), attr(0)))
+                    )
+                    password = (
+                        _loginInfo.password
+                        if _loginInfo.password is not None
+                        else input("%spassword: %s" % (fg(207), attr(0)))
+                    )
+                    LOGGED = Instagram.login(username, password)
+                    if LOGGED:
+                        Instagram.removeRequests()
+                        print(Instagram.messages()["done"])
+                        Instagram.reset_bot()
+                    else:
+                        Instagram.reset_bot()
+        except KeyboardInterrupt:
+            print("%s >>> Shutting down... %s" % (fg(10), attr(0)))
+        except Exception as e:
+            print("Caught an unexpected error: %s" % e)
+            print("%s >>> Shutting down... %s" % (fg(10), attr(0)))
+        finally:
+            Instagram.close_bot()
+            exit()
+except Exception as e:
+    print(f"%s {e.msg} %s" % (fg(1), attr(0)))
