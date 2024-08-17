@@ -448,7 +448,7 @@ class Instagram:
             time.sleep(2)
 
             new_count = len(
-                self.browser.find_elements(By.XPATH, "//*[@class='_aarf']")
+                self.browser.find_elements(By.XPATH, "//*[@class='x1rg5ohu']")
             )
             self.clearc()
 
@@ -466,7 +466,7 @@ class Instagram:
                 break
 
         followers = self.browser.find_elements(
-            By.XPATH, "//*[@class='_aarf']"
+            By.XPATH, "//*[@class='x1rg5ohu']"
         )
         self.user_list = []
 
@@ -486,7 +486,7 @@ class Instagram:
         self.messages()["countFollowers"]
 
         followers_count = len(
-            self.browser.find_elements(By.XPATH, "//*[@class='_aarf']")
+            self.browser.find_elements(By.XPATH, "//*[@class='x1rg5ohu']")
         )
         print(f" >>> Started to Counting Followers: {followers_count}")
 
@@ -495,7 +495,7 @@ class Instagram:
             time.sleep(2)
 
             new_count = len(
-                self.browser.find_elements(By.XPATH, "//*[@class='_aarf']")
+                self.browser.find_elements(By.XPATH, "//*[@class='x1rg5ohu']")
             )
             self.clearc()
 
@@ -510,7 +510,7 @@ class Instagram:
 
         try:
             total_followers = self.browser.find_elements(
-                By.XPATH, "//*[@class='_aarf']"
+                By.XPATH, "//*[@class='x1rg5ohu']"
             )
 
             Flist = []
