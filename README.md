@@ -57,7 +57,7 @@ IG_PASSWORD="your_password"
 
 The headless option may lead to certian action blocks (follow/unfollow) from Instagram if used too often. You might want to disable it in your use case.
 
-Order to disable it comment out or remove the above line from **InstagramTool.py** file.
+Order to disable it comment out or remove the below line from **InstagramTool.py** file.
 
 ```py
  self.chrome_options.add_argument("--headless")
