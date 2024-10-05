@@ -1,6 +1,6 @@
 scrollScript = """
     var element = document.evaluate(
-        "//*[@role='dialog']/div/div/div[2]",
+        "//*[@role='dialog']/div/div/div[3]",
         document,
         null,
         XPathResult.FIRST_ORDERED_NODE_TYPE,
