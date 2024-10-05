@@ -440,8 +440,12 @@ class Instagram:
                     )
                     time.sleep(1)
 
-    def getFollowings(self, total):
+    def getFollowings(self):
         time.sleep(5)
+
+        # Get total number of followers shown by Instagram
+        total = self.browser.execute_script(_scripts.getChildElementCount)
+        print(total)
 
         while True:
             self.browser.execute_script(_scripts.scrollScript)
@@ -465,9 +469,7 @@ class Instagram:
             else:
                 break
 
-        followers = self.browser.find_elements(
-            By.XPATH, "//*[@class='x1rg5ohu']"
-        )
+        followers = self.browser.find_elements( By.XPATH, "//*[@class='x1rg5ohu']")
         self.user_list = []
 
         i = 0
@@ -664,11 +666,14 @@ try:
                         else input("%spassword: %s" % (fg(207), attr(0)))
                     )
                     target = input("%sTarget account name: %s" % (fg(207), attr(0)))
-                    total = int(input("%sTotal Follow: %s" % (fg(10), attr(0))))
+
+                    # Instagram won't show all followers at once anymore.
+                    # total = int(input("%sTotal Follow: %s" % (fg(10), attr(0))))
+                    
                     LOGGED = Instagram.login(username, password)
                     USER_EXIST = Instagram.navigate_to(target, "followers")
                     if LOGGED & USER_EXIST:
-                        Instagram.getFollowings(total)
+                        Instagram.getFollowings() #(total)
                         Instagram.userAction("Follow")
                         print(Instagram.messages()["done"])
                         Instagram.reset_bot()
