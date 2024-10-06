@@ -87,6 +87,7 @@ class Instagram:
             "rewritingRequests": "%s\n >>> Re-writing 'pending_follow_requests.json' file...%s"
             % (fg(2), attr(0)),
             "done": "%s\n >>> DONE!%s" % (fg(2), attr(0)),
+            "followersNotAvailable" : "%s>>> Followers not shown by account. Collecting available followers.%s" % (fg(2), attr(0)),
         }
 
     def create_image_path(self):
@@ -440,13 +441,26 @@ class Instagram:
                     )
                     time.sleep(1)
 
-    def getFollowings(self):
+    def getFollowings(self, total):
         time.sleep(5)
 
-        # Get total number of followers shown by Instagram
-        total = self.browser.execute_script(_scripts.getChildElementCount)
-        print(total)
+        canCollectfollowers = True
 
+        # Check is followers available to collect
+        try:
+            self.browser.find_element(By.XPATH, "//*[@role='dialog']/div/div/div[2]/div/input")
+        except NoSuchElementException:
+            print(self.messages()["followersNotAvailable"])
+            canCollectfollowers = False
+            time.sleep(2)
+
+        # If followers not available, collect only shown ones.
+        if canCollectfollowers is False:
+            self.browser.execute_script(_scripts.scrollScript)
+            time.sleep(2)
+            total = self.browser.execute_script(_scripts.getChildElementCount)
+        
+        # Start collecting
         while True:
             self.browser.execute_script(_scripts.scrollScript)
             time.sleep(2)
@@ -666,14 +680,11 @@ try:
                         else input("%spassword: %s" % (fg(207), attr(0)))
                     )
                     target = input("%sTarget account name: %s" % (fg(207), attr(0)))
-
-                    # Instagram won't show all followers at once anymore.
-                    # total = int(input("%sTotal Follow: %s" % (fg(10), attr(0))))
-                    
+                    total = int(input("%sTotal Follow: %s" % (fg(10), attr(0))))
                     LOGGED = Instagram.login(username, password)
                     USER_EXIST = Instagram.navigate_to(target, "followers")
                     if LOGGED & USER_EXIST:
-                        Instagram.getFollowings() #(total)
+                        Instagram.getFollowings(total)
                         Instagram.userAction("Follow")
                         print(Instagram.messages()["done"])
                         Instagram.reset_bot()
