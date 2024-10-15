@@ -60,7 +60,7 @@ The headless option may lead to certian action blocks (follow/unfollow) from Ins
 Order to disable it comment out or remove the below line from **InstagramTool.py** file.
 
 ```py
- self.chrome_options.add_argument("--headless")
+ self.chrome_options.add_argument("--headless=old")
 ```
 
 ## Links to the repositories of the libraries used in this tool
