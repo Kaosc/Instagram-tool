@@ -14,9 +14,15 @@ pip install selenium colored pillow python-dotenv requests
 
 or run the `dep-installer.py` file.
 
-## 2. ChromeDriver
+## 2. Setting Up Chrome Driver
 
-**Please check [here](https://googlechromelabs.github.io/chrome-for-testing/) for the latest version. Current ChromeDriver version is 129 Stable (win64).**
+The current version of Chrome Driver in this repository is **129**. To ensure compatibility, please check for the latest ChromeDriver version [here](https://googlechromelabs.github.io/chrome-for-testing/).
+
+If a newer version is available:
+1. Download the latest ChromeDriver.
+2. Replace the existing file in the `driver` folder with the newly downloaded version.
+
+**Note**: If you don't have Chrome installed on your system, make sure to install it before proceeding.
 
 ChromeDriver version must be the same chrome version installed on your system. You can check your installed chrome version via Settings > About Chrome.
 
