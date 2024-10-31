@@ -75,4 +75,4 @@ Order to disable it comment out or remove the below line from **InstagramTool.py
 - [Colored](https://gitlab.com/dslackw/colored)
 - [Pillow](https://github.com/python-pillow/Pillow)
 - [python-dotenv](https://github.com/theskumar/python-dotenv)
-- [Requests](https://github.com/psf/requests)
+- [Instaloader](https://github.com/instaloader/instaloader)

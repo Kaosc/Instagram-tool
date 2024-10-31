@@ -10,13 +10,12 @@ from selenium.common.exceptions import NoSuchElementException
 from colored import fg, attr
 import urllib.request
 from PIL import Image
-import requests
+import instaloader
 
 import _loginInfo
 import _scripts
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
-
 
 class Instagram:
     def __init__(self):
@@ -25,11 +24,13 @@ class Instagram:
         self.imageFolderPath = "./images"
         self.requestedAccountsFilePath = "data/pending_follow_requests.json"
 
-        # Chrome Options
+        # Chrome driver setup
         self.service = Service(self.driverPath)
         self.chrome_options = webdriver.ChromeOptions()
 
-        # The headless option may lead to blocks from Instagram if used too often.
+        # Chrome options
+
+        # The headless option may lead you to get blocked by Instagram if used too often.
         # You might want to disable it in your use case.
         self.chrome_options.add_argument("--headless=old")
 
@@ -67,11 +68,7 @@ class Instagram:
             "getFollowersSuccess": "%s\n >>> Followers successfully saved to 'followers.txt' file!%s" % (fg(2), attr(0)),
             "getFollowersError": "%s\n >>> Something went wrong while saving followers. Please try again later.%s" % (fg(1), attr(0)),
             "importingRequests": "%s\n >>> Importing data from 'pending_follow_requests.json' file...%s" % (fg(2), attr(0)),
-            "importingRequestsError": (
-                "%s\n >>> Something went wrong while importing data from "
-                "'pending_follow_requests.json' file. Please make sure the file exists "
-                "and meets the requirements. Read the README.md file for more information.%s"
-            )
+            "importingRequestsError": ("%s\n >>> Something went wrong while importing data from 'pending_follow_requests.json' file. Please make sure the file exists and meets the requirements. Read the README.md file for more information.%s")
             % (fg(1), attr(0)),
             "removeRequest": "%s\n >>> Removing requests...%s" % (fg(2), attr(0)),
             "rewritingRequests": "%s\n >>> Re-writing 'pending_follow_requests.json' file...%s" % (fg(2), attr(0)),
@@ -79,12 +76,20 @@ class Instagram:
             "followersNotAvailable": "%s>>> Followers not shown by account. Collecting available followers.%s" % (fg(2), attr(0)),
         }
 
+    def clearc(self):
+        os.system("cls")
+        time.sleep(1)
+
+    def close_bot(self):
+        self.browser.quit()
+
+    def reset_bot(self):
+        self.user_list = []
+        self.pendingFollowRequests = []
+
     def create_image_path(self):
         if not os.path.exists(self.imageFolderPath):
             os.makedirs(self.imageFolderPath)
-
-    def clearc(self):
-        os.system("cls")
 
     def get_total_file_sum(self, path):
         total = 0
@@ -95,6 +100,36 @@ class Instagram:
             return 1
         else:
             return total + 1
+
+    def show_img(self):
+        self.clearc()
+
+        fileName = input("\n%s[post / pp / result] :%s" % (fg(30), attr(0)))
+        try:
+            img = Image.open(f"{self.imageFolderPath}/{fileName}.png")
+            img.show()
+        except FileNotFoundError:
+            print(self.messages()["fileNotFound"])
+
+    def delete_img(self):
+        self.clearc()
+
+        files = ["pp", "post", "result"]
+        fileName = input(f"\n%s {files}: %s" % (fg(30), attr(0)))
+
+        if fileName == "all":
+            for file in files:
+                try:
+                    os.remove(f"{self.imageFolderPath}/{file}.png")
+                except FileNotFoundError:
+                    pass
+            print(self.messages()["allImgDeleted"])
+        else:
+            try:
+                os.remove(f"{self.imageFolderPath}/{fileName}.png")
+                print(self.messages()["imgDeleted"])
+            except FileNotFoundError:
+                pass
 
     def login(self, username, password):
         if self.isLoggedIn:
@@ -129,57 +164,27 @@ class Instagram:
             self.isLoggedIn = True
             return True
 
-    def close_bot(self):
-        self.browser.quit()
-
-    def reset_bot(self):
-        self.user_list = []
-        self.pendingFollowRequests = []
-
-    def show_img(self):
-        self.clearc()
-
-        fileName = input("\n%s[post / pp / result] :%s" % (fg(30), attr(0)))
-        try:
-            img = Image.open(f"{self.imageFolderPath}/{fileName}.png")
-            img.show()
-        except FileNotFoundError:
-            print(self.messages()["fileNotFound"])
-
-    def delete_img(self):
-        self.clearc()
-
-        files = ["pp", "post", "result"]
-        fileName = input(f"\n%s {files}: %s" % (fg(30), attr(0)))
-
-        if fileName == "all":
-            for file in files:
-                try:
-                    os.remove(f"{self.imageFolderPath}/{file}.png")
-                except FileNotFoundError:
-                    pass
-            print(self.messages()["allImgDeleted"])
-        else:
-            try:
-                os.remove(f"{self.imageFolderPath}/{fileName}.png")
-                print(self.messages()["imgDeleted"])
-            except FileNotFoundError:
-                pass
-
     def download_pp(self, username):
         self.clearc()
         self.messages()["downloading"]
 
-        url = f"https://www.instagram.com/{username}/?__a=1&__d=1"
-        pic = requests.get(url).json()["graphql"]["user"]["profile_pic_url_hd"]
+        path = f"{self.imageFolderPath}/{username}"
+
+        loader = instaloader.Instaloader(save_metadata=False, quiet=True, dirname_pattern=path)
+
+        try:
+            loader.download_profile(username, profile_pic_only=True)
+
+            id_file_path = os.path.join(path, f"{username}_id")
+            if os.path.exists(id_file_path):
+                os.remove(id_file_path)
+
+            print(self.messages()["downloaded"])
+        except Exception as e:
+            print(f"An error occurred: {e}")
 
         # create images folder if not exists
         self.create_image_path()
-        fileNum = self.get_total_file_sum(self.imageFolderPath)
-
-        urllib.request.urlretrieve(pic, f"{self.imageFolderPath}/pp{fileNum}.png")
-
-        print(self.messages()["downloaded"])
 
     def downloadPost(self, link=""):
         self.clearc()
@@ -200,30 +205,6 @@ class Instagram:
         urllib.request.urlretrieve(src, f"{self.imageFolderPath}/post{fileNum}.png")
 
         print(self.messages()["downloaded"])
-
-    def freeze_account(self, password):
-        self.clearc()
-        print(self.messages()["freeze"])
-
-        self.browser.get("https://www.instagram.com/accounts/remove/request/temporary/")
-        time.sleep(2)
-        self.browser.find_element(By.XPATH, '//*[@id="deletion-reason"]').click()
-        time.sleep(2)
-        self.browser.find_element(By.XPATH, "//option[@value='need-break']").click()
-        self.browser.find_element(By.XPATH, '//*[@id="password"]').send_keys(password)
-        time.sleep(2)
-        self.browser.find_element(By.CSS_SELECTOR, "article form button").click()
-        time.sleep(2)
-        self.browser.find_element(By.CSS_SELECTOR, "article form div div button").click()
-
-        print(self.messages()["freezeResult"])
-        time.sleep(2)
-
-        self.browser.save_screenshot(f"{self.imageFolderPath}/result.png")
-        img = Image.open(f"{self.imageFolderPath}/result.png")
-        time.sleep(2)
-
-        img.show()
 
     def check_page_load_block(self, action):
         blocked = False
@@ -355,6 +336,7 @@ class Instagram:
 
                     time.sleep(1.5)
 
+                    # Click unfollow button in popup dialog
                     try:
                         unfollow_button = self.browser.find_element(
                             By.XPATH,
@@ -414,7 +396,7 @@ class Instagram:
                     )
                     time.sleep(1)
 
-    def getFollowings(self, total, type):
+    def collect_users(self, total, type):
         time.sleep(5)
 
         canCollectfollowers = True
@@ -441,19 +423,25 @@ class Instagram:
             scroll()
             total = self.browser.execute_script(_scripts.getChildElementCount)
 
+        prev_count = 0 
+
         # Start collecting
         while True:
             scroll()
 
             new_count = len(self.browser.find_elements(By.XPATH, "//*[@class='x1rg5ohu']"))
-            self.clearc()
 
+            if prev_count == new_count:
+                break
+
+            prev_count = new_count 
+            
             print(f"%s >>> Total Collected User Count: {new_count}/{total} %s" % (fg(10), attr(0)))
 
             if new_count <= 1:
                 break
 
-            if new_count < total:
+            if new_count <= total:
                 time.sleep(0.5)
             else:
                 break
@@ -469,7 +457,7 @@ class Instagram:
             if i >= total:
                 break
 
-    def get_followers(self, username):
+    def collect_followers(self, username):
         os.system("cls")
         self.browser.get(f"https://www.instagram.com/{username}/followers")
         time.sleep(3)
@@ -563,56 +551,38 @@ try:
                 print("%s\n\n∴∵∴∵∴∵ INSTAGRAM TOOL ∴∵∴∵∴∵∴\n%s" % (fg(171), attr(0)))
                 opt = input(
                     "%s"
-                    "[0] - Download Profile Picture\n"
-                    "[1] - Download Post Picture\n"
-                    "[2] - Freeze Account\n"
+                    "[1] - Download Profile Picture\n"
+                    "[2] - Download Post (Picture)\n"
                     "[3] - Get Your Follower List\n"
                     "[4] - Follower Farm\n"
                     "[5] - unFollow Farm \n"
-                    "[6] - Show Pictures\n"
-                    "[7] - Delete Pictures\n"
-                    "[8] - Remove Requests\n"
+                    "[6] - Remove Follow Requests\n"
+                    "[7] - Show Pictures\n"
+                    "[8] - Delete Pictures\n"
                     "[9] - Exit \n\n"
                     ">>> ENTER NUMBER: %s"
                     "" % (fg(171), attr(0))
                 )
 
-                if opt == "0":
+                if opt == "1":
                     # DOWNLOAD PROFILE PICTURE #
                     username = input("%susername: %s" % (fg(207), attr(0)))
                     Instagram.download_pp(username)
                     Instagram.reset_bot()
-                elif opt == "9":
-                    Instagram.close_bot()
-                    exit()
-                elif opt == "1":
+                elif opt == "2":
                     # DOWNLOAD POST #
                     link = input("%sPost Link: %s" % (fg(207), attr(0)))
                     Instagram.downloadPost(link)
                     Instagram.reset_bot()
-                elif opt == "2":
-                    # FREEZE ACCOUNT #
-                    username = _loginInfo.username if _loginInfo.username is not None else input("%susername: %s" % (fg(207), attr(0)))
-                    password = _loginInfo.password if _loginInfo.password is not None else input("%spassword: %s" % (fg(207), attr(0)))
-                    LOGGED = Instagram.login(username, password)
-                    if LOGGED:
-                        Instagram.freeze_account(password)
-                        Instagram.reset_bot()
-                    else:
-                        Instagram.reset_bot()
-                elif opt == "6":
-                    # OPEN SELECTED PICTURE #
-                    Instagram.show_img()
-                elif opt == "7":
-                    # DELETE SELECTED PICTURE #
-                    Instagram.delete_img()
                 elif opt == "3":
-                    # GET FOLLOWERS #
+                    # GET FOLLOWERS LIST #
                     username = _loginInfo.username if _loginInfo.username is not None else input("%susername: %s" % (fg(207), attr(0)))
                     password = _loginInfo.password if _loginInfo.password is not None else input("%spassword: %s" % (fg(207), attr(0)))
+
                     LOGGED = Instagram.login(username, password)
+
                     if LOGGED:
-                        Instagram.get_followers(username)
+                        Instagram.collect_followers(username)
                         Instagram.reset_bot()
                     else:
                         Instagram.reset_bot()
@@ -622,10 +592,12 @@ try:
                     password = _loginInfo.password if _loginInfo.password is not None else input("%spassword: %s" % (fg(207), attr(0)))
                     target = input("%sTarget account name: %s" % (fg(207), attr(0)))
                     total = int(input("%sTotal Follow: %s" % (fg(10), attr(0))))
+
                     LOGGED = Instagram.login(username, password)
                     USER_EXIST = Instagram.navigate_to(target, "followers")
+
                     if LOGGED & USER_EXIST:
-                        Instagram.getFollowings(total, "Followers")
+                        Instagram.collect_users(total, "Followers")
                         Instagram.userAction("Follow")
                         print(Instagram.messages()["done"])
                         Instagram.reset_bot()
@@ -636,26 +608,39 @@ try:
                     username = _loginInfo.username if _loginInfo.username is not None else input("%susername: %s" % (fg(207), attr(0)))
                     password = _loginInfo.password if _loginInfo.password is not None else input("%spassword: %s" % (fg(207), attr(0)))
                     total = int(input("%sTotal unFollow: %s" % (fg(10), attr(0))))
+
                     LOGGED = Instagram.login(username, password)
                     USER_EXIST = Instagram.navigate_to(username, "following")
+
                     if LOGGED & USER_EXIST:
-                        Instagram.getFollowings(total, "Following")
+                        Instagram.collect_users(total, "Following")
                         Instagram.userAction("unFollow")
                         print(Instagram.messages()["done"])
                         Instagram.reset_bot()
                     else:
                         Instagram.reset_bot()
-                elif opt == "8":
+                elif opt == "6":
                     # REMOVE REQUESTS #
                     username = _loginInfo.username if _loginInfo.username is not None else input("%susername: %s" % (fg(207), attr(0)))
                     password = _loginInfo.password if _loginInfo.password is not None else input("%spassword: %s" % (fg(207), attr(0)))
+                    
                     LOGGED = Instagram.login(username, password)
+
                     if LOGGED:
                         Instagram.removeRequests()
                         print(Instagram.messages()["done"])
                         Instagram.reset_bot()
                     else:
                         Instagram.reset_bot()
+                elif opt == "7":
+                    # OPEN SELECTED PICTURE #
+                    Instagram.show_img()
+                elif opt == "8":
+                    # DELETE SELECTED PICTURE #
+                    Instagram.delete_img()
+                elif opt == "9":
+                    Instagram.close_bot()
+                    exit()
         except KeyboardInterrupt:
             print("%s >>> Shutting down... %s" % (fg(10), attr(0)))
         except Exception as e:
