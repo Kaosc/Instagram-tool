@@ -16,7 +16,7 @@ or run the `dep-installer.py` file.
 
 ## 2. Setting Up Chrome Driver
 
-The current version of Chrome Driver in this repository is **129**. To ensure compatibility, please check for the latest ChromeDriver version [here](https://googlechromelabs.github.io/chrome-for-testing/).
+The current version of Chrome Driver in this repository is **131**. To ensure compatibility, please check for the latest ChromeDriver version [here](https://googlechromelabs.github.io/chrome-for-testing/).
 
 If a newer version is available:
 1. Download the latest ChromeDriver.
