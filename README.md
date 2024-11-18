@@ -4,6 +4,9 @@
 
 ![console look](./assets/preview.png)
 
+> [!WARNING]
+> Please be aware of the risk of being restricted or blocked by Instagram when using this tool. The likelihood of this occurring may depend on how frequently the tool is used. We do not take any responsibility for any consequences, and users should proceed at their own risk.
+
 # Installing dependencies
 
 ## 1. Python dependencies
