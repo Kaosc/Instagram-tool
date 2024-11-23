@@ -17,7 +17,7 @@ import _scripts
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
-class Instagram:
+class InstagramTool:
     def __init__(self):
         # Paths
         self.driverPath = "./driver/chromedriver.exe"
@@ -53,26 +53,30 @@ class Instagram:
         self.unfollow_timeout = 10
         self.isLoggedIn = False
 
+        # Login info
+        self.username = None
+        self.password = None
+
     def messages(self):
         return {
-            "login": "%s\n >>> Logging in...%s" % (fg(1), attr(0)),
-            "imgNotFound": "%s\n >>> Image not found!%s" % (fg(1), attr(0)),
-            "imgDeleted": "%s\n >>> Image deleted!%s" % (fg(2), attr(0)),
-            "allImgDeleted": "%s\n >>> All images deleted!%s" % (fg(2), attr(0)),
-            "downloading": "%s\n >>> Downloading image...%s" % (fg(2), attr(0)),
-            "downloaded": "%s\n >>> Image downloaded!%s" % (fg(2), attr(0)),
-            "freeze": "%s\n >>> Freezing account...%s" % (fg(2), attr(0)),
-            "freezeResult": "%s\n >>> Results loading...%s" % (fg(2), attr(0)),
-            "countFollowers": "%s\n >>> Counting followers...%s" % (fg(2), attr(0)),
-            "savingFollowers": "%s\n >>> Saving followers...%s" % (fg(2), attr(0)),
-            "getFollowersSuccess": "%s\n >>> Followers successfully saved to 'followers.txt' file!%s" % (fg(2), attr(0)),
-            "getFollowersError": "%s\n >>> Something went wrong while saving followers. Please try again later.%s" % (fg(1), attr(0)),
-            "importingRequests": "%s\n >>> Importing data from 'pending_follow_requests.json' file...%s" % (fg(2), attr(0)),
-            "importingRequestsError": ("%s\n >>> Something went wrong while importing data from 'pending_follow_requests.json' file. Please make sure the file exists and meets the requirements. Read the README.md file for more information.%s")
+            "login": "%s\n>>> Logging in...%s" % (fg(1), attr(0)),
+            "imgNotFound": "%s\n>>> Image not found!%s" % (fg(1), attr(0)),
+            "imgDeleted": "%s\n>>> Image deleted!%s" % (fg(2), attr(0)),
+            "allImgDeleted": "%s\n>>> All images deleted!%s" % (fg(2), attr(0)),
+            "downloading": "%s\n>>> Downloading image...%s" % (fg(2), attr(0)),
+            "downloaded": "%s\n>>> Image downloaded!%s" % (fg(2), attr(0)),
+            "freeze": "%s\n>>> Freezing account...%s" % (fg(2), attr(0)),
+            "freezeResult": "%s\n>>> Results loading...%s" % (fg(2), attr(0)),
+            "countFollowers": "%s\n>>> Counting followers...%s" % (fg(2), attr(0)),
+            "savingFollowers": "%s\n>>> Saving followers...%s" % (fg(2), attr(0)),
+            "getFollowersSuccess": "%s\n>>> Followers successfully saved to 'followers.txt' file!%s" % (fg(2), attr(0)),
+            "getFollowersError": "%s\n>>> Something went wrong while saving followers. Please try again later.%s" % (fg(1), attr(0)),
+            "importingRequests": "%s\n>>> Importing data from 'pending_follow_requests.json' file...%s" % (fg(2), attr(0)),
+            "importingRequestsError": ("%s\n>>> Something went wrong while importing data from 'pending_follow_requests.json' file. Please make sure the file exists and meets the requirements. Read the README.md file for more information.%s")
             % (fg(1), attr(0)),
-            "removeRequest": "%s\n >>> Removing requests...%s" % (fg(2), attr(0)),
-            "rewritingRequests": "%s\n >>> Re-writing 'pending_follow_requests.json' file...%s" % (fg(2), attr(0)),
-            "done": "%s\n >>> DONE!%s" % (fg(2), attr(0)),
+            "removeRequest": "%s\n>>> Removing requests...%s" % (fg(2), attr(0)),
+            "rewritingRequests": "%s\n>>> Re-writing 'pending_follow_requests.json' file...%s" % (fg(2), attr(0)),
+            "done": "%s\n>>> DONE!%s" % (fg(2), attr(0)),
             "followersNotAvailable": "%s>>> Followers not shown by account. Collecting available followers.%s" % (fg(2), attr(0)),
         }
 
@@ -131,7 +135,7 @@ class Instagram:
             except FileNotFoundError:
                 pass
 
-    def login(self, username, password):
+    def login(self):
         if self.isLoggedIn:
             return True
 
@@ -142,12 +146,13 @@ class Instagram:
         self.browser.get("https://www.instagram.com/accounts/login/")
         time.sleep(7)
 
-        self.browser.find_element(By.NAME, "username").send_keys(username)
-        self.browser.find_element(By.NAME, "password").send_keys(password)
+        self.browser.find_element(By.NAME, "username").send_keys(self.username)
+        self.browser.find_element(By.NAME, "password").send_keys(self.password)
         time.sleep(1)
         self.browser.find_element(By.XPATH, '//*[@type="submit"]').click()
         time.sleep(10)
 
+        # Check if password is incorrect
         try:
             isPasswordIncorrect = self.browser.find_element(By.XPATH, '//*[@id="loginForm"]/span/div')
             if isPasswordIncorrect:
@@ -156,6 +161,37 @@ class Instagram:
         except NoSuchElementException:
             pass
 
+        # Check 2FA
+        while True:
+            try:
+                code = input("%s>Enter the 2FA code: %s" % (fg(207), attr(0)))
+                
+                # Validate input
+                if not code.isdigit():
+                    print("Invalid input. Please enter a numeric code.")
+                    continue
+
+                # If valid, send the code
+                self.browser.find_element(By.NAME, "verificationCode").send_keys(int(code))
+                time.sleep(1)
+                self.browser.find_element(By.XPATH, '//*[@type="button"]').click()
+                time.sleep(5)
+
+                try:
+                    isCodeIncorrect = self.browser.find_element(By.XPATH, '//*[@id="twoFactorErrorAlert"]')
+                except NoSuchElementException:
+                    isCodeIncorrect = False
+
+                if isCodeIncorrect:
+                    print(f"%s>>> {isCodeIncorrect.text} %s" % (fg(1), attr(0)))
+                else:
+                    break
+
+            except ValueError:
+                print("Unexpected input format. Please try again.")
+
+
+        # Check if login is successful
         try:
             errmsg = self.browser.find_element(By.XPATH, '//*[@id="slfErrorAlert"]')
             print(f"%s>>> {errmsg.text} \n%s" % (fg(1), attr(0)))
@@ -213,7 +249,7 @@ class Instagram:
             time.sleep(1)
             blocked = self.browser.find_element(By.XPATH, "//*[@aria-label='Error']")
             if blocked.is_displayed():
-                print(f"%s\n >>> Instagram blocked {action}. Try again later. %s" % (fg(1), attr(0)))
+                print(f"%s\n>>> Instagram blocked {action}. Try again later. %s" % (fg(1), attr(0)))
                 self.reset_bot()
         except NoSuchElementException:
             pass
@@ -230,7 +266,7 @@ class Instagram:
 
             if errText == "Try Again Later":
                 blocked = True
-                print(f"%s\n >>> Instagram blocked {action}. Try again later. %s" % (fg(1), attr(0)))
+                print(f"%s\n>>> Instagram blocked {action}. Try again later. %s" % (fg(1), attr(0)))
                 self.reset_bot()
         except NoSuchElementException:
             pass
@@ -360,7 +396,7 @@ class Instagram:
                 time.sleep(1.5)
                 self.browser.find_element(By.TAG_NAME, "h3")
                 print(
-                    f"%s\n >>> Instagram blocked {
+                    f"%s\n>>> Instagram blocked {
                         action} actions. Try again later. %s"
                     % (fg(1), attr(0))
                 )
@@ -380,7 +416,7 @@ class Instagram:
             # the more time it will take to finish the process.
             if skip:
                 print(
-                    f"%s\n >>> Skipping {
+                    f"%s\n>>> Skipping {
                         action} action cause it's already done. %s"
                     % (fg(1), attr(0))
                 )
@@ -457,9 +493,9 @@ class Instagram:
             if i >= total:
                 break
 
-    def collect_followers(self, username):
+    def collect_followers(self, ):
         os.system("cls")
-        self.browser.get(f"https://www.instagram.com/{username}/followers")
+        self.browser.get(f"https://www.instagram.com/{self.username}/followers")
         time.sleep(3)
 
         self.messages()["countFollowers"]
@@ -541,9 +577,16 @@ class Instagram:
         with open(self.requestedAccountsFilePath, "w", encoding="utf-8") as file:
             json.dump(newFile, file, indent=3)
 
+    def get_username_password(self):
+        if self.username and self.password:
+            return
+
+        self.username = _loginInfo.username if _loginInfo.username is not None else input("%susername: %s" % (fg(207), attr(0)))
+        self.password = _loginInfo.password if _loginInfo.password is not None else input("%spassword: %s" % (fg(207), attr(0)))
+
 
 try:
-    Instagram = Instagram()
+    igTool = InstagramTool()
 
     if __name__ == "__main__":
         try:
@@ -567,79 +610,73 @@ try:
                 if opt == "1":
                     # DOWNLOAD PROFILE PICTURE #
                     username = input("%susername: %s" % (fg(207), attr(0)))
-                    Instagram.download_pp(username)
-                    Instagram.reset_bot()
+                    igTool.download_pp(username)
+                    igTool.reset_bot()
                 elif opt == "2":
                     # DOWNLOAD POST #
                     link = input("%sPost Link: %s" % (fg(207), attr(0)))
-                    Instagram.downloadPost(link)
-                    Instagram.reset_bot()
+                    igTool.downloadPost(link)
+                    igTool.reset_bot()
                 elif opt == "3":
                     # GET FOLLOWERS LIST #
-                    username = _loginInfo.username if _loginInfo.username is not None else input("%susername: %s" % (fg(207), attr(0)))
-                    password = _loginInfo.password if _loginInfo.password is not None else input("%spassword: %s" % (fg(207), attr(0)))
-
-                    LOGGED = Instagram.login(username, password)
+                    igTool.get_username_password()
+                    LOGGED = igTool.login()
 
                     if LOGGED:
-                        Instagram.collect_followers(username)
-                        Instagram.reset_bot()
+                        igTool.collect_followers()
+                        igTool.reset_bot()
                     else:
-                        Instagram.reset_bot()
+                        igTool.reset_bot()
                 elif opt == "4":
                     # FOLLOW FARM #
-                    username = _loginInfo.username if _loginInfo.username is not None else input("%susername: %s" % (fg(207), attr(0)))
-                    password = _loginInfo.password if _loginInfo.password is not None else input("%spassword: %s" % (fg(207), attr(0)))
+                    igTool.get_username_password()
                     target = input("%sTarget account name: %s" % (fg(207), attr(0)))
                     total = int(input("%sTotal Follow: %s" % (fg(10), attr(0))))
 
-                    LOGGED = Instagram.login(username, password)
-                    USER_EXIST = Instagram.navigate_to(target, "followers")
+                    LOGGED = igTool.login()
+                    USER_EXIST = igTool.navigate_to(target, "followers")
 
                     if LOGGED & USER_EXIST:
-                        Instagram.collect_users(total, "Followers")
-                        Instagram.userAction("Follow")
-                        print(Instagram.messages()["done"])
-                        Instagram.reset_bot()
+                        igTool.collect_users(total, "Followers")
+                        igTool.userAction("Follow")
+                        print(igTool.messages()["done"])
+                        igTool.reset_bot()
                     else:
-                        Instagram.reset_bot()
+                        igTool.reset_bot()
                 elif opt == "5":
                     # UNFOLLOW FARM #
-                    username = _loginInfo.username if _loginInfo.username is not None else input("%susername: %s" % (fg(207), attr(0)))
-                    password = _loginInfo.password if _loginInfo.password is not None else input("%spassword: %s" % (fg(207), attr(0)))
+                    igTool.get_username_password()
                     total = int(input("%sTotal unFollow: %s" % (fg(10), attr(0))))
 
-                    LOGGED = Instagram.login(username, password)
-                    USER_EXIST = Instagram.navigate_to(username, "following")
+                    LOGGED = igTool.login()
+                    USER_EXIST = igTool.navigate_to(username, "following")
 
                     if LOGGED & USER_EXIST:
-                        Instagram.collect_users(total, "Following")
-                        Instagram.userAction("unFollow")
-                        print(Instagram.messages()["done"])
-                        Instagram.reset_bot()
+                        igTool.collect_users(total, "Following")
+                        igTool.userAction("unFollow")
+                        print(igTool.messages()["done"])
+                        igTool.reset_bot()
                     else:
-                        Instagram.reset_bot()
+                        igTool.reset_bot()
                 elif opt == "6":
                     # REMOVE REQUESTS #
-                    username = _loginInfo.username if _loginInfo.username is not None else input("%susername: %s" % (fg(207), attr(0)))
-                    password = _loginInfo.password if _loginInfo.password is not None else input("%spassword: %s" % (fg(207), attr(0)))
-                    
-                    LOGGED = Instagram.login(username, password)
+                    igTool.get_username_password()
+                    LOGGED = igTool.login()
 
                     if LOGGED:
-                        Instagram.removeRequests()
-                        print(Instagram.messages()["done"])
-                        Instagram.reset_bot()
+                        igTool.removeRequests()
+                        print(igTool.messages()["done"])
+                        igTool.reset_bot()
                     else:
-                        Instagram.reset_bot()
+                        igTool.reset_bot()
                 elif opt == "7":
                     # OPEN SELECTED PICTURE #
-                    Instagram.show_img()
+                    igTool.show_img()
                 elif opt == "8":
                     # DELETE SELECTED PICTURE #
-                    Instagram.delete_img()
+                    igTool.delete_img()
                 elif opt == "9":
-                    Instagram.close_bot()
+                    igTool.close_bot()
                     exit()
         except KeyboardInterrupt:
             print("%s >>> Shutting down... %s" % (fg(10), attr(0)))
@@ -647,7 +684,7 @@ try:
             print("Caught an unexpected error: %s" % e)
             print("%s >>> Shutting down... %s" % (fg(10), attr(0)))
         finally:
-            Instagram.close_bot()
+            igTool.close_bot()
             exit()
 except Exception as e:
     print(f"%s {e.msg} %s" % (fg(1), attr(0)))
