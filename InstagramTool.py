@@ -193,6 +193,8 @@ class InstagramTool:
                print("Unexpected input format. Please try again.")
       except NoSuchElementException:
          pass
+      
+      time.sleep(5)
 
       # Check if login is successful
       try:
@@ -321,10 +323,7 @@ class InstagramTool:
             if action == "Follow":
                # This will skip ["Requested", "Following", "Follow Back"] buttons
                try:
-                  followButton = self.browser.find_element(
-                     By.XPATH,
-                     "//header//*[@type='button']//*[contains(text(), 'Follow')]",
-                  )
+                  followButton = self.browser.find_element(By.XPATH,"//header//*[@type='button']//*[contains(text(), 'Follow')]")
                   if followButton.text == "Follow":
                      followButton.click()
                      skip = False
@@ -335,10 +334,7 @@ class InstagramTool:
             elif action == "removeRequest":
                # Open popup dialog
                try:
-                  popupButton = self.browser.find_element(
-                     By.XPATH,
-                     "//header//*[@type='button']//*[contains(text(), 'Requested')]",
-                  )
+                  popupButton = self.browser.find_element(By.XPATH,"//header//*[@type='button']//*[contains(text(), 'Requested')]")
                   if popupButton.text == "Requested":
                      if popupButton.text == "Requested":
                         popupButton.click()
@@ -362,10 +358,7 @@ class InstagramTool:
             else:
                # Open popup dialog
                try:
-                  popupButton = self.browser.find_element(
-                     By.XPATH,
-                     "//header//*[@type='button']//*[contains(text(), 'Following')]",
-                  )
+                  popupButton = self.browser.find_element(By.XPATH,"//header//*[@type='button']//*[contains(text(), 'Following')]")
                   if popupButton.text == "Following":
                      if popupButton.text == "Following":
                         popupButton.click()
@@ -377,32 +370,21 @@ class InstagramTool:
 
                # Click unfollow button in popup dialog
                try:
-                  unfollow_button = self.browser.find_element(
-                     By.XPATH,
-                     "//*/div[@role='button']//*[contains(text(), 'Unfollow')]",
-                  )
+                  unfollow_button = self.browser.find_element(By.XPATH,"//*/div[@role='button']//*[contains(text(), 'Unfollow')]")
                   if unfollow_button.text == "Unfollow":
                      unfollow_button.click()
                      skip = False
                except NoSuchElementException:
                   pass
          except Exception as e:
-            print(
-               f"%s>>> Something went wrong on {
-                  action} action. Skipping...%s"
-               % (fg(1), attr(0))
-            )
+            print(f"%s>>> Something went wrong on {action} action. Skipping...%s"% (fg(1), attr(0)))
             print(e)
 
          # Check action block
          try:
             time.sleep(1.5)
             self.browser.find_element(By.TAG_NAME, "h3")
-            print(
-               f"%s\n>>> Instagram blocked {
-                  action} actions. Try again later. %s"
-               % (fg(1), attr(0))
-            )
+            print(f"%s\n>>> Instagram blocked {action} actions. Try again later. %s"% (fg(1), attr(0)))
             break
          except NoSuchElementException:
             pass
@@ -413,16 +395,10 @@ class InstagramTool:
 
          count += 1
 
-         # Wait for 25 seconds to avoid Instagram blocking actions.
-         # You can increase the time if you get blocked so often.
-         # Please note that the more you increase the time,
-         # the more time it will take to finish the process.
+         # Wait for 25 seconds to avoid Instagram blocking actions, you can increase the time if you get blocked so often.
+         # Please note that the more you increase the time, the more time it will take to finish the process.
          if skip:
-            print(
-               f"%s\n>>> Skipping {
-                  action} action cause it's already done. %s"
-               % (fg(1), attr(0))
-            )
+            print(f"%s\n>>> Skipping {action} action cause it's already done. %s" % (fg(1), attr(0)))
             time.sleep(1)
          else:
             sleepTime = action == "Follow" and self.followTimeout or self.unfollow_timeout
@@ -467,6 +443,7 @@ class InstagramTool:
       # Start collecting
       while True:
          scroll()
+         time.sleep(2)
 
          new_count = len(self.browser.find_elements(By.XPATH, "//*[@class='x1rg5ohu']"))
 
