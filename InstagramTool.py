@@ -3,6 +3,7 @@ import time
 import os
 import json
 
+from selenium.webdriver.common.keys import Keys
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
@@ -173,8 +174,12 @@ class InstagramTool:
                   print("Invalid input. Please enter a numeric code.")
                   continue
 
-               # If valid, send the code
-               self.browser.find_element(By.NAME, "verificationCode").send_keys(int(code))
+               # Clear the input field
+               self.browser.find_element(By.TAG_NAME, "input").send_keys(Keys.CONTROL + "a")
+               time.sleep(1)
+               self.browser.find_element(By.TAG_NAME, "input").seasd(Keys.DELETE)
+               # Enter the code
+               self.browser.find_element(By.TAG_NAME, "input").send_keys(int(code))
                time.sleep(1)
                self.browser.find_element(By.XPATH, '//*[@type="button"]').click()
                time.sleep(5)
@@ -300,16 +305,19 @@ class InstagramTool:
       count = 0
       hrefs = action == "removeRequest" and self.pendingFollowRequests or self.user_list
 
+      # actions : instagram buttons text
+      actions = {
+         "Follow": "Follow",
+         "unFollow": "Following",
+         "removeRequest": "Requested",
+      }
+
       for user in hrefs:
          self.clearc()
 
          skip = True
 
-         print(
-            f"%s>>> Total {action}ed: {
-               count}/{len(hrefs)} %s"
-            % (fg(43), attr(0))
-         )
+         print( f"%s>>> Total {action}ed: {count}/{len(hrefs)} %s"% (fg(43), attr(0)))
          self.browser.get(action == "removeRequest" and user["string_list_data"][0]["href"] or user)
 
          if self.check_page_load_block(f"{action} actions"):
@@ -319,76 +327,52 @@ class InstagramTool:
          try:
             time.sleep(2)
 
-            # Follow
-            if action == "Follow":
-               # This will skip ["Requested", "Following", "Follow Back"] buttons
+            if action in actions:
                try:
-                  followButton = self.browser.find_element(By.XPATH,"//header//*[@type='button']//*[contains(text(), 'Follow')]")
-                  if followButton.text == "Follow":
-                     followButton.click()
+                  # Locate the primary button based on the action
+                  button = self.browser.find_element(By.XPATH, f"//header//*[@type='button']//*[contains(text(), '{actions[action]}')]")
+                  if button.text == actions[action]:
+                     button.click()
+                     skip = False
+               except NoSuchElementException:
+                     pass
+               
+            # action in popup window
+            if action in ["unFollow", "removeRequest"]:
+               time.sleep(2)
+               try:
+                  popup_unfollow_button = self.browser.find_element(By.XPATH,"//*/div[@role='button']//*[contains(text(), 'Unfollow')]")
+                  if popup_unfollow_button.text == "Unfollow":
+                     popup_unfollow_button.click()
                      skip = False
                except NoSuchElementException:
                   pass
 
-            # removeRequest
-            elif action == "removeRequest":
-               # Open popup dialog
-               try:
-                  popupButton = self.browser.find_element(By.XPATH,"//header//*[@type='button']//*[contains(text(), 'Requested')]")
-                  if popupButton.text == "Requested":
-                     if popupButton.text == "Requested":
-                        popupButton.click()
-                        skip = False
-               except NoSuchElementException:
-                  pass
-
-               # Click unfollow button in popup dialog
-               time.sleep(1.5)
-               try:
-                  unfollow_button = self.browser.find_element(By.XPATH, "//*/button[contains(text(), 'Unfollow')]")
-                  if unfollow_button.text == "Unfollow":
-                     unfollow_button.click()
-                     skip = False
-               except NoSuchElementException:
-                  pass
-
+            if action == "removeRequest":
                self.re_write_pending_requests(user)
-
-            # unFollow
-            else:
-               # Open popup dialog
-               try:
-                  popupButton = self.browser.find_element(By.XPATH,"//header//*[@type='button']//*[contains(text(), 'Following')]")
-                  if popupButton.text == "Following":
-                     if popupButton.text == "Following":
-                        popupButton.click()
-                        skip = False
-               except NoSuchElementException:
-                  pass
-
-               time.sleep(1.5)
-
-               # Click unfollow button in popup dialog
-               try:
-                  unfollow_button = self.browser.find_element(By.XPATH,"//*/div[@role='button']//*[contains(text(), 'Unfollow')]")
-                  if unfollow_button.text == "Unfollow":
-                     unfollow_button.click()
-                     skip = False
-               except NoSuchElementException:
-                  pass
          except Exception as e:
             print(f"%s>>> Something went wrong on {action} action. Skipping...%s"% (fg(1), attr(0)))
             print(e)
 
          # Check action block
          try:
-            time.sleep(1.5)
+            time.sleep(2)
             self.browser.find_element(By.TAG_NAME, "h3")
             print(f"%s\n>>> Instagram blocked {action} actions. Try again later. %s"% (fg(1), attr(0)))
             break
          except NoSuchElementException:
             pass
 
+         # Check action block without popup
+         try:
+            time.sleep(2)
+            action_button = self.browser.find_element(By.XPATH, f"//header//*[@type='button']//*[contains(text(), '{actions[action]}')]")
+            if action_button.text == actions[action]:
+               print(f"%s\n>>> Instagram blocked {action} actions. Try again later. %s" % (fg(1), attr(0)))
+               break
+         except NoSuchElementException:
+            pass
+         
          # Check popup block
          if self.check_popup_block(action):
             return False
@@ -561,6 +545,7 @@ class InstagramTool:
       if self.username and self.password:
          return
 
+      print("%s\n>>> Please enter your Instagram credentials. %s" % (fg(171), attr(0)))
       self.username = _loginInfo.username if _loginInfo.username is not None else input("%susername: %s" % (fg(207), attr(0)))
       self.password = _loginInfo.password if _loginInfo.password is not None else input("%spassword: %s" % (fg(207), attr(0)))
 
@@ -633,7 +618,7 @@ try:
                total = int(input("%sTotal unFollow: %s" % (fg(10), attr(0))))
 
                LOGGED = igTool.login()
-               USER_EXIST = igTool.navigate_to(username, "following")
+               USER_EXIST = igTool.navigate_to(igTool.username, "following")
 
                if LOGGED & USER_EXIST:
                   igTool.collect_users(total, "Following")
