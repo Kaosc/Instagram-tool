@@ -177,7 +177,7 @@ class InstagramTool:
                # Clear the input field
                self.browser.find_element(By.TAG_NAME, "input").send_keys(Keys.CONTROL + "a")
                time.sleep(1)
-               self.browser.find_element(By.TAG_NAME, "input").seasd(Keys.DELETE)
+               self.browser.find_element(By.TAG_NAME, "input").send_keys(Keys.DELETE)
                # Enter the code
                self.browser.find_element(By.TAG_NAME, "input").send_keys(int(code))
                time.sleep(1)
