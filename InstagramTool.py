@@ -325,7 +325,7 @@ class InstagramTool:
 
          # Execute follow/unfollow aciton
          try:
-            time.sleep(2)
+            time.sleep(2.5)
 
             if action in actions:
                try:
@@ -339,7 +339,7 @@ class InstagramTool:
                
             # action in popup window
             if action in ["unFollow", "removeRequest"]:
-               time.sleep(2)
+               time.sleep(4)
                try:
                   path = action == "removeRequest" and "//*/button[contains(text(), 'Unfollow')]" or "//*/div[@role='button']//*[contains(text(), 'Unfollow')]"
                   popup_unfollow_button = self.browser.find_element(By.XPATH,path)
@@ -357,7 +357,7 @@ class InstagramTool:
 
          # Check action block
          try:
-            time.sleep(2.5)
+            time.sleep(3.5)
             self.browser.find_element(By.TAG_NAME, "h3")
             print(f"%s\n>>> Instagram blocked {action} actions. Try again later. %s"% (fg(1), attr(0)))
             break
@@ -366,7 +366,7 @@ class InstagramTool:
 
          # Check action block without popup
          try:
-            time.sleep(2.5)
+            time.sleep(3.5)
             action_button = self.browser.find_element(By.XPATH, f"//header//*[@type='button']//*[contains(text(), '{actions[action]}')]")
             if action_button.text == actions[action]:
                print(f"%s\n>>> Instagram blocked {action} actions. Try again later. %s" % (fg(1), attr(0)))
