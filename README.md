@@ -76,8 +76,8 @@ Order to remove pending follow requests:
     self.chrome_options.add_argument("--headless=old")
    ```
 
-   > [!WARNING]
-      > Be cautious about storing your account credentials, such as your username and password, on your local machine (e.g., in an .env file). If your computer is compromised, this information could be leaked. Additionally, consider enabling two-factor authentication (2FA) for your Instagram account to enhance security.
+> [!WARNING]
+> Be cautious about storing your account credentials, such as your username and password, on your local machine (e.g., in an .env file). If your computer is compromised, this information could be leaked. Additionally, consider enabling two-factor authentication (2FA) for your Instagram account to enhance security.
 
 - If you choose not to use headless, please make sure not to minimize the Chrome window, as it may disrupt some actions when minimized.
 
