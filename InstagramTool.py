@@ -187,7 +187,7 @@ class InstagramTool:
                     self.browser.find_element(By.TAG_NAME, "input").send_keys(int(code))
                     time.sleep(1)
                     self.browser.find_element(By.XPATH, '//*[@type="button"]').click()
-                    time.sleep(5)
+                    time.sleep(10)
 
                     try:
                         isCodeIncorrect = self.browser.find_element(By.XPATH, '//*[@id="twoFactorErrorAlert"]')
