@@ -330,9 +330,10 @@ class InstagramTool:
 
             # Execute follow/unfollow aciton
             try:
-                time.sleep(2.5)
+                time.sleep(3)
 
                 if action in actions:
+                    time.sleep(2)
                     try:
                         # Locate the primary button based on the action
                         button = self.browser.find_element(By.XPATH, f"//header//*[@type='button']//*[contains(text(), '{actions[action]}')]")
@@ -362,7 +363,7 @@ class InstagramTool:
 
             # Check action block
             try:
-                time.sleep(3.5)
+                time.sleep(5)
                 self.browser.find_element(By.TAG_NAME, "h3")
                 print(f"%s\n>>> Instagram blocked {action} actions. Try again later. %s" % (fg(1), attr(0)))
                 break
@@ -371,7 +372,7 @@ class InstagramTool:
 
             # Check action block without popup
             try:
-                time.sleep(3.5)
+                time.sleep(5)
                 action_button = self.browser.find_element(By.XPATH, f"//header//*[@type='button']//*[contains(text(), '{actions[action]}')]")
                 if action_button.text == actions[action]:
                     print(f"%s\n>>> Instagram blocked {action} actions. Try again later. %s" % (fg(1), attr(0)))
@@ -389,7 +390,7 @@ class InstagramTool:
             # Please note that the more you increase the time, the more time it will take to finish the process.
             if skip:
                 print(f"%s\n>>> Skipping {action} action cause it's already done. %s" % (fg(1), attr(0)))
-                time.sleep(1)
+                time.sleep(2)
             else:
                 sleepTime = action == "Follow" and self.followTimeout or self.unfollow_timeout
                 for wait in range(sleepTime):
