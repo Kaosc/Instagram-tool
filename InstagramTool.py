@@ -2,12 +2,16 @@ import warnings
 import time
 import os
 import json
+import random
+import math
 
 from selenium.webdriver.common.keys import Keys
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
 from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.common.action_chains import ActionChains
+
 from colored import fg, attr
 import urllib.request
 from PIL import Image
@@ -34,6 +38,7 @@ class InstagramTool:
 
         # The headless option may lead you to get blocked by Instagram if used too often.
         # You might want to disable it in your use case.
+        # Recommended to use it without headless mode.
         self.chrome_options.add_argument("--headless=old")
 
         self.chrome_options.add_argument("--lang=en")
@@ -45,14 +50,12 @@ class InstagramTool:
         self.chrome_options.add_experimental_option("excludeSwitches", ["disable-popup-blocking"])
         self.chrome_options.add_experimental_option("prefs", {"profile.default_content_setting_values.notifications": "2"})
         self.chrome_options.add_experimental_option("excludeSwitches", ["enable-logging"])
-
+        self.chrome_options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.5938.92 Safari/537.36")
         self.browser = webdriver.Chrome(service=self.service, options=self.chrome_options)
 
         # Variables
         self.user_list = []
         self.pendingFollowRequests = []
-        self.followTimeout = 35
-        self.unfollow_timeout = 10
         self.isLoggedIn = False
 
         # Login info
@@ -184,7 +187,7 @@ class InstagramTool:
                     time.sleep(1)
                     self.browser.find_element(By.TAG_NAME, "input").send_keys(Keys.DELETE)
                     # Enter the code
-                    self.browser.find_element(By.TAG_NAME, "input").send_keys(int(code))
+                    self.browser.find_element(By.TAG_NAME, "input").send_keys(code)
                     time.sleep(1)
                     self.browser.find_element(By.XPATH, '//*[@type="button"]').click()
                     time.sleep(10)
@@ -204,7 +207,7 @@ class InstagramTool:
         except NoSuchElementException:
             pass
 
-        time.sleep(5)
+        time.sleep(6)
 
         # Check if login is successful
         try:
@@ -261,7 +264,7 @@ class InstagramTool:
         blocked = False
 
         try:
-            time.sleep(1)
+            time.sleep(random.uniform(1, 2))
             blocked = self.browser.find_element(By.XPATH, "//*[@aria-label='Error']")
             if blocked.is_displayed():
                 print(f"%s\n>>> Instagram blocked {action}. Try again later. %s" % (fg(1), attr(0)))
@@ -275,7 +278,7 @@ class InstagramTool:
         blocked = False
 
         try:
-            time.sleep(1.5)
+            time.sleep(random.uniform(1.5, 2.5))
 
             errText = self.browser.find_element(By.XPATH, "//*[@role='dialog']//span[1]").text
 
@@ -291,20 +294,40 @@ class InstagramTool:
     def navigate_to(self, user, path):
         self.browser.get(f"https://www.instagram.com/{user}")
         print(f"%s>>> Navigating to {path}\n%s" % (fg(61), attr(0)))
-        time.sleep(3)
+        time.sleep(random.uniform(2.5, 4.5))
 
         if self.check_page_load_block("page loads"):
             return False
 
-        time.sleep(2)
+        time.sleep(random.uniform(1.5, 2.5))
 
         try:
             self.browser.find_element(By.XPATH, f'//*[@href="/{user}/{path}/"]').click()
-            time.sleep(2)
+            time.sleep(random.uniform(2, 3))
             return True
         except NoSuchElementException:
             print(f"%s>>> {user} does not exist!%s" % (fg(1), attr(0)))
             return False
+
+    def mimic_mouse(self):
+        actions = ActionChains(self.browser)
+        window_size = self.browser.get_window_size()
+        width, height = window_size["width"], window_size["height"]
+
+        for _ in range(2):
+            try:
+                x_offset = random.randint(0, int(math.floor(width - 1)))
+                y_offset = random.randint(0, int(math.floor(height - 1)))
+                actions.move_by_offset(x_offset, y_offset).perform()
+            except Exception:
+                pass
+
+            time.sleep(random.uniform(0.5, 1.5))
+
+    def mimic_goback(self):
+        if random.randint(0, 4) == 1:
+            self.browser.execute_script("window.history.go(-1)")
+            time.sleep(random.uniform(2, 3))
 
     def userAction(self, action):
         count = 0
@@ -323,17 +346,22 @@ class InstagramTool:
             skip = True
 
             print(f"%s>>> Total {action}ed: {count}/{len(hrefs)} %s" % (fg(43), attr(0)))
+
+            self.mimic_goback()
+
             self.browser.get(action == "removeRequest" and user["string_list_data"][0]["href"] or user)
 
             if self.check_page_load_block(f"{action} actions"):
                 return False
 
+            self.mimic_mouse()
+
             # Execute follow/unfollow aciton
             try:
-                time.sleep(3)
+                time.sleep(random.uniform(3.5, 4.5))
 
                 if action in actions:
-                    time.sleep(2)
+                    time.sleep(random.uniform(2, 3.5))
                     try:
                         # Locate the primary button based on the action
                         button = self.browser.find_element(By.XPATH, f"//header//*[@type='button']//*[contains(text(), '{actions[action]}')]")
@@ -345,7 +373,7 @@ class InstagramTool:
 
                 # action in popup window
                 if action in ["unFollow", "removeRequest"]:
-                    time.sleep(4)
+                    time.sleep(random.uniform(3.5, 4.5))
                     try:
                         path = action == "removeRequest" and "//*/button[contains(text(), 'Unfollow')]" or "//*/div[@role='button']//*[contains(text(), 'Unfollow')]"
                         popup_unfollow_button = self.browser.find_element(By.XPATH, path)
@@ -363,7 +391,7 @@ class InstagramTool:
 
             # Check action block
             try:
-                time.sleep(5)
+                time.sleep(random.uniform(5, 6.5))
                 self.browser.find_element(By.TAG_NAME, "h3")
                 print(f"%s\n>>> Instagram blocked {action} actions. Try again later. %s" % (fg(1), attr(0)))
                 break
@@ -372,7 +400,7 @@ class InstagramTool:
 
             # Check action block without popup
             try:
-                time.sleep(5)
+                time.sleep(random.uniform(3.5, 6.5))
                 action_button = self.browser.find_element(By.XPATH, f"//header//*[@type='button']//*[contains(text(), '{actions[action]}')]")
                 if action_button.text == actions[action]:
                     print(f"%s\n>>> Instagram blocked {action} actions. Try again later. %s" % (fg(1), attr(0)))
@@ -385,14 +413,15 @@ class InstagramTool:
                 return False
 
             count += 1
+            self.mimic_mouse()
 
             # Wait for 25 seconds to avoid Instagram blocking actions, you can increase the time if you get blocked so often.
             # Please note that the more you increase the time, the more time it will take to finish the process.
             if skip:
                 print(f"%s\n>>> Skipping {action} action cause it's already done. %s" % (fg(1), attr(0)))
-                time.sleep(2)
+                time.sleep(random.uniform(2.5, 3.5))
             else:
-                sleepTime = action == "Follow" and self.followTimeout or self.unfollow_timeout
+                sleepTime = math.floor(random.uniform(14, 32))
                 for wait in range(sleepTime):
                     print(
                         f"%s>>> {
@@ -435,6 +464,7 @@ class InstagramTool:
         while True:
             scroll()
             time.sleep(2)
+            os.system("cls")
 
             new_count = len(self.browser.find_elements(By.XPATH, "//*[@class='x1rg5ohu']"))
 
@@ -443,7 +473,7 @@ class InstagramTool:
 
             prev_count = new_count
 
-            print(f"%s>>> Total Collected User Count: {new_count}/{total} %s" % (fg(10), attr(0)))
+            print(f"%s>>> Collected {new_count} out of {total} {type} %s" % (fg(10), attr(0)))
 
             if new_count <= 1:
                 break
