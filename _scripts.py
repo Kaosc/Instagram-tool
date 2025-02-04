@@ -12,23 +12,9 @@ blockedFollowersScrollScript = """
     }
 """
 
-followersScrollScript = """
+scrollScript = """
     var element = document.evaluate(
         "//*[@role='dialog']/div/div/div[3]",
-        document,
-        null,
-        XPathResult.FIRST_ORDERED_NODE_TYPE,
-        null
-    ).singleNodeValue;
-
-    if (element) {
-        element.scrollTo(0, element.scrollHeight);
-    }
-"""
-
-followingsScrollScript = """
-    var element = document.evaluate(
-        "//*[@role='dialog']/div/div/div[4]",
         document,
         null,
         XPathResult.FIRST_ORDERED_NODE_TYPE,

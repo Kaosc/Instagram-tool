@@ -437,12 +437,10 @@ class InstagramTool:
         canCollectfollowers = True
 
         def scroll():
-            if type == "Followers":
-                self.browser.execute_script(_scripts.followersScrollScript)
             if canCollectfollowers is False:
                 self.browser.execute_script(_scripts.blockedFollowersScrollScript)
             else:
-                self.browser.execute_script(_scripts.followingsScrollScript)
+                self.browser.execute_script(_scripts.scrollScript)
             time.sleep(2)
 
         # Check is followers available to collect
