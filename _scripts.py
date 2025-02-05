@@ -1,6 +1,6 @@
 blockedFollowersScrollScript = """
     var element = document.evaluate(
-        "//*[@role='dialog']/div/div/div[2]",
+        "//*[@role='dialog']/div/div/div/div/div[2] ",
         document,
         null,
         XPathResult.FIRST_ORDERED_NODE_TYPE,
@@ -14,7 +14,7 @@ blockedFollowersScrollScript = """
 
 scrollScript = """
     var element = document.evaluate(
-        "//*[@role='dialog']/div/div/div[3]",
+        "//*[@role='dialog']/div/div/div/div/div[3]",
         document,
         null,
         XPathResult.FIRST_ORDERED_NODE_TYPE,
