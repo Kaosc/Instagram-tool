@@ -39,7 +39,7 @@ class InstagramTool:
         # The headless option may lead you to get blocked by Instagram if used too often.
         # You might want to disable it in your use case.
         # Recommended to use it without headless mode.
-        self.chrome_options.add_argument("--headless=old")
+        self.chrome_options.add_argument("--headless")
 
         self.chrome_options.add_argument("--lang=en")
         self.chrome_options.add_argument("--log-level=3")
