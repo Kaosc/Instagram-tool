@@ -19,6 +19,7 @@ import instaloader
 
 import _loginInfo
 import _scripts
+import _excludedUsers
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
@@ -343,6 +344,12 @@ class InstagramTool:
         for user in hrefs:
             self.clearc()
 
+            # Skip excluded users for unfollow action
+            if action == "unFollow" or action == "Follow":
+                if user in _excludedUsers.EXCLUDED_USERNAMES:
+                    print(f"%s>>> Skipping {user}... reason: excluded user %s" % (fg(1), attr(0)))
+                    continue
+
             skip = True
 
             print(f"%s>>> Total {action}ed: {count}/{len(hrefs)} %s" % (fg(43), attr(0)))
@@ -600,7 +607,7 @@ try:
                     "[2] - Download Post (Picture)\n"
                     "[3] - Get Your Follower List\n"
                     "[4] - Follower Farm\n"
-                    "[5] - unFollow Farm \n"
+                    "[5] - Mass Unfollow \n"
                     "[6] - Remove Follow Requests\n"
                     "[7] - Show Pictures\n"
                     "[8] - Delete Pictures\n"
@@ -650,7 +657,7 @@ try:
                     else:
                         igTool.reset_bot()
                 elif opt == "5":
-                    # UNFOLLOW FARM #
+                    # MASS UNFOLLOW #
                     igTool.get_username_password()
 
                     total = int(input("%sTotal unFollow: %s" % (fg(10), attr(0))))
