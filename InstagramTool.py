@@ -344,9 +344,9 @@ class InstagramTool:
         for user in hrefs:
             self.clearc()
 
-            # Skip excluded users for unfollow action
+            # Skip excluded users for unfollow/follow action
             if action == "unFollow" or action == "Follow":
-                if user in _excludedUsers.EXCLUDED_USERNAMES:
+                if user.split("/")[-1] in _excludedUsers.EXCLUDED_USERNAMES:
                     print(f"%s>>> Skipping {user}... reason: excluded user %s" % (fg(1), attr(0)))
                     continue
 
