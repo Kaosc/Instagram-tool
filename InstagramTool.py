@@ -448,6 +448,8 @@ class InstagramTool:
                 self.browser.execute_script(_scripts.blockedFollowersScrollScript)
             else:
                 self.browser.execute_script(_scripts.scrollScript)
+                time.sleep(2)
+                self.browser.execute_script(_scripts.scrollScript)
             time.sleep(2)
 
         # Check is followers available to collect
@@ -514,6 +516,7 @@ class InstagramTool:
         while True:
             self.browser.execute_script(_scripts.scrollScript)
             time.sleep(2)
+            self.browser.execute_script(_scripts.scrollScript)
 
             new_count = len(self.browser.find_elements(By.XPATH, "//*[@class='x1rg5ohu']"))
             self.clearc()
