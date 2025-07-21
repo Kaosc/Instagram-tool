@@ -63,6 +63,10 @@ class InstagramTool:
         self.username = None
         self.password = None
 
+        # action timeout
+        self.minActionTimeout = 14
+        self.maxActionTimeout = 32
+
     def messages(self):
         return {
             "login": "%s\n>>> Logging in...%s" % (fg(1), attr(0)),
@@ -428,7 +432,7 @@ class InstagramTool:
                 print(f"%s\n>>> Skipping {action} action cause it's already done. %s" % (fg(1), attr(0)))
                 time.sleep(random.uniform(2.5, 3.5))
             else:
-                sleepTime = math.floor(random.uniform(14, 32))
+                sleepTime = math.floor(random.uniform(self.minActionTimeout, self.maxActionTimeout))
                 for wait in range(sleepTime):
                     print(
                         f"%s>>> {
