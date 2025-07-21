@@ -63,9 +63,12 @@ class InstagramTool:
         self.username = None
         self.password = None
 
-        # action timeout
-        self.minActionTimeout = 14
-        self.maxActionTimeout = 32
+        # timeout value for actions like follow, unfollow, etc.
+        self.minActionTimeout = 14  # default 14
+        self.maxActionTimeout = 32  # default 32
+
+        # sleep range for random sleep between actions
+        self.sleepRange = [1, 5]  # default [1, 5]
 
     def messages(self):
         return {
@@ -91,6 +94,9 @@ class InstagramTool:
             "done": "%s\n>>> DONE!%s" % (fg(2), attr(0)),
             "followersNotAvailable": "%s>>> Followers not shown by account. Collecting available followers.%s" % (fg(2), attr(0)),
         }
+
+    def actionTimeout(self):
+        time.sleep(random.uniform(self.sleepRange[0], self.sleepRange[1]))
 
     def clearc(self):
         os.system("cls")
@@ -269,7 +275,7 @@ class InstagramTool:
         blocked = False
 
         try:
-            time.sleep(random.uniform(1, 2))
+            self.actionTimeout()
             blocked = self.browser.find_element(By.XPATH, "//*[@aria-label='Error']")
             if blocked.is_displayed():
                 print(f"%s\n>>> Instagram blocked {action}. Try again later. %s" % (fg(1), attr(0)))
@@ -283,7 +289,7 @@ class InstagramTool:
         blocked = False
 
         try:
-            time.sleep(random.uniform(1.5, 2.5))
+            self.actionTimeout()
 
             errText = self.browser.find_element(By.XPATH, "//*[@role='dialog']//span[1]").text
 
@@ -299,16 +305,16 @@ class InstagramTool:
     def navigate_to(self, user, path):
         self.browser.get(f"https://www.instagram.com/{user}")
         print(f"%s>>> Navigating to {path}\n%s" % (fg(61), attr(0)))
-        time.sleep(random.uniform(2.5, 4.5))
+        self.actionTimeout()
 
         if self.check_page_load_block("page loads"):
             return False
 
-        time.sleep(random.uniform(1.5, 2.5))
+        self.actionTimeout()
 
         try:
             self.browser.find_element(By.XPATH, f'//*[@href="/{user}/{path}/"]').click()
-            time.sleep(random.uniform(2, 3))
+            self.actionTimeout()
             return True
         except NoSuchElementException:
             print(f"%s>>> {user} does not exist!%s" % (fg(1), attr(0)))
@@ -327,12 +333,12 @@ class InstagramTool:
             except Exception:
                 pass
 
-            time.sleep(random.uniform(0.5, 1.5))
+            self.actionTimeout()
 
     def mimic_goback(self):
         if random.randint(0, 4) == 1:
             self.browser.execute_script("window.history.go(-1)")
-            time.sleep(random.uniform(2, 3))
+            self.actionTimeout()
 
     def userAction(self, action):
         count = 0
@@ -369,10 +375,10 @@ class InstagramTool:
 
             # Execute follow/unfollow aciton
             try:
-                time.sleep(random.uniform(3.5, 4.5))
+                self.actionTimeout()
 
                 if action in actions:
-                    time.sleep(random.uniform(2, 3.5))
+                    self.actionTimeout()
                     try:
                         # Locate the primary button based on the action
                         button = self.browser.find_element(By.XPATH, f"//header//*[@type='button']//*[contains(text(), '{actions[action]}')]")
@@ -384,7 +390,7 @@ class InstagramTool:
 
                 # action in popup window
                 if action in ["unFollow", "removeRequest"]:
-                    time.sleep(random.uniform(3.5, 4.5))
+                    self.actionTimeout()
                     try:
                         path = action == "removeRequest" and "//*/button[contains(text(), 'Unfollow')]" or "//*/div[@role='button']//*[contains(text(), 'Unfollow')]"
                         popup_unfollow_button = self.browser.find_element(By.XPATH, path)
@@ -402,7 +408,7 @@ class InstagramTool:
 
             # Check action block
             try:
-                time.sleep(random.uniform(5, 6.5))
+                self.actionTimeout()
                 self.browser.find_element(By.TAG_NAME, "h3")
                 print(f"%s\n>>> Instagram blocked {action} actions. Try again later. %s" % (fg(1), attr(0)))
                 break
@@ -411,7 +417,7 @@ class InstagramTool:
 
             # Check action block without popup
             try:
-                time.sleep(random.uniform(3.5, 6.5))
+                self.actionTimeout()
                 action_button = self.browser.find_element(By.XPATH, f"//header//*[@type='button']//*[contains(text(), '{actions[action]}')]")
                 if action_button.text == actions[action]:
                     print(f"%s\n>>> Instagram blocked {action} actions. Try again later. %s" % (fg(1), attr(0)))
@@ -430,7 +436,7 @@ class InstagramTool:
             # Please note that the more you increase the time, the more time it will take to finish the process.
             if skip:
                 print(f"%s\n>>> Skipping {action} action cause it's already done. %s" % (fg(1), attr(0)))
-                time.sleep(random.uniform(2.5, 3.5))
+                self.actionTimeout()
             else:
                 sleepTime = math.floor(random.uniform(self.minActionTimeout, self.maxActionTimeout))
                 for wait in range(sleepTime):
