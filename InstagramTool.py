@@ -40,7 +40,7 @@ class InstagramTool:
         # The headless option may lead you to get blocked by Instagram if used too often.
         # You might want to disable it in your use case.
         # Recommended to use it without headless mode.
-        self.chrome_options.add_argument("--headless")
+        # self.chrome_options.add_argument("--headless")
 
         self.chrome_options.add_argument("--lang=en")
         self.chrome_options.add_argument("--log-level=3")
@@ -164,10 +164,10 @@ class InstagramTool:
         self.browser.get("https://www.instagram.com/accounts/login/")
         time.sleep(7)
 
-        self.browser.find_element(By.NAME, "username").send_keys(self.username)
-        self.browser.find_element(By.NAME, "password").send_keys(self.password)
+        self.browser.find_element(By.NAME, "email").send_keys(self.username)
+        self.browser.find_element(By.NAME, "pass").send_keys(self.password)
         time.sleep(1)
-        self.browser.find_element(By.XPATH, '//*[@type="submit"]').click()
+        self.browser.find_element(By.XPATH, '//*[@id="login_form"]/div/div[1]/div/div[3]/div/div').click()
         time.sleep(10)
 
         # Check if password is incorrect
