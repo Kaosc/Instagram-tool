@@ -278,7 +278,7 @@ class InstagramTool:
             self.actionTimeout()
             blocked = self.browser.find_element(By.XPATH, "//*[@aria-label='Error']")
             if blocked.is_displayed():
-                print(f"%s\n>>> Instagram blocked {action}. Try again later. %s" % (fg(1), attr(0)))
+                print(f"%s\n>>> Instagram blocked {action}.(5) Try again later. %s" % (fg(1), attr(0)))
                 self.reset_bot()
         except NoSuchElementException:
             pass
@@ -295,7 +295,7 @@ class InstagramTool:
 
             if errText == "Try Again Later":
                 blocked = True
-                print(f"%s\n>>> Instagram blocked {action}. Try again later. %s" % (fg(1), attr(0)))
+                print(f"%s\n>>> Instagram blocked {action}.(4) Try again later. %s" % (fg(1), attr(0)))
                 self.reset_bot()
         except NoSuchElementException:
             pass
@@ -403,14 +403,14 @@ class InstagramTool:
                 if action == "removeRequest":
                     self.re_write_pending_requests(user)
             except Exception as e:
-                print(f"%s>>> Something went wrong on {action} action. Skipping...%s" % (fg(1), attr(0)))
+                print(f"%s>>> Something went wrong on {action} action.(3) Skipping...%s" % (fg(1), attr(0)))
                 print(e)
 
             # Check action block
             try:
                 self.actionTimeout()
                 self.browser.find_element(By.TAG_NAME, "h3")
-                print(f"%s\n>>> Instagram blocked {action} actions. Try again later. %s" % (fg(1), attr(0)))
+                print(f"%s\n>>> Instagram blocked {action} actions.(2) Try again later. %s" % (fg(1), attr(0)))
                 break
             except NoSuchElementException:
                 pass
@@ -420,7 +420,7 @@ class InstagramTool:
                 self.actionTimeout()
                 action_button = self.browser.find_element(By.XPATH, f"//header//*[@type='button']//*[contains(text(), '{actions[action]}')]")
                 if action_button.text == actions[action]:
-                    print(f"%s\n>>> Instagram blocked {action} actions. Try again later. %s" % (fg(1), attr(0)))
+                    print(f"%s\n>>> Instagram blocked {action} actions.(1) Try again later. %s" % (fg(1), attr(0)))
                     break
             except NoSuchElementException:
                 pass
