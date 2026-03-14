@@ -415,16 +415,6 @@ class InstagramTool:
             except NoSuchElementException:
                 pass
 
-            # Check action block without popup
-            try:
-                self.actionTimeout()
-                action_button = self.browser.find_element(By.XPATH, f"//header//*[@type='button']//*[contains(text(), '{actions[action]}')]")
-                if action_button.text == actions[action]:
-                    print(f"%s\n>>> Instagram blocked {action} actions.(1) Try again later. %s" % (fg(1), attr(0)))
-                    break
-            except NoSuchElementException:
-                pass
-
             # Check popup block
             if self.check_popup_block(action):
                 return False
